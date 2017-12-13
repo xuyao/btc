@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>rest.api.exx</groupId>
-	<artifactId>exx_api_rest_demo</artifactId>
+	<groupId>cn.xy.btc</groupId>
+	<artifactId>btc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,11 +42,6 @@
 			<version>2.5</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-webmvc</artifactId>
-			<version>5.0.2.RELEASE</version>
-		</dependency>
-		<dependency>
 		    <groupId>org.quartz-scheduler</groupId>
 		    <artifactId>quartz</artifactId>
 		    <version>2.3.0</version>
@@ -66,10 +61,9 @@
 		    <artifactId>spring-tx</artifactId>
 		    <version>5.0.2.RELEASE</version>
 		</dependency>
-		
 	</dependencies>
 
 	<build>
-		<finalName>exx_api_rest_demo</finalName>
+		<finalName>btc</finalName>
 	</build>
 </project>
