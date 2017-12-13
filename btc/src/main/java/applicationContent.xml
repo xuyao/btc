@@ -14,4 +14,27 @@
  
 	<context:component-scan base-package="cn.xy.btc.service" >
 	</context:component-scan>
+	
+	<bean id="myJobDetail"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="jobService"></property>
+        <property name="targetMethod" value="work"></property>
+        <property name="concurrent" value="false" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+    </bean>
+	<bean id="myTriggers" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="myJobDetail">
+        </property>
+        <property name="cronExpression">
+            <value>0/5 * * * * ?</value>
+        </property>
+    </bean>
+	<bean id="myScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="myTriggers"></ref>
+            </list>
+        </property>
+        <property name="autoStartup" value="true"></property>
+    </bean>
 </beans>

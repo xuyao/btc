@@ -1,4 +1,4 @@
-package cn.xy.btc.util;
+package cn.xy.btc.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,12 +9,14 @@ import java.net.URL;
 import java.util.Map;
 
 import org.apache.http.HttpException;
+import org.springframework.stereotype.Service;
 
 import com.zb.kits.EncryDigestUtil;
 import com.zb.kits.HttpUtilManager;
 import com.zb.kits.MapSort;
 
-public class HttpUtil {
+@Service
+public class HttpService {
 	
 	public final String ACCESS_KEY = "";
 	public final String SECRET_KEY = "";

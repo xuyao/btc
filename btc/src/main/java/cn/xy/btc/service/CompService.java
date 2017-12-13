@@ -1,24 +1,24 @@
 package cn.xy.btc.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import cn.xy.btc.vo.AskBid;
+import cn.xy.btc.vo.Deal;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 
-import cn.xy.btc.util.HttpUtil;
-import cn.xy.btc.vo.AskBid;
-import cn.xy.btc.vo.Deal;
-
 @Service
 public class CompService {
 
-	HttpUtil hu = new HttpUtil();
-	
+	@Autowired
+	HttpService httpService;
 	
 	//得到挂单的买卖价格和数量
 	public AskBid getAskBid(String market, Double cnyUsd){
 		String ha = "http://api.zb.com/data/v1/depth?market="+market+"&size=2";
-		String result = hu.get(ha);
+		String result = httpService.get(ha);
 //		System.out.println(result);
 		JSONArray asksArr = JSON.parseObject(result).getJSONArray("asks");
 		JSONArray bidsArr = JSON.parseObject(result).getJSONArray("bids");
@@ -64,4 +64,16 @@ public class CompService {
 		}
 		return deal;
 	}
+
+
+	public HttpService getHttpService() {
+		return httpService;
+	}
+
+
+	public void setHttpService(HttpService httpService) {
+		this.httpService = httpService;
+	}
+	
+	
 }
