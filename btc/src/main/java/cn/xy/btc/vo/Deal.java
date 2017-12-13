@@ -4,11 +4,11 @@ public class Deal {
 
 	private String buyMarket;
 	private Double buyPrice;
-	private Integer buyAmount;
+	private Double buyAmount;
 	
 	private String sellMarket;
 	private Double sellPrice;
-	private Integer sellAmount;
+	private Double sellAmount;
 
 	public String getBuyMarket() {
 		return buyMarket;
@@ -34,11 +34,11 @@ public class Deal {
 		this.buyPrice = buyPrice;
 	}
 
-	public Integer getBuyAmount() {
+	public Double getBuyAmount() {
 		return buyAmount;
 	}
 
-	public void setBuyAmount(Integer buyAmount) {
+	public void setBuyAmount(Double buyAmount) {
 		this.buyAmount = buyAmount;
 	}
 
@@ -50,11 +50,11 @@ public class Deal {
 		this.sellPrice = sellPrice;
 	}
 
-	public Integer getSellAmount() {
+	public Double getSellAmount() {
 		return sellAmount;
 	}
 
-	public void setSellAmount(Integer sellAmount) {
+	public void setSellAmount(Double sellAmount) {
 		this.sellAmount = sellAmount;
 	}
 

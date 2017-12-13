@@ -9,14 +9,6 @@ public class Run {
 		System.out.println("运行开始！");
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContent.xml");
 		Market.init();
-//		for(String[] arr : Market.arry){
-//		System.out.println(arr[0]+" "+arr[1]);
-//	try {
-//		Thread.sleep(500);
-//	} catch (InterruptedException e) {
-//		e.printStackTrace();
-//	}
-//	}
 
 	}
 }

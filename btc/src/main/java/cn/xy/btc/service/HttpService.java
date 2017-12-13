@@ -18,17 +18,17 @@ import com.zb.kits.MapSort;
 @Service
 public class HttpService {
 	
-	public final String ACCESS_KEY = "";
-	public final String SECRET_KEY = "";
-	public final String URL_PREFIX = "https://trade.zb.com/api/";
-	public static String API_DOMAIN = "http://api.zb.com";
+	public final String ACCESS_KEY = "102b9103-bd79-4cc0-97a4-fa7c58cd99f8";
+	public final String SECRET_KEY = "0f926281-01ff-4991-bf53-2f961483c92c";
+	public final String URL_PREFIX = "https://trade.zb.com/api/";// 测试环境,测试环境是ttapi测试不通
+	
 	/**
 	 * 获取json内容(统一加密)
 	 * 
 	 * @param params
 	 * @return
 	 */
-	private String getJsonPost(Map<String, String> params) {
+	public String getJsonPost(Map<String, String> params) {
 		params.put("accesskey", ACCESS_KEY);// 这个需要加入签名,放前面
 		String digest = EncryDigestUtil.digest(SECRET_KEY);
 
@@ -38,8 +38,6 @@ public class HttpService {
 		// 加入验证
 		params.put("sign", sign);
 		params.put("reqTime", System.currentTimeMillis() + "");
-		String url = "请求地址:" + URL_PREFIX + method + " 参数:" + params;
-		System.out.println(url);
 		String json = "";
 		try {
 			json = HttpUtilManager.getInstance().requestHttpPost(URL_PREFIX, method, params);
