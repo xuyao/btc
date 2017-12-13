@@ -25,8 +25,17 @@ public class JobService {
 //		detail("hsr_qc","hsr_usdt",usd_cny);
 //		detail("eos_qc","eos_usdt",usd_cny);
 		
-		AccountInfo ai = compService.getAccountInfo();
-		System.out.println(ai.getQcAvailable()+" "+ai.getUsdtAvailable());
+		detail("bcc_qc","bcc_usdt",usd_cny);
+		detail("ltc_qc","ltc_usdt",usd_cny);
+		detail("eth_qc","eth_usdt",usd_cny);
+		detail("etc_qc","etc_usdt",usd_cny);
+		detail("qtum_qc","qtum_usdt",usd_cny);
+		detail("bcd_qc","bcd_usdt",usd_cny);
+		detail("dash_qc","dash_usdt",usd_cny);
+		
+		
+//		AccountInfo ai = compService.getAccountInfo();
+//		System.out.println(ai.getQcAvailable()+" "+ai.getUsdtAvailable());
 	}
 	
 	public void detail(String abqc, String abusdt, Double usd_cny){
