@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import cn.xy.btc.util.ConstsUtil;
 import cn.xy.btc.vo.AccountInfo;
 import cn.xy.btc.vo.AskBid;
 import cn.xy.btc.vo.Deal;
@@ -20,6 +21,26 @@ public class CompService {
 
 	@Autowired
 	HttpService httpService;
+	
+	Double comp_cny_usd = ConstsUtil.getCompCnyUsd();//人民币比美元
+	Double comp_usd_cny = ConstsUtil.getCompUsdCny();//美元比人民币
+	
+	//下单 tradeType交易类型1/0[buy/sell]
+	public void order(String currency, String tradeType,String price, String amount){
+		try {
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("method", "order");
+			params.put("price", price);
+			params.put("amount", amount);
+			params.put("tradeType", "1");
+			params.put("currency", currency);
+			// 请求测试
+			String json = httpService.getJsonPost(params);
+			System.out.println("testOrder 结果: " + json);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 	
 	//获得用户信息
 	public AccountInfo getAccountInfo(){
@@ -78,7 +99,7 @@ public class CompService {
 	//比较两个市场的套利价格,从ab1买，去ab2卖，第一个参数是人民币，第二个参数是usd
 	public Deal compCnyUsd(AskBid ab1, AskBid ab2 ,Double usd_cny){
 		Deal deal = new Deal();
-		if((ab2.getBid1()*usd_cny)/ab1.getAsk1()>0.998){//如果价格之差大于ab2的1.2%认为有利可图,后改成千分之6
+		if((ab2.getBid1()*usd_cny)/ab1.getAsk1()>comp_cny_usd){//如果价格之差大于ab2的1.2%认为有利可图,后改成千分之6
 			deal.setBuyPrice(ab1.getAsk1());//买入价格设置为ab1的卖一价格
 			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
 			deal.setBuyMarket(ab1.getMarket());
@@ -95,7 +116,7 @@ public class CompService {
 	//第一个参数是usd，第二个参数是人民币
 	public Deal compUsdCny(AskBid ab1, AskBid ab2 ,Double usd_cny){
 		Deal deal = new Deal();
-		if(ab2.getBid1()/(ab1.getAsk1()*usd_cny)>1.030){//如果价格之差大于ab2的1.2%认为有利可图，后改成2.7%
+		if(ab2.getBid1()/(ab1.getAsk1()*usd_cny)>comp_usd_cny){//如果价格之差大于ab2的1.2%认为有利可图，后改成2.7%
 			deal.setBuyPrice(ab1.getAsk1());//买入价格设置为ab1的卖一价格
 			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
 			deal.setBuyMarket(ab1.getMarket());

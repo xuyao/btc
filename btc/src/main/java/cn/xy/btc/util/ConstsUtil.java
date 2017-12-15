@@ -21,7 +21,19 @@ public class ConstsUtil {
 		return prop.getProperty(key);
 	}
 	
-	public static Double getCnyUsd(String key){
-		return Double.parseDouble(prop.getProperty(key));
+	public static Double getCnyUsd(){
+		return Double.parseDouble(prop.getProperty("usd_cny"));
+	}
+	
+	public static Double getCompCnyUsd(){
+		return Double.parseDouble(prop.getProperty("comp_cny_usd"));
+	}
+	
+	public static Double getCompUsdCny(){
+		return Double.parseDouble(prop.getProperty("comp_usd_cny"));
+	}
+	
+	public static Double getQcLimit(){
+		return Double.parseDouble(prop.getProperty("qc_limit"));
 	}
 }
