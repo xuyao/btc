@@ -1,4 +1,4 @@
-package cn.xy.btc.util;
+package cn.xy.zb.util;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,4 +1,4 @@
-package cn.xy.btc.vo;
+package cn.xy.zb.vo;
 
 /**
  * 	买卖价格和数量
