@@ -9,6 +9,5 @@ public class Run {
 		System.out.println("运行开始！");
 		Market.init();
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContent.xml");
-
 	}
 }

@@ -80,7 +80,6 @@ public class JobService {
 			
 			//这里有个问题就是调整买入的数量
 //		}
-		
 	}
 
 	
