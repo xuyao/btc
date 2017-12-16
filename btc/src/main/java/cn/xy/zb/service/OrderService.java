@@ -37,7 +37,7 @@ public class OrderService {
 		
 		Double buyPrice = deal.getBuyPrice();
 		Double sellPrice = deal.getSellPrice();
-		sellPrice = sellPrice*usd_cny;
+		sellPrice = NumberUtil.doubleMul(sellPrice, usd_cny);
 		System.out.println("*****************************************");
 
 		Double amount = qc_limit/buyPrice;//qc的价格折算的数量
@@ -66,7 +66,7 @@ public class OrderService {
 			return;
 		Double buyPrice = deal.getBuyPrice();
 		Double sellPrice = deal.getSellPrice();
-		buyPrice = buyPrice*usd_cny;
+		buyPrice = NumberUtil.doubleMul(buyPrice, usd_cny);
 		System.out.println("*****************************************");
 
 		Double amount = qc_limit/buyPrice;//qc的价格折算的数量

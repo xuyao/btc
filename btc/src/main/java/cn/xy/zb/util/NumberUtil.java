@@ -15,6 +15,34 @@ public class NumberUtil {
     }
     
     
+    public static double doubleAdd(double a1, double b1) {  
+    	BigDecimal a2 = new BigDecimal(Double.toString(a1));  
+    	BigDecimal b2 = new BigDecimal(Double.toString(b1));  
+    	return a2.add(b2).doubleValue();  
+	}
+    
+    public static double doubleSub(double a1, double b1) {  
+    	BigDecimal a2 = new BigDecimal(Double.toString(a1));  
+    	BigDecimal b2 = new BigDecimal(Double.toString(b1));  
+    	return a2.subtract(b2).doubleValue();  
+	}
+    
+    public static double doubleMul(double a1, double b1) {  
+    	BigDecimal a2 = new BigDecimal(Double.toString(a1));  
+    	BigDecimal b2 = new BigDecimal(Double.toString(b1));  
+    	return a2.multiply(b2).doubleValue();  
+	}
+    
+    public static double doubleDiv(double a1, double b1, int scale) {
+        if (scale < 0) {  
+            throw new IllegalArgumentException("error");  
+        }
+        BigDecimal a2 = new BigDecimal(Double.toString(a1));  
+        BigDecimal b2 = new BigDecimal(Double.toString(b1));  
+        return a2.divide(b2, scale, BigDecimal.ROUND_HALF_UP).doubleValue();  
+    }
+    
+    
     public static void main(String[] args){
     	System.out.println(formatDouble(1.1231415556666, 4));
     }
