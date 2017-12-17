@@ -36,4 +36,8 @@ public class ConstsUtil {
 	public static Double getQcLimit(){
 		return Double.parseDouble(prop.getProperty("qc_limit"));
 	}
+	
+	public static Double getProfit(){
+		return Double.parseDouble(prop.getProperty("profit"));
+	}
 }

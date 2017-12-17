@@ -30,6 +30,7 @@ public class OrderService {
 	
 	Double usd_cny = ConstsUtil.getCnyUsd();//汇率
 	Double qc_limit = ConstsUtil.getQcLimit();//qc限制
+	Double profit = ConstsUtil.getProfit();//得到利益的下限
 	
 	//qc_usdt
 	public void dealQc2Usdt(Deal deal){
@@ -39,7 +40,8 @@ public class OrderService {
 		Double buyPrice = deal.getBuyPrice();
 		Double sellPrice = deal.getSellPrice();
 		sellPrice = NumberUtil.doubleMul(sellPrice, usd_cny);
-
+		
+		//计算amount
 		Double amount = qc_limit/buyPrice;//qc的价格折算的数量
 		if(amount>deal.getBuyAmount())//如果限制仓位下的amount小于挂单买入的amount，以小的为准
 			amount=deal.getBuyAmount();
@@ -74,6 +76,9 @@ public class OrderService {
 		if(amount>deal.getBuyAmount())//如果限制仓位下的amount小于挂单买入的amount，以小的为准
 			amount=deal.getBuyAmount();
 		amount =  getAmount(deal.getBuyMarket(), amount);//买入量按照市场进行小数点转换
+		
+		if((sellPrice-buyPrice)*amount*0.998<profit)//如果利益不满足要求，就不要操作了
+			return;
 		
 //		doOrder(deal, amount);
 		System.out.println("usdt*****************************************"+amount);
