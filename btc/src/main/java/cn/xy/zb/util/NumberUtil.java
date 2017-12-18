@@ -44,7 +44,7 @@ public class NumberUtil {
     
     
     public static void main(String[] args){
-    	System.out.println(formatDouble(1.1231415556666, 4));
+    	System.out.println(formatDouble(450.1664989638998, 4));
     }
     
     

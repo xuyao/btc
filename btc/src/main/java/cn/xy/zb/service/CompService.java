@@ -35,7 +35,6 @@ public class CompService {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("method", "getAccountInfo");
 			String json = httpService.getJsonPost(params);
-			System.out.println(json);
 			JSONArray jsonArry = JSON.parseObject(json).getJSONObject("result").getJSONArray("coins");
 			
 			ai = new AccountInfo();

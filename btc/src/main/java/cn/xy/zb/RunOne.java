@@ -5,6 +5,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import cn.xy.zb.service.CompService;
 import cn.xy.zb.service.OrderService;
+import cn.xy.zb.vo.AccountInfo;
 import cn.xy.zb.vo.AskBid;
 import cn.xy.zb.vo.Deal;
 
@@ -27,8 +28,10 @@ public class RunOne {
 			AskBid ab2 = compService.getAskBid(args[1]);
 			if(ab1==null || ab2==null)
 				return ;//如果为空，就返回
+			
 			Deal deal_ac_usdt = compService.compCnyUsd(ab1, ab2);//cny转usd
-			orderService.dealQc2Usdt(deal_ac_usdt);
+			AccountInfo ai = compService.getAccountInfo();
+			orderService.dealQc2Usdt(deal_ac_usdt, ai);
 		}
 		
 		if(args[0].contains("usdt") && args[1].contains("qc")){//从usdt买入到qc卖出
@@ -36,8 +39,10 @@ public class RunOne {
 			AskBid ab2 = compService.getAskBid(args[1]);
 			if(ab1==null || ab2==null)
 				return ;//如果为空，就返回
+			
+			AccountInfo ai = compService.getAccountInfo();
 			Deal deal_usdt_qc = compService.compUsdCny(ab1, ab2);
-			orderService.dealUsdt2Qc(deal_usdt_qc);
+			orderService.dealUsdt2Qc(deal_usdt_qc, ai);
 		}
 		
 	}

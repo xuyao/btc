@@ -15,10 +15,11 @@ import cn.xy.zb.vo.MarketAB;
 
 public class Market {
 
-	public static String[][] arry = new String[13][];//13行n列
+	public static String[][] arry = new String[19][];
 	public static Map<String,MarketAB> map = new HashMap<String,MarketAB>();//map
 	
 	public static void init(){
+		
 		arry[0] = new String[]{"btc_qc","btc_usdt",null};
 		arry[1] = new String[]{"bcc_qc","bcc_usdt","bcc_btc"};
 		arry[2] = new String[]{"ubtc_qc","ubtc_usdt","ubtc_btc"};
@@ -32,6 +33,12 @@ public class Market {
 		arry[10] = new String[]{"xrp_qc","xrp_usdt","xrp_btc"};
 		arry[11] = new String[]{"bcd_qc","bcd_usdt","bcd_btc"};
 		arry[12] = new String[]{"dash_qc","dash_usdt","dash_btc"};
+		arry[13] = new String[]{"sbtc_qc","sbtc_usdt","sbtc_btc"};
+		arry[14] = new String[]{"ink_qc","ink_usdt","ink_btc"};
+		arry[15] = new String[]{"tv_qc","tv_usdt","tv_btc"};
+		arry[16] = new String[]{"bcx_qc","bcx_usdt","bcx_btc"};
+		arry[17] = new String[]{"bth_qc","bth_usdt","bth_btc"};
+		arry[18] = new String[]{"lbtc_qc","lbtc_usdt","lbtc_btc"};
 		
 		String path = ConstsUtil.getValue("jsonpath");
 		String json ="";

@@ -61,7 +61,14 @@ public class HttpService {
 			connection.setConnectTimeout(30000);
 			connection.setRequestProperty("User-agent", userAgent);
 			connection.connect();
-			InputStream is = connection.getInputStream();
+			InputStream is = null;
+			try{
+				is = connection.getInputStream();
+			}catch(Exception e){
+				
+			}
+			if(is==null)
+				return null;
 			reader = new BufferedReader(new InputStreamReader(is, "utf-8"));
 			String strRead = null;
 			while ((strRead = reader.readLine()) != null) {
