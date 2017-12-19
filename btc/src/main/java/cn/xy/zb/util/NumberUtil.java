@@ -6,11 +6,11 @@ import java.math.RoundingMode;
 public class NumberUtil {
 
     /** 
-     * 使用DecimalFormat,保留小数点后n位 
+     * 使用DecimalFormat,保留小数点后n位 ,直接截取，不保留小数
      */  
     public static Double formatDouble(double value, Integer scale) {  
         BigDecimal bd = new BigDecimal(value);  
-        bd = bd.setScale(scale, RoundingMode.HALF_UP);  
+        bd = bd.setScale(scale, RoundingMode.DOWN);  
         return bd.doubleValue();
     }
     
@@ -44,7 +44,7 @@ public class NumberUtil {
     
     
     public static void main(String[] args){
-    	System.out.println(formatDouble(450.1664989638998, 4));
+    	System.out.println(formatDouble(450.161, 2));
     }
     
     

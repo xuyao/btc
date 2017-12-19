@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import cn.xy.zb.Market;
+import cn.xy.zb.Tax;
 import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.util.DateUtil;
 import cn.xy.zb.util.NumberUtil;
@@ -43,12 +44,11 @@ public class OrderService {
 		//计算amount
 		qc_limit = ai.getQcAvailable();
 		Double amount = qc_limit/buyPrice;//qc的价格折算的数量
-		System.out.println(qc_limit+"_____"+amount);
 		if(amount>deal.getBuyAmount())//如果限制仓位下的amount小于挂单买入的amount，以小的为准
 			amount=deal.getBuyAmount();
 		amount =  getAmount(deal.getBuyMarket(), amount);//买入量按照市场进行小数点转换
 		
-//		doOrder(deal, amount);
+		doOrder(deal, amount);
 		StringBuilder sb = new StringBuilder(DateUtil.formatLongPattern(new Date())).append("\n");
 		sb.append(" 市场：").append(deal.getBuyMarket());
 		sb.append(" ").append(deal.getBuyPrice()).append(" ").append(buyPrice);
@@ -108,13 +108,16 @@ public class OrderService {
 	
 	//循环等待请求
 	public synchronized void doOrder(Deal deal, Double amount){
-		Result buyResult = order(deal.getBuyMarket(), "1", String.valueOf(deal.getBuyPrice()),String.valueOf(amount*1.002));//买入
+		Result buyResult = order(deal.getBuyMarket(), "1", String.valueOf(deal.getBuyPrice()),String.valueOf(amount));//买入
 		if(buyResult!=null){//请求接口成功
 			if("1000".equals(buyResult.getCode())){
 				int i=0;
 				do{
 					try {
 						Thread.sleep(350);//现成休眠320毫秒，等待买入成功
+						//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
+						Double tax = Tax.map.get(deal.getBuyMarket());
+						amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
 						Result sellResult = order(deal.getSellMarket(), "0", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
 						System.out.println("sellResult code:"+sellResult.getCode());
 					} catch (InterruptedException e) {
