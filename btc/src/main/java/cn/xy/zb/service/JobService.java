@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.xy.zb.Market;
+import cn.xy.zb.Tax;
 import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.util.DateUtil;
 import cn.xy.zb.util.NumberUtil;
@@ -42,9 +43,9 @@ public class JobService {
 			return ;//如果为空，就返回
 		
 		Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
-		Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
-		
 		orderService.dealQc2Usdt(deal_ac_usdt, ai);
+		
+		Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
 		orderService.dealUsdt2Qc(deal_usdt_qc, ai);
 
 	}

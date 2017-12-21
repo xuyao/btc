@@ -47,6 +47,8 @@ public class OrderService {
 		if(amount>deal.getBuyAmount())//如果限制仓位下的amount小于挂单买入的amount，以小的为准
 			amount=deal.getBuyAmount();
 		amount =  getAmount(deal.getBuyMarket(), amount);//买入量按照市场进行小数点转换
+		if(amount==0)//如果买不起了，就不要操作了
+			return;
 		
 		doOrder(deal, amount);
 		StringBuilder sb = new StringBuilder(DateUtil.formatLongPattern(new Date())).append("\n");
@@ -80,8 +82,8 @@ public class OrderService {
 			amount=deal.getBuyAmount();
 		amount =  getAmount(deal.getBuyMarket(), amount);//买入量按照市场进行小数点转换
 		
-//		if((sellPrice-buyPrice)*amount*0.998<profit)//如果利益不满足要求，就不要操作了
-//			return;
+		if(amount==0)//如果买不起了，就不要操作了
+			return;
 		
 		doOrder(deal, amount);
 		StringBuilder sb = new StringBuilder(DateUtil.formatLongPattern(new Date())).append("\n");
@@ -107,14 +109,14 @@ public class OrderService {
 	
 	
 	//循环等待请求
-	public synchronized void doOrder(Deal deal, Double amount){
+	public void doOrder(Deal deal, Double amount){
 		Result buyResult = order(deal.getBuyMarket(), "1", String.valueOf(deal.getBuyPrice()),String.valueOf(amount));//买入
 		if(buyResult!=null){//请求接口成功
 			if("1000".equals(buyResult.getCode())){
 				int i=0;
 				do{
 					try {
-						Thread.sleep(350);//现成休眠320毫秒，等待买入成功
+						Thread.sleep(320);//现成休眠320毫秒，等待买入成功
 						//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
 						Double tax = Tax.map.get(deal.getBuyMarket());
 						amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
@@ -124,14 +126,14 @@ public class OrderService {
 						e.printStackTrace();
 					}
 					i++;
-				}while(i>7);//6次
+				}while(i<7);//6次
 			}
 		}
 	}
 	
 	
 	//下单 tradeType交易类型1/0[buy/sell]
-	public synchronized Result order(String currency, String tradeType,String price, String amount){
+	public Result order(String currency, String tradeType,String price, String amount){
 		Result result = null;
 		try {
 			Map<String, String> params = new HashMap<String, String>();
@@ -142,9 +144,9 @@ public class OrderService {
 			params.put("currency", currency);
 			// 请求测试
 			String json = httpService.getJsonPost(params);
-			System.out.println(price+" "+" "+amount+"交易结果: " + json);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			result = jsonObj.parseObject(json, Result.class);
+			System.out.println(price+" "+" "+amount+"交易结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
