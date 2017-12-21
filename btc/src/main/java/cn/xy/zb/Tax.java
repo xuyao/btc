@@ -66,35 +66,35 @@ public class Tax {
 	
 		
 	public static void main(String[] args){
-//			HttpService http = new HttpService();
-//			String html = http.get("https://www.zb.com/i/rate");
-//			String path = ConstsUtil.getValue("taxpath");
-//			
-//			Document doc = Jsoup.parse(html);
-//			Elements es = doc.getElementsByTag("table");
-//			Elements trs = es.get(0).getElementsByTag("tr");
-//			Iterator it = trs.iterator();
-//			it.next();
-//			StringBuilder sb = new StringBuilder();
-//			while(it.hasNext()){
-//				Element tr = (Element)it.next();
-//				Elements tds = tr.getElementsByTag("td");
-//				sb.append(tds.get(0).text()).append(",");
-//				sb.append(tds.get(1).text()).append(",");
-//				sb.append(tds.get(2).text()).append(",");
-//				sb.append(tds.get(3).text()).append(";");
-//			}
-//		
-//			try {
-//				FileUtils.writeStringToFile(new File(path), sb.toString(), "utf-8");
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			System.out.println("save tax ok!");
+			HttpService http = new HttpService();
+			String html = http.get("https://www.zb.com/i/rate");
+			String path = ConstsUtil.getValue("taxpath");
+			
+			Document doc = Jsoup.parse(html);
+			Elements es = doc.getElementsByTag("table");
+			Elements trs = es.get(0).getElementsByTag("tr");
+			Iterator it = trs.iterator();
+			it.next();
+			StringBuilder sb = new StringBuilder();
+			while(it.hasNext()){
+				Element tr = (Element)it.next();
+				Elements tds = tr.getElementsByTag("td");
+				sb.append(tds.get(0).text()).append(",");
+				sb.append(tds.get(1).text()).append(",");
+				sb.append(tds.get(2).text()).append(",");
+				sb.append(tds.get(3).text()).append(";");
+			}
+		
+			try {
+				FileUtils.writeStringToFile(new File(path), sb.toString(), "utf-8");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println("save tax ok!");
 			
 		
-			Market.init();
-			init();
+//			Market.init();
+//			init();
 //			String market = "btc_qc";
 //			MarketAB mab = Market.map.get(market);
 //			Double tax = Tax.map.get(market);
