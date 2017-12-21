@@ -80,6 +80,18 @@ public class CompService {
 	}
 	
 	
+	//嗅探
+	public Double sniffCnyUsd(AskBid ab1, AskBid ab2){
+		Double d = (ab2.getBid1()*usd_cny)/ab1.getAsk1();
+		return d;
+	}
+	
+	//嗅探
+	public Double sniffUsdCny(AskBid ab1, AskBid ab2){
+		Double d = ab2.getBid1()/(ab1.getAsk1()*usd_cny);
+		return d;
+	}
+	
 	//比较两个市场的套利价格,从ab1买，去ab2卖，第一个参数是人民币，第二个参数是usd
 	public Deal compCnyUsd(AskBid ab1, AskBid ab2){
 		Deal deal =null;

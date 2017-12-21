@@ -44,4 +44,9 @@ public class ConstsUtil {
 	public static Double getProfit(){
 		return Double.parseDouble(prop.getProperty("profit"));
 	}
+	
+	public static String getSniff(){
+		return prop.getProperty("sniff");
+	}
+
 }

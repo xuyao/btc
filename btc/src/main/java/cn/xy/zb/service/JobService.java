@@ -24,6 +24,9 @@ public class JobService {
 	@Autowired
 	OrderService orderService;
 	AccountInfo ai = null;
+	String sniff = ConstsUtil.getSniff();
+	Double sniffCnyUsd = 0d;
+	Double sniffUsdCny = 0d;
 	
 	public void work(){
 //		long a = System.currentTimeMillis();
@@ -31,6 +34,12 @@ public class JobService {
 		String[][] arry = Market.arry;
 		for(String[] sa : arry){
 			detail(sa[0], sa[1]);
+		}
+		
+		if("true".equals(sniff)){
+			System.out.println("cny to usdt:"+sniffCnyUsd);
+			System.out.println("usdt to cny:"+sniffUsdCny);
+			System.out.println();
 		}
 //		System.out.println((System.currentTimeMillis()-a)/1000);
 		
@@ -42,11 +51,16 @@ public class JobService {
 		if(ab_qc==null || ab_usdt==null)
 			return ;//如果为空，就返回
 		
-		Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
-		orderService.dealQc2Usdt(deal_ac_usdt, ai);
-		
-		Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
-		orderService.dealUsdt2Qc(deal_usdt_qc, ai);
+		if("true".equals(sniff)){//
+			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
+			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
+		}else{
+			Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
+			orderService.dealQc2Usdt(deal_ac_usdt, ai);
+			
+			Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
+			orderService.dealUsdt2Qc(deal_usdt_qc, ai);
+		}
 
 	}
 

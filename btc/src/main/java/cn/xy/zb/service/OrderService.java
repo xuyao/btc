@@ -126,7 +126,7 @@ public class OrderService {
 						e.printStackTrace();
 					}
 					i++;
-				}while(i<7);//6次
+				}while(i<5);//5次
 			}
 		}
 	}
