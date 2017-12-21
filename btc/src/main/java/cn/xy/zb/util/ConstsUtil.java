@@ -49,4 +49,7 @@ public class ConstsUtil {
 		return prop.getProperty("sniff");
 	}
 
+	public static String getDirection(){
+		return prop.getProperty("direction");
+	}
 }

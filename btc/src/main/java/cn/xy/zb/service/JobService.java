@@ -23,10 +23,12 @@ public class JobService {
 	CompService compService;
 	@Autowired
 	OrderService orderService;
+	
 	AccountInfo ai = null;
 	String sniff = ConstsUtil.getSniff();
 	Double sniffCnyUsd = 0d;
 	Double sniffUsdCny = 0d;
+	String direction = ConstsUtil.getDirection();
 	
 	public void work(){
 //		long a = System.currentTimeMillis();
@@ -55,11 +57,21 @@ public class JobService {
 			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
 			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
 		}else{
-			Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
-			orderService.dealQc2Usdt(deal_ac_usdt, ai);
-			
-			Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
-			orderService.dealUsdt2Qc(deal_usdt_qc, ai);
+			if("1".equals(direction)){
+				Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
+				orderService.dealQc2Usdt(deal_ac_usdt, ai);
+			}
+			if("2".equals(direction)){
+				Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
+				orderService.dealUsdt2Qc(deal_usdt_qc, ai);
+			}
+			if("0".equals(direction)){
+				Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
+				orderService.dealQc2Usdt(deal_ac_usdt, ai);
+				
+				Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
+				orderService.dealUsdt2Qc(deal_usdt_qc, ai);
+			}
 		}
 
 	}
