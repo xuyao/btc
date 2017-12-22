@@ -38,7 +38,7 @@ public class JobService {
 			detail(sa[0], sa[1]);
 		}
 		
-		if("true".equals(sniff)){
+		if("t".equals(sniff)){
 			System.out.println("cny to usdt:"+sniffCnyUsd);
 			System.out.println("usdt to cny:"+sniffUsdCny);
 			System.out.println();
