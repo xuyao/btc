@@ -15,7 +15,7 @@ import cn.xy.zb.vo.MarketAB;
 
 public class Market {
 
-	public static String[][] arry = new String[19][];
+	public static String[][] arry = new String[18][];
 	public static Map<String,MarketAB> map = new HashMap<String,MarketAB>();//map
 	
 	public static void init(){
@@ -26,19 +26,19 @@ public class Market {
 		arry[3] = new String[]{"ltc_qc","ltc_usdt","ltc_btc"};
 		arry[4] = new String[]{"eth_qc","eth_usdt","eth_btc"};
 		arry[5] = new String[]{"etc_qc","etc_usdt","etc_btc"};
-		arry[6] = new String[]{"bts_qc","bts_usdt","bts_btc"};
-		arry[7] = new String[]{"eos_qc","eos_usdt","eos_btc"};
-		arry[8] = new String[]{"qtum_qc","qtum_usdt","qtum_btc"};
-		arry[9] = new String[]{"hsr_qc","hsr_usdt","hsr_btc"};
-		arry[10] = new String[]{"xrp_qc","xrp_usdt","xrp_btc"};
-		arry[11] = new String[]{"bcd_qc","bcd_usdt","bcd_btc"};
-		arry[12] = new String[]{"dash_qc","dash_usdt","dash_btc"};
-		arry[13] = new String[]{"sbtc_qc","sbtc_usdt","sbtc_btc"};
-		arry[14] = new String[]{"ink_qc","ink_usdt","ink_btc"};
-		arry[15] = new String[]{"tv_qc","tv_usdt","tv_btc"};
-		arry[16] = new String[]{"bcx_qc","bcx_usdt","bcx_btc"};
-		arry[17] = new String[]{"bth_qc","bth_usdt","bth_btc"};
-		arry[18] = new String[]{"lbtc_qc","lbtc_usdt","lbtc_btc"};
+		arry[6] = new String[]{"eos_qc","eos_usdt","eos_btc"};
+		arry[7] = new String[]{"qtum_qc","qtum_usdt","qtum_btc"};
+		arry[8] = new String[]{"hsr_qc","hsr_usdt","hsr_btc"};
+		arry[9] = new String[]{"xrp_qc","xrp_usdt","xrp_btc"};
+		arry[10] = new String[]{"bcd_qc","bcd_usdt","bcd_btc"};
+		arry[11] = new String[]{"dash_qc","dash_usdt","dash_btc"};
+		arry[12] = new String[]{"sbtc_qc","sbtc_usdt","sbtc_btc"};
+		arry[13] = new String[]{"ink_qc","ink_usdt","ink_btc"};
+		arry[14] = new String[]{"tv_qc","tv_usdt","tv_btc"};
+		arry[15] = new String[]{"bcx_qc","bcx_usdt","bcx_btc"};
+		arry[16] = new String[]{"bth_qc","bth_usdt","bth_btc"};
+		arry[17] = new String[]{"lbtc_qc","lbtc_usdt","lbtc_btc"};
+//		arry[19] = new String[]{"bts_qc","bts_usdt","bts_btc"};
 		
 		String path = ConstsUtil.getValue("jsonpath");
 		String json ="";

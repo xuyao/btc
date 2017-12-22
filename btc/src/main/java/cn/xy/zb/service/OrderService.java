@@ -82,7 +82,7 @@ public class OrderService {
 			amount=deal.getBuyAmount();
 		amount =  getAmount(deal.getBuyMarket(), amount);//买入量按照市场进行小数点转换
 		
-		if(amount==0)//如果买不起了，就不要操作了
+		if(amount==0 || (amount*buyPrice)<profit)//如果买不起了，就不要操作了
 			return;
 		
 		doOrder(deal, amount);
