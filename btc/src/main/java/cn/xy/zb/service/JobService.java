@@ -55,7 +55,7 @@ public class JobService {
 		if(ab_qc==null || ab_usdt==null)
 			return ;//如果为空，就返回
 		
-		if("true".equals(sniff)){//
+		if("t".equals(sniff)){//
 			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
 			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
 		}else{
