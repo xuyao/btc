@@ -42,6 +42,8 @@ public class JobService {
 			System.out.println("cny to usdt:"+sniffCnyUsd);
 			System.out.println("usdt to cny:"+sniffUsdCny);
 			System.out.println();
+			sniffCnyUsd = 0d;
+			sniffUsdCny = 0d;
 		}
 //		System.out.println((System.currentTimeMillis()-a)/1000);
 		
