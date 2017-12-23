@@ -74,7 +74,6 @@ public class OrderService {
 		
 		Double buyPrice = deal.getBuyPrice();
 		Double sellPrice = deal.getSellPrice();
-		buyPrice = NumberUtil.doubleMul(buyPrice, usd_cny);
 
 		usdt_limit = ai.getUsdtAvailable();
 		Double amount = usdt_limit/buyPrice;//qc的价格折算的数量
@@ -82,9 +81,10 @@ public class OrderService {
 			amount=deal.getBuyAmount();
 		amount =  getAmount(deal.getBuyMarket(), amount);//买入量按照市场进行小数点转换
 		
-		if(amount==0 || (amount*buyPrice)<profit)//如果买不起了，就不要操作了
+		if(amount==0)//如果买不起了，就不要操作了
 			return;
 		
+		buyPrice = NumberUtil.doubleMul(buyPrice, usd_cny);
 		doOrder(deal, amount);
 		StringBuilder sb = new StringBuilder(DateUtil.formatLongPattern(new Date())).append("\n");
 		sb.append(" 市场：").append(deal.getBuyMarket());
