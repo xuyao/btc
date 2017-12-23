@@ -32,7 +32,9 @@ public class JobService {
 	
 	public void work(){
 //		long a = System.currentTimeMillis();
+		//查询账户
 		ai = compService.getAccountInfo();
+		//循环市场
 		String[][] arry = Market.arry;
 		for(String[] sa : arry){
 			detail(sa[0], sa[1]);
