@@ -35,7 +35,7 @@ public class OrderService {
 	
 	//qc_usdt
 	public void dealQc2Usdt(Deal deal, AccountInfo ai){
-		if(deal==null)
+		if(deal==null || ai == null)
 			return;
 		Double buyPrice = deal.getBuyPrice();
 		Double sellPrice = deal.getSellPrice();
@@ -47,7 +47,7 @@ public class OrderService {
 		if(amount>deal.getBuyAmount())//如果限制仓位下的amount小于挂单买入的amount，以小的为准
 			amount=deal.getBuyAmount();
 		amount =  getAmount(deal.getBuyMarket(), amount);//买入量按照市场进行小数点转换
-		if(amount==0)//如果买不起了，就不要操作了
+		if(amount==0 || amount*buyPrice<profit*usd_cny)//如果买不起了，或者金额太小，就不要操作了
 			return;
 		
 		doOrder(deal, amount);
@@ -69,7 +69,7 @@ public class OrderService {
 	
 	//usdt_qc
 	public void dealUsdt2Qc(Deal deal, AccountInfo ai){
-		if(deal==null)
+		if(deal==null || ai==null)
 			return;
 		
 		Double buyPrice = deal.getBuyPrice();
@@ -81,7 +81,7 @@ public class OrderService {
 			amount=deal.getBuyAmount();
 		amount =  getAmount(deal.getBuyMarket(), amount);//买入量按照市场进行小数点转换
 		
-		if(amount==0)//如果买不起了，就不要操作了
+		if(amount==0 || amount*buyPrice<profit)//如果买不起了，或者金额太小，就不要操作了
 			return;
 		
 		buyPrice = NumberUtil.doubleMul(buyPrice, usd_cny);
