@@ -126,7 +126,7 @@ public class OrderService {
 						e.printStackTrace();
 					}
 					i++;
-				}while(i<3);//3次
+				}while(i<2);//2次
 			}
 		}
 		java.awt.Toolkit.getDefaultToolkit().beep();
