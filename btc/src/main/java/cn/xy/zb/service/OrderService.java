@@ -129,6 +129,7 @@ public class OrderService {
 				}while(i<3);//3次
 			}
 		}
+		java.awt.Toolkit.getDefaultToolkit().beep();
 	}
 	
 	
