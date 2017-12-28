@@ -48,7 +48,7 @@ public class JobService {
 			sniffUsdCny = 0d;
 		}
 //		System.out.println((System.currentTimeMillis()-a)/1000);
-		
+		System.out.println(".");
 	}
 	
 	public void detail(String abqc, String abusdt){
