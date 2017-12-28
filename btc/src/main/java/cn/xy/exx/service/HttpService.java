@@ -11,15 +11,16 @@ import java.util.Map;
 import org.apache.http.HttpException;
 import org.springframework.stereotype.Service;
 
-import com.zb.kits.EncryDigestUtil;
+import cn.xy.exx.util.EncryDigestUtil;
+
 import com.zb.kits.HttpUtilManager;
 import com.zb.kits.MapSort;
 
 @Service
 public class HttpService {
 	
-	public final String ACCESS_KEY = "2e90b0cd-c69a-41dc-b190-2bb586515cf8";
-	public final String SECRET_KEY = "2e7527ddd21d19f7aea9a168f6609a486883dc61";
+	public final String ACCESS_KEY = "";
+	public final String SECRET_KEY = "";
 	public final String URL_PREFIX = " https://trade.exx.com/api/";// 测试环境,测试环境是ttapi测试不通
 	
 	/**
@@ -30,14 +31,15 @@ public class HttpService {
 	 */
 	public String getJsonPost(Map<String, String> params) {
 		params.put("accesskey", ACCESS_KEY);// 这个需要加入签名,放前面
+		params.put("nonce", System.currentTimeMillis() + "");
 		String digest = EncryDigestUtil.digest(SECRET_KEY);
 
 		String sign = EncryDigestUtil.hmacSign(MapSort.toStringMap(params), digest); // 参数执行加密
 		String method = params.get("method");
 
 		// 加入验证
-		params.put("sign", sign);
-		params.put("reqTime", System.currentTimeMillis() + "");
+		params.put("signature", sign);
+		
 		String json = "";
 		try {
 			json = HttpUtilManager.getInstance().requestHttpPost(URL_PREFIX, method, params);
