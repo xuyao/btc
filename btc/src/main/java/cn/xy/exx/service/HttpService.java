@@ -1,4 +1,4 @@
-package cn.xy.zb.service;
+package cn.xy.exx.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,9 +18,9 @@ import com.zb.kits.MapSort;
 @Service
 public class HttpService {
 	
-	public final String ACCESS_KEY = "102b9103-bd79-4cc0-97a4-fa7c58cd99f8";
-	public final String SECRET_KEY = "0f926281-01ff-4991-bf53-2f961483c92c";
-	public final String URL_PREFIX = "https://trade.zb.com/api/";// 测试环境,测试环境是ttapi测试不通
+	public final String ACCESS_KEY = "2e90b0cd-c69a-41dc-b190-2bb586515cf8";
+	public final String SECRET_KEY = "2e7527ddd21d19f7aea9a168f6609a486883dc61";
+	public final String URL_PREFIX = " https://trade.exx.com/api/";// 测试环境,测试环境是ttapi测试不通
 	
 	/**
 	 * 获取json内容(统一加密)
