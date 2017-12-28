@@ -50,7 +50,7 @@ public class OrderService {
 		if(amount==0 || amount*buyPrice<profit*usd_cny)//如果买不起了，或者金额太小，就不要操作了
 			return;
 		
-		doOrder(deal, amount);
+//		doOrder(deal, amount);
 		StringBuilder sb = new StringBuilder(DateUtil.formatLongPattern(new Date())).append("\n");
 		sb.append(" 市场：").append(deal.getBuyMarket());
 		sb.append(" ").append(deal.getBuyPrice()).append(" ").append(buyPrice);
@@ -85,7 +85,7 @@ public class OrderService {
 			return;
 		
 		buyPrice = NumberUtil.doubleMul(buyPrice, usd_cny);
-		doOrder(deal, amount);
+//		doOrder(deal, amount);
 		StringBuilder sb = new StringBuilder(DateUtil.formatLongPattern(new Date())).append("\n");
 		sb.append(" 市场：").append(deal.getBuyMarket());
 		sb.append(" ").append(deal.getBuyPrice()).append(" ").append(buyPrice);
@@ -118,7 +118,9 @@ public class OrderService {
 					try {
 						Thread.sleep(320);//现成休眠320毫秒，等待买入成功
 						//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
-						Double tax = Tax.map.get(deal.getBuyMarket());
+//						Double tax = Tax.map.get(deal.getBuyMarket());
+//						目前exx全部交易都是0.1%
+						Double tax = 0.001;
 						amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
 						Result sellResult = order(deal.getSellMarket(), "0", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
 						System.out.println("sellResult code:"+sellResult.getCode());

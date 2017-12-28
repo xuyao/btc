@@ -33,21 +33,16 @@ public class CompService {
 		try {
 			// 需加密的请求参数
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("method", "getAccountInfo");
+			params.put("method", "getBalance");
 			String json = httpService.getJsonPost(params);
 			JSONObject result = JSON.parseObject(json);
 			if(result == null)
 				return null;
-			result = result.getJSONObject("result");
-			JSONArray jsonArry = result.getJSONArray("coins");
+			result = result.getJSONObject("funds");
+			JSONObject jsonObj = result.getJSONObject("coins");
 			
-			ai = new AccountInfo();
-			JSONObject jsonObj = jsonArry.getJSONObject(0);
-			if("qc".equalsIgnoreCase(jsonObj.getString("key")))
-					ai.setQcAvailable(jsonObj.getDouble("available"));
-			jsonObj = jsonArry.getJSONObject(1);
-			if("usdt".equalsIgnoreCase(jsonObj.getString("key")))
-				ai.setUsdtAvailable(jsonObj.getDouble("available"));
+			ai.setQcAvailable(jsonObj.getJSONObject("QC").getDouble("balance"));
+			ai.setUsdtAvailable(jsonObj.getJSONObject("USDT").getDouble("balance"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
