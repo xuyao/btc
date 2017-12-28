@@ -272,7 +272,6 @@ public class HttpUtilManager {
 		method.setEntity(urlEncodedFormEntity);
 		method.setConfig(requestConfig);
 		HttpResponse response = client.execute(method);
-		// System.out.println(method.getURI());
 		HttpEntity entity = response.getEntity();
 
 		if (entity == null) {
