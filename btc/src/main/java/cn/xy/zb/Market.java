@@ -15,7 +15,7 @@ import cn.xy.zb.vo.MarketAB;
 
 public class Market {
 
-	public static String[][] arry = new String[20][];
+	public static String[][] arry = new String[21][];
 	public static Map<String,MarketAB> map = new HashMap<String,MarketAB>();//map
 	
 	public static void init(){
@@ -40,6 +40,7 @@ public class Market {
 		arry[17] = new String[]{"lbtc_qc","lbtc_usdt","lbtc_btc"};
 		arry[18] = new String[]{"eos_qc","eos_usdt","eos_btc"};
 		arry[19] = new String[]{"chat_qc","chat_usdt","chat_btc"};
+		arry[20] = new String[]{"hlc_qc","hlc_usdt","hlc_btc"};
 		
 		
 		String path = ConstsUtil.getValue("jsonpath");
