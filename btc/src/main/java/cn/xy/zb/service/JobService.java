@@ -17,7 +17,7 @@ import cn.xy.zb.vo.AskBid;
 import cn.xy.zb.vo.Deal;
 
 @Service
-public class JobService {
+public class JobService extends LogService{
 
 	@Autowired
 	CompService compService;
@@ -48,7 +48,8 @@ public class JobService {
 			sniffUsdCny = 0d;
 		}
 //		System.out.println((System.currentTimeMillis()-a)/1000);
-		System.out.println(".");
+		logger.info(".");  
+		
 	}
 	
 	public void detail(String abqc, String abusdt){

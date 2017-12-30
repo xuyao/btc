@@ -25,7 +25,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 @Service
-public class OrderService {
+public class OrderService extends LogService{
 	
 	@Autowired
 	HttpService httpService;
@@ -64,8 +64,8 @@ public class OrderService {
 		sb.append("\n");
 		sb.append(" 买入价格：").append(deal.getBuyPrice()).append(" 卖出价格：").append(deal.getSellPrice()).append(" ").append(sellPrice);
 		sb.append(" 数量：").append(amount).append(" 利：").append((sellPrice-buyPrice)*amount*0.998);//手续费
-		System.out.println(sb.toString());
-		System.out.println("qc*****************************************");
+		logger.info(sb.toString());  
+		logger.info("qc*****************************************");  
 	}
 	
 	
@@ -99,8 +99,8 @@ public class OrderService {
 		sb.append("\n");
 		sb.append(" 买入价格：").append(deal.getBuyPrice()).append(" ").append(buyPrice).append(" 卖出价格：").append(deal.getSellPrice());
 		sb.append(" 数量：").append(amount).append(" 利：").append((sellPrice-buyPrice)*amount*0.998);//手续费
-		System.out.println(sb.toString());
-		System.out.println("usdt*****************************************");
+		logger.info(sb.toString());  
+		logger.info("qc*****************************************");  
 	}
 	
 	
@@ -121,7 +121,7 @@ public class OrderService {
 					Double tax = Tax.map.get(deal.getBuyMarket());
 					amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
 					Result sellResult = order(deal.getSellMarket(), "0", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
-					System.out.println("sellResult code:"+sellResult.getCode());
+					logger.info("sellResult code:"+sellResult.getCode());
 					i++;
 					try {
 						Thread.sleep(400);
@@ -149,7 +149,7 @@ public class OrderService {
 			String json = httpService.getJsonPost(params);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			result = jsonObj.parseObject(json, Result.class);
-			System.out.println(price+" "+" "+amount+"交易结果: " + json);
+			logger.info(price+" "+" "+amount+"交易结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -197,7 +197,7 @@ public class OrderService {
 			params.put("currency", order.getCurrency());
 
 			String json = httpService.getJsonPost(params);
-			System.out.println("cancelOrder 结果: " + json);
+			logger.info(order.getCurrency()+"cancelOrder 结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

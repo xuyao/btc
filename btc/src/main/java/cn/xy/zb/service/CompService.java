@@ -17,7 +17,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 @Service
-public class CompService {
+public class CompService extends LogService{
 
 	@Autowired
 	HttpService httpService;

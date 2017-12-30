@@ -11,7 +11,6 @@ import java.util.Map;
 import org.apache.http.HttpException;
 import org.springframework.stereotype.Service;
 
-import cn.xy.exx.util.EncryDigestUtil;
 
 import com.zb.kits.HttpUtilManager;
 import com.zb.kits.MapSort;
@@ -30,23 +29,24 @@ public class HttpService {
 	 * @return
 	 */
 	public String getJsonPost(Map<String, String> params) {
-		params.put("accesskey", ACCESS_KEY);// 这个需要加入签名,放前面
-		params.put("nonce", System.currentTimeMillis() + "");
-		String digest = EncryDigestUtil.digest(SECRET_KEY);
-
-		String sign = EncryDigestUtil.hmacSign(MapSort.toStringMap(params), digest); // 参数执行加密
-		String method = params.get("method");
-
-		// 加入验证
-		params.put("signature", sign);
-		
-		String json = "";
-		try {
-			json = HttpUtilManager.getInstance().requestHttpPost(URL_PREFIX, method, params);
-		} catch (HttpException | IOException e) {
-			e.printStackTrace();
-		}
-		return json;
+//		params.put("accesskey", ACCESS_KEY);// 这个需要加入签名,放前面
+//		params.put("nonce", System.currentTimeMillis() + "");
+//		String digest = EncryDigestUtil.digest(SECRET_KEY);
+//
+//		String sign = EncryDigestUtil.hmacSign(MapSort.toStringMap(params), digest); // 参数执行加密
+//		String method = params.get("method");
+//
+//		// 加入验证
+//		params.put("signature", sign);
+//		
+//		String json = "";
+//		try {
+//			json = HttpUtilManager.getInstance().requestHttpPost(URL_PREFIX, method, params);
+//		} catch (HttpException | IOException e) {
+//			e.printStackTrace();
+//		}
+//		return json;
+		return null;
 	}
 	
 	
