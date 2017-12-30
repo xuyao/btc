@@ -56,7 +56,7 @@ public class Market {
 	
 	public static void main(String[] args){
 		HttpService http = new HttpService();
-		String json = http.get("http://api.zb.com/data/v1/markets");
+		String json = http.get("https://api.exx.com/data/v1/markets");
 		String path = ConstsUtil.getValue("jsonpath");
 		try {
 			FileUtils.writeStringToFile(new File(path), json, "utf-8");

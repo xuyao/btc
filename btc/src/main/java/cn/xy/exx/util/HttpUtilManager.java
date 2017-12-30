@@ -1,4 +1,4 @@
-package com.zb.kits;
+package cn.xy.exx.util;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -262,10 +262,10 @@ public class HttpUtilManager {
 		return responseData;
 	}
 
-	public String requestHttpPost(String url_prex, String url, Map<String, String> params)
+	public String requestHttpPost(String url, Map<String, String> params)
 			throws HttpException, IOException {
 		IdleConnectionMonitor();
-		url = url_prex + url;
+		System.out.println(url);
 		HttpPost method = this.httpPostMethod(url);
 		List<NameValuePair> valuePairs = this.convertMap2PostParams(params);
 		UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);
