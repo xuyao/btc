@@ -1,7 +1,10 @@
 package cn.xy.zb.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +17,10 @@ import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.util.DateUtil;
 import cn.xy.zb.util.NumberUtil;
 import cn.xy.zb.vo.AccountInfo;
-import cn.xy.zb.vo.AskBid;
 import cn.xy.zb.vo.Deal;
+import cn.xy.zb.vo.Order;
 import cn.xy.zb.vo.Result;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
@@ -115,17 +117,17 @@ public class OrderService {
 			if("1000".equals(buyResult.getCode())){
 				int i=0;
 				do{
+					//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
+					Double tax = Tax.map.get(deal.getBuyMarket());
+					amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
+					Result sellResult = order(deal.getSellMarket(), "0", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
+					System.out.println("sellResult code:"+sellResult.getCode());
+					i++;
 					try {
-						Thread.sleep(320);//现成休眠320毫秒，等待买入成功
-						//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
-						Double tax = Tax.map.get(deal.getBuyMarket());
-						amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
-						Result sellResult = order(deal.getSellMarket(), "0", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
-						System.out.println("sellResult code:"+sellResult.getCode());
+						Thread.sleep(400);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					i++;
 				}while(i<2);//2次
 			}
 		}
@@ -153,6 +155,54 @@ public class OrderService {
 		}
 		return result;
 	}
+
+	
+	public List<Order> getUnfinishedOrdersIgnoreTradeType(String market) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("method", "getUnfinishedOrdersIgnoreTradeType");
+		params.put("currency", market);
+		params.put("pageIndex", "1");
+		params.put("pageSize", "10");
+		String json = httpService.getJsonPost(params);
+		if(StringUtils.isEmpty(json) || json.startsWith("{")){
+			return null;
+		}
+		JSONArray jsonArry = JSONArray.parseArray(json);
+		Iterator it = jsonArry.iterator();
+		List<Order> list = new ArrayList<Order>();
+		while(it.hasNext()){
+			JSONObject jsonObj = (JSONObject)it.next();
+			Order order = new Order();
+			order.setCurrency(jsonObj.getString("currency"));
+			order.setId(jsonObj.getString("id"));
+			order.setPrice(jsonObj.getDouble("price"));
+			order.setStatus(jsonObj.getInteger("status"));
+			order.setTotal_amount(jsonObj.getDouble("total_amount"));
+			order.setTrade_amount(jsonObj.getDouble("trade_amount"));
+			order.setTrade_date(jsonObj.getInteger("trade_date"));
+			order.setTrade_money(jsonObj.getDouble("trade_money"));
+			order.setType(jsonObj.getInteger("type"));
+			list.add(order);
+		}
+		return list;	
+	}
+	
+	//cancel order
+	public void cancelOrder(Order order) {
+		String orderId = order.getId();//
+		try {
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("method", "cancelOrder");
+			params.put("id", orderId);
+			params.put("currency", order.getCurrency());
+
+			String json = httpService.getJsonPost(params);
+			System.out.println("cancelOrder 结果: " + json);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
 	
 
 	public HttpService getHttpService() {
