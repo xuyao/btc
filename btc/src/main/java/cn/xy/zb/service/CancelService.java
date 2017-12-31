@@ -58,20 +58,20 @@ public class CancelService {
 				}
 				orderService.cancelOrder(o);
 			}else if(o.getType()==0){//如果是卖单未成交，处理起来比较麻烦
-				//如果时间够长，才能撤单
-				long sys = System.currentTimeMillis();
-				if(sys - o.getTrade_date() < 240000)//如果订单间隔2分钟，就撤单
-					return;
-				orderService.cancelOrder(o);
-				AskBid ab_qc = compService.getAskBid(sa[0]);//qc叫价
-				AskBid ab_usdt = compService.getAskBid(sa[1]);//usdt叫价
-				if(ab_qc.getBid1()>ab_usdt.getBid1()*usd_cny){//人民币市场价格大于美元
-					Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);
-					orderService.dealQc2Usdt(deal_ac_usdt, ai);
-				}else{//美元价格大于人民币的话，卖向美元市场
-					Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
-					orderService.dealUsdt2Qc(deal_usdt_qc, ai);
-				}
+//				//如果时间够长，才能撤单
+//				long sys = System.currentTimeMillis();
+//				if(sys - o.getTrade_date() < 240000)//如果订单间隔2分钟，就撤单
+//					return;
+//				orderService.cancelOrder(o);
+//				AskBid ab_qc = compService.getAskBid(sa[0]);//qc叫价
+//				AskBid ab_usdt = compService.getAskBid(sa[1]);//usdt叫价
+//				if(ab_qc.getBid1()>ab_usdt.getBid1()*usd_cny){//人民币市场价格大于美元
+//					Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);
+//					orderService.dealQc2Usdt(deal_ac_usdt, ai);
+//				}else{//美元价格大于人民币的话，卖向美元市场
+//					Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
+//					orderService.dealUsdt2Qc(deal_usdt_qc, ai);
+//				}
 			}else{
 				System.out.println("Ask me please,why this order type is undefinded?");
 			}
