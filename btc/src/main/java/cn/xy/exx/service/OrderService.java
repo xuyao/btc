@@ -12,12 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import cn.xy.exx.Market;
-import cn.xy.exx.Tax;
 import cn.xy.exx.util.ConstsUtil;
 import cn.xy.exx.util.DateUtil;
 import cn.xy.exx.util.NumberUtil;
 import cn.xy.exx.vo.AccountInfo;
-import cn.xy.exx.vo.AskBid;
 import cn.xy.exx.vo.Deal;
 import cn.xy.exx.vo.Result;
 import cn.xy.exx.service.LogService;
