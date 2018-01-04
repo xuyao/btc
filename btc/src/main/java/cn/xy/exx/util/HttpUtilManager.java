@@ -262,10 +262,10 @@ public class HttpUtilManager {
 		return responseData;
 	}
 
-	public String requestHttpPost(String url, Map<String, String> params)
+	public String requestHttpPost(String url, String urlMethod, Map<String, String> params)
 			throws HttpException, IOException {
 		IdleConnectionMonitor();
-		System.out.println(url);
+		url = url + urlMethod;
 		HttpPost method = this.httpPostMethod(url);
 		List<NameValuePair> valuePairs = this.convertMap2PostParams(params);
 		UrlEncodedFormEntity urlEncodedFormEntity = new UrlEncodedFormEntity(valuePairs, Consts.UTF_8);

@@ -1,23 +1,17 @@
 package cn.xy.exx.service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.xy.exx.Market;
-import cn.xy.exx.Tax;
 import cn.xy.exx.util.ConstsUtil;
-import cn.xy.exx.util.DateUtil;
-import cn.xy.exx.util.NumberUtil;
 import cn.xy.exx.vo.AccountInfo;
 import cn.xy.exx.vo.AskBid;
 import cn.xy.exx.vo.Deal;
+import cn.xy.zb.service.LogService;
 
 @Service
-public class JobService {
+public class JobService extends LogService{
 
 	@Autowired
 	CompService compService;
@@ -31,7 +25,6 @@ public class JobService {
 	String direction = ConstsUtil.getDirection();
 	
 	public void work(){
-//		long a = System.currentTimeMillis();
 		//查询账户
 		ai = compService.getAccountInfo();
 		//循环市场
@@ -47,7 +40,6 @@ public class JobService {
 			sniffCnyUsd = 0d;
 			sniffUsdCny = 0d;
 		}
-//		System.out.println((System.currentTimeMillis()-a)/1000);
 		System.out.println(".");
 	}
 	

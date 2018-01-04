@@ -1,7 +1,7 @@
 package cn.xy.exx.service;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,13 +11,14 @@ import cn.xy.exx.util.ConstsUtil;
 import cn.xy.exx.vo.AccountInfo;
 import cn.xy.exx.vo.AskBid;
 import cn.xy.exx.vo.Deal;
+import cn.xy.zb.service.LogService;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 @Service
-public class CompService {
+public class CompService extends LogService{
 
 	@Autowired
 	HttpService httpService;
@@ -29,20 +30,20 @@ public class CompService {
 	
 	//获得用户信息
 	public AccountInfo getAccountInfo(){
+		String ha = "https://trade.exx.com/api/getBalance";
 		AccountInfo ai = null;
 		try {
 			// 需加密的请求参数
-			Map<String, String> params = new HashMap<String, String>();
-			params.put("method", "getBalance");
-			String json = httpService.getJsonPost(params);
+			Map<String, String> params = new TreeMap<String, String>();
+			String json = httpService.get(ha, params);
 			JSONObject result = JSON.parseObject(json);
 			if(result == null)
 				return null;
 			result = result.getJSONObject("funds");
-			JSONObject jsonObj = result.getJSONObject("coins");
 			
-			ai.setQcAvailable(jsonObj.getJSONObject("QC").getDouble("balance"));
-			ai.setUsdtAvailable(jsonObj.getJSONObject("USDT").getDouble("balance"));
+			ai = new AccountInfo();
+			ai.setQcAvailable(result.getJSONObject("QC").getDouble("balance"));
+			ai.setUsdtAvailable(result.getJSONObject("USDT").getDouble("balance"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -52,9 +53,8 @@ public class CompService {
 	
 	//得到挂单的买卖价格和数量
 	public AskBid getAskBid(String market){
-		String ha = "https://api.exx.com/data/v1/depth?market="+market+"&size=2";
-		String result = httpService.get(ha);
-//		System.out.println(market+result);
+		String ha = "https://api.exx.com/data/v1/depth?currency="+market;
+		String result = httpService.get(ha, null);
 		if(StringUtils.isEmpty(result))//如果行情没取到直接返回
 			return null;
 
@@ -62,22 +62,17 @@ public class CompService {
 		JSONArray bidsArr = JSON.parseObject(result).getJSONArray("bids");
 		if(asksArr==null || bidsArr==null)
 			return null;
-		JSONArray asks1 = asksArr.getJSONArray(0);
+		JSONArray asks1 = asksArr.getJSONArray(asksArr.size()-1);
 		JSONArray bids1 = bidsArr.getJSONArray(0);
-		
-		JSONArray asks2 = asksArr.getJSONArray(1);
-		JSONArray bids2 = bidsArr.getJSONArray(1);
 		
 		AskBid ab = new AskBid();
 		ab.setAsk1(asks1.getDouble(0));
 		ab.setAsk1_amount(asks1.getDouble(1));
-		ab.setAsk2(asks2.getDouble(0));
-		ab.setAsk2_amount(asks2.getDouble(1));
 		ab.setBid1(bids1.getDouble(0));
 		ab.setBid1_amount(bids1.getDouble(1));
-		ab.setBid2(bids2.getDouble(0));
-		ab.setBid2_amount(bids2.getDouble(1));
 		ab.setMarket(market);
+//		System.out.println(market+" "+asks1.getDouble(0)+asks1.getDouble(1)+" "
+//				+bids1.getDouble(0)+" "+bids1.getDouble(1));
 		return ab;
 	}
 	

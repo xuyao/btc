@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpException;
@@ -13,11 +14,12 @@ import org.springframework.stereotype.Service;
 
 import cn.xy.exx.util.EncryDigestUtil;
 import cn.xy.exx.util.HttpUtilManager;
+import cn.xy.zb.service.LogService;
 
 import com.zb.kits.MapSort;
 
 @Service
-public class HttpService {
+public class HttpService extends LogService{
 	
 	public final String ACCESS_KEY = "";
 	public final String SECRET_KEY = "";
@@ -30,29 +32,33 @@ public class HttpService {
 	 * @return
 	 */
 	public String getJsonPost(Map<String, String> params) {
-//		params.put("accesskey", ACCESS_KEY);// 这个需要加入签名,放前面
-//		params.put("nonce", System.currentTimeMillis() + "");
-//		String digest = EncryDigestUtil.digest(SECRET_KEY);
-//
-//		String sign = EncryDigestUtil.hmacSign(MapSort.toStringMap(params), digest); // 参数执行加密
-//		String method = params.get("method");
-//
-//		// 加入验证
-//		params.put("signature", sign);
-//		
-//		String json = "";
-//		try {
-//			json = HttpUtilManager.getInstance().requestHttpPost(URL_PREFIX, method, params);
-//		} catch (HttpException | IOException e) {
-//			e.printStackTrace();
-//		}
-//		return json;
-		return null;
+		params.put("accesskey", ACCESS_KEY);// 这个需要加入签名,放前面
+		params.put("nonce", System.currentTimeMillis() + "");
+
+		String sign = EncryDigestUtil.hmacSHA512(MapSort.toStringMap(params), SECRET_KEY); // 参数执行加密
+		String method = params.get("method");
+
+		// 加入验证
+		params.put("signature", sign);
+		
+		String json = "";
+		try {
+			json = HttpUtilManager.getInstance().requestHttpPost(URL_PREFIX, method, params);
+		} catch (HttpException | IOException e) {
+			e.printStackTrace();
+		}
+		return json;
 
 	}
 	
 	
-	public String get(String urlAll) {
+	public String get(String urlAll, Map<String, String> params) {
+		if(params!=null){
+			params.put("accesskey", ACCESS_KEY);// 这个需要加入签名,放前面
+			params.put("nonce", System.currentTimeMillis() + "");
+			String signature = EncryDigestUtil.hmacSHA512(MapSort.toStringMap(params), SECRET_KEY);
+			urlAll = urlAll+"?"+MapSort.toStringMap(params)+"&signature="+signature;
+		}
 		BufferedReader reader = null;
 		String result = null;
 		StringBuffer sbf = new StringBuffer();

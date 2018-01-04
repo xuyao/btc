@@ -1,7 +1,10 @@
 package cn.xy.exx.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +20,15 @@ import cn.xy.exx.vo.AccountInfo;
 import cn.xy.exx.vo.AskBid;
 import cn.xy.exx.vo.Deal;
 import cn.xy.exx.vo.Result;
+import cn.xy.zb.service.LogService;
+import cn.xy.zb.vo.Order;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 @Service
-public class OrderService {
+public class OrderService extends LogService{
 	
 	@Autowired
 	HttpService httpService;
@@ -50,7 +55,7 @@ public class OrderService {
 		if(amount==0 || amount*buyPrice<profit*usd_cny)//如果买不起了，或者金额太小，就不要操作了
 			return;
 		
-//		doOrder(deal, amount);
+		doOrder(deal, amount);
 		StringBuilder sb = new StringBuilder(DateUtil.formatLongPattern(new Date())).append("\n");
 		sb.append(" 市场：").append(deal.getBuyMarket());
 		sb.append(" ").append(deal.getBuyPrice()).append(" ").append(buyPrice);
@@ -85,7 +90,7 @@ public class OrderService {
 			return;
 		
 		buyPrice = NumberUtil.doubleMul(buyPrice, usd_cny);
-//		doOrder(deal, amount);
+		doOrder(deal, amount);
 		StringBuilder sb = new StringBuilder(DateUtil.formatLongPattern(new Date())).append("\n");
 		sb.append(" 市场：").append(deal.getBuyMarket());
 		sb.append(" ").append(deal.getBuyPrice()).append(" ").append(buyPrice);
@@ -110,7 +115,7 @@ public class OrderService {
 	
 	//循环等待请求
 	public void doOrder(Deal deal, Double amount){
-		Result buyResult = order(deal.getBuyMarket(), "1", String.valueOf(deal.getBuyPrice()),String.valueOf(amount));//买入
+		Result buyResult = order(deal.getBuyMarket(), "buy", String.valueOf(deal.getBuyPrice()),String.valueOf(amount));//买入
 		if(buyResult!=null){//请求接口成功
 			if("1000".equals(buyResult.getCode())){
 				int i=0;
@@ -122,7 +127,7 @@ public class OrderService {
 //						目前exx全部交易都是0.1%
 						Double tax = 0.001;
 						amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
-						Result sellResult = order(deal.getSellMarket(), "0", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
+						Result sellResult = order(deal.getSellMarket(), "sell", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
 						System.out.println("sellResult code:"+sellResult.getCode());
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -135,18 +140,17 @@ public class OrderService {
 	}
 	
 	
-	//下单 tradeType交易类型1/0[buy/sell]
+	//下单 tradeType交易类型[buy/sell]
 	public Result order(String currency, String tradeType,String price, String amount){
 		Result result = null;
 		try {
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("method", "order");
 			params.put("price", price);
 			params.put("amount", amount);
-			params.put("tradeType", tradeType);
+			params.put("type", tradeType);
 			params.put("currency", currency);
 			// 请求测试
-			String json = httpService.getJsonPost(params);
+			String json = httpService.get("https://trade.exx.com/api/order", params);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			result = jsonObj.parseObject(json, Result.class);
 			System.out.println(price+" "+" "+amount+"交易结果: " + json);
@@ -157,6 +161,51 @@ public class OrderService {
 	}
 	
 
+	public List<Order> getUnfinishedOrdersIgnoreTradeType(String market) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("method", "getUnfinishedOrdersIgnoreTradeType");
+		params.put("currency", market);
+		params.put("pageIndex", "1");
+		params.put("pageSize", "10");
+		String json = httpService.getJsonPost(params);
+		if(StringUtils.isEmpty(json) || json.startsWith("{")){
+			return null;
+		}
+		JSONArray jsonArry = JSONArray.parseArray(json);
+		Iterator it = jsonArry.iterator();
+		List<Order> list = new ArrayList<Order>();
+		while(it.hasNext()){
+			JSONObject jsonObj = (JSONObject)it.next();
+			Order order = new Order();
+			order.setCurrency(jsonObj.getString("currency"));
+			order.setId(jsonObj.getString("id"));
+			order.setPrice(jsonObj.getDouble("price"));
+			order.setStatus(jsonObj.getInteger("status"));
+			order.setTotal_amount(jsonObj.getDouble("total_amount"));
+			order.setTrade_amount(jsonObj.getDouble("trade_amount"));
+			order.setTrade_date(jsonObj.getInteger("trade_date"));
+			order.setTrade_money(jsonObj.getDouble("trade_money"));
+			order.setType(jsonObj.getInteger("type"));
+			list.add(order);
+		}
+		return list;	
+	}
+	
+	//cancel order
+	public void cancelOrder(Order order) {
+		String orderId = order.getId();//
+		try {
+			Map<String, String> params = new HashMap<String, String>();
+			params.put("method", "cancelOrder");
+			params.put("id", orderId);
+			params.put("currency", order.getCurrency());
+
+			String json = httpService.getJsonPost(params);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+	
 	public HttpService getHttpService() {
 		return httpService;
 	}

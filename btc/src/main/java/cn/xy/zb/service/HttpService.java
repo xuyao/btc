@@ -18,8 +18,8 @@ import com.zb.kits.MapSort;
 @Service
 public class HttpService {
 	
-	public final String ACCESS_KEY = "";
-	public final String SECRET_KEY = "";
+	public final String ACCESS_KEY = "102b9103-bd79-4cc0-97a4-fa7c58cd99f8";
+	public final String SECRET_KEY = "0f926281-01ff-4991-bf53-2f961483c92c";
 	public final String URL_PREFIX = "https://trade.zb.com/api/";// 测试环境,测试环境是ttapi测试不通
 	
 	/**
