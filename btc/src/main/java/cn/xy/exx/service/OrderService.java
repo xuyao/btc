@@ -120,19 +120,19 @@ public class OrderService extends LogService{
 			if("1000".equals(buyResult.getCode())){
 				int i=0;
 				do{
+					//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
+//					Double tax = Tax.map.get(deal.getBuyMarket());
+//					目前exx全部交易都是0.1%
+					Double tax = 0.001;
+					amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
+					Result sellResult = order(deal.getSellMarket(), "sell", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
+					System.out.println("sellResult code:"+sellResult.getCode());
+					i++;
 					try {
-						Thread.sleep(320);//现成休眠320毫秒，等待买入成功
-						//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
-//						Double tax = Tax.map.get(deal.getBuyMarket());
-//						目前exx全部交易都是0.1%
-						Double tax = 0.001;
-						amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
-						Result sellResult = order(deal.getSellMarket(), "sell", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
-						System.out.println("sellResult code:"+sellResult.getCode());
+						Thread.sleep(400);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					i++;
 				}while(i<2);//2次
 			}
 		}
