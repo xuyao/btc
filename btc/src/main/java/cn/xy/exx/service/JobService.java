@@ -8,7 +8,7 @@ import cn.xy.exx.util.ConstsUtil;
 import cn.xy.exx.vo.AccountInfo;
 import cn.xy.exx.vo.AskBid;
 import cn.xy.exx.vo.Deal;
-import cn.xy.zb.service.LogService;
+import cn.xy.exx.service.LogService;
 
 @Service
 public class JobService extends LogService{

@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import cn.xy.exx.Market;
 import cn.xy.exx.util.ConstsUtil;
 import cn.xy.exx.vo.AccountInfo;
-import cn.xy.zb.service.LogService;
-import cn.xy.zb.vo.Order;
+import cn.xy.exx.service.LogService;
+import cn.xy.exx.vo.Order;
 
 @Service
 public class CancelService extends LogService{
@@ -49,14 +49,14 @@ public class CancelService extends LogService{
 		if(orderList==null)//如果没有未成交单据，直接返回
 			return;
 		for(Order o : orderList){
-			if(o.getType()==1){//如果是买单未成交，无论什么情况立刻撤销
+			if("buy".equals(o.getType())){//如果是买单未成交，无论什么情况立刻撤销
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 				orderService.cancelOrder(o);
-			}else if(o.getType()==0){//如果是卖单未成交，处理起来比较麻烦
+			}else if("sell".equals(o.getType())){//如果是卖单未成交，处理起来比较麻烦
 //				//如果时间够长，才能撤单
 //				long sys = System.currentTimeMillis();
 //				if(sys - o.getTrade_date() < 240000)//如果订单间隔2分钟，就撤单
