@@ -40,7 +40,7 @@ public class JobService extends LogService{
 			sniffCnyUsd = 0d;
 			sniffUsdCny = 0d;
 		}
-		System.out.println(".");
+		logger.info("exx.");
 	}
 	
 	public void detail(String abqc, String abusdt){

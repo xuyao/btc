@@ -65,8 +65,8 @@ public class OrderService extends LogService{
 		sb.append("\n");
 		sb.append(" 买入价格：").append(deal.getBuyPrice()).append(" 卖出价格：").append(deal.getSellPrice()).append(" ").append(sellPrice);
 		sb.append(" 数量：").append(amount).append(" 利：").append((sellPrice-buyPrice)*amount*0.998);//手续费
-		System.out.println(sb.toString());
-		System.out.println("qc*****************************************");
+		logger.info("exx:"+sb.toString());  
+		logger.info("exx_qc*****************************************");
 	}
 	
 	
@@ -100,8 +100,8 @@ public class OrderService extends LogService{
 		sb.append("\n");
 		sb.append(" 买入价格：").append(deal.getBuyPrice()).append(" ").append(buyPrice).append(" 卖出价格：").append(deal.getSellPrice());
 		sb.append(" 数量：").append(amount).append(" 利：").append((sellPrice-buyPrice)*amount*0.998);//手续费
-		System.out.println(sb.toString());
-		System.out.println("usdt*****************************************");
+		logger.info("exx:"+sb.toString());  
+		logger.info("exx_usdt*****************************************");  
 	}
 	
 	
@@ -121,16 +121,17 @@ public class OrderService extends LogService{
 					//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
 //					Double tax = Tax.map.get(deal.getBuyMarket());
 //					目前exx全部交易都是0.1%
-					Double tax = 0.001;
-					amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
-					Result sellResult = order(deal.getSellMarket(), "sell", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
-					System.out.println("sellResult code:"+sellResult.getCode());
-					i++;
 					try {
-						Thread.sleep(400);
+						Thread.sleep(350);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+					Double tax = 0.001;
+					amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
+					Result sellResult = order(deal.getSellMarket(), "sell", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
+					logger.info("exx sellResult code:"+sellResult.getCode());
+					i++;
+
 				}while(i<2);//2次
 			}
 		}
@@ -151,7 +152,7 @@ public class OrderService extends LogService{
 			String json = httpService.get("https://trade.exx.com/api/order", params);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			result = jsonObj.parseObject(json, Result.class);
-			System.out.println(price+" "+" "+amount+"交易结果: " + json);
+			logger.info("exx "+price+" "+amount+"交易结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

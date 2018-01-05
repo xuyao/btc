@@ -48,7 +48,7 @@ public class JobService extends LogService{
 			sniffUsdCny = 0d;
 		}
 //		System.out.println((System.currentTimeMillis()-a)/1000);
-		logger.info(".");  
+		logger.info(".");
 		
 	}
 	

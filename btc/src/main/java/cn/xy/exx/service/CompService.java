@@ -36,7 +36,6 @@ public class CompService extends LogService{
 			// 需加密的请求参数
 			Map<String, String> params = new TreeMap<String, String>();
 			String json = httpService.get(ha, params);
-			System.out.println(json);
 			JSONObject result = JSON.parseObject(json);
 			if(result == null)
 				return null;

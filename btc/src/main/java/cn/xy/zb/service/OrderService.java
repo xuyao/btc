@@ -65,7 +65,7 @@ public class OrderService extends LogService{
 		sb.append(" 买入价格：").append(deal.getBuyPrice()).append(" 卖出价格：").append(deal.getSellPrice()).append(" ").append(sellPrice);
 		sb.append(" 数量：").append(amount).append(" 利：").append((sellPrice-buyPrice)*amount*0.998);//手续费
 		logger.info(sb.toString());  
-		logger.info("qc*****************************************");  
+		logger.info("qc*****************************************");
 	}
 	
 	
@@ -149,7 +149,7 @@ public class OrderService extends LogService{
 			String json = httpService.getJsonPost(params);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			result = jsonObj.parseObject(json, Result.class);
-			logger.info(price+" "+" "+amount+"交易结果: " + json);
+			logger.info(price+" "+amount+"交易结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
