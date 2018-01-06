@@ -34,9 +34,8 @@ public class JobService extends LogService{
 		}
 		
 		if("t".equals(sniff)){
-			System.out.println("cny to usdt:"+sniffCnyUsd);
-			System.out.println("usdt to cny:"+sniffUsdCny);
-			System.out.println();
+			logger.info("cny to usdt:"+sniffCnyUsd);
+			logger.info("usdt to cny:"+sniffUsdCny);
 			sniffCnyUsd = 0d;
 			sniffUsdCny = 0d;
 		}

@@ -122,7 +122,7 @@ public class OrderService extends LogService{
 //					Double tax = Tax.map.get(deal.getBuyMarket());
 //					目前exx全部交易都是0.1%
 					try {
-						Thread.sleep(350);
+						Thread.sleep(1000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -162,11 +162,11 @@ public class OrderService extends LogService{
 
 	public List<Order> getUnfinishedOrdersIgnoreTradeType(String market) {
 		Map<String, String> params = new HashMap<String, String>();
-		params.put("method", "getUnfinishedOrdersIgnoreTradeType");
 		params.put("currency", market);
 		params.put("pageIndex", "1");
-		params.put("pageSize", "10");
-		String json = httpService.getJsonPost(params);
+		params.put("type", "buy");
+		String json = httpService.get("https://trade.exx.com/api/getOpenOrders", params);
+		System.out.println(json);
 		if(StringUtils.isEmpty(json) || json.startsWith("{")){
 			return null;
 		}
@@ -175,6 +175,8 @@ public class OrderService extends LogService{
 		List<Order> list = new ArrayList<Order>();
 		while(it.hasNext()){
 			JSONObject jsonObj = (JSONObject)it.next();
+			if(!"0".equals(jsonObj.getString("type")) && !"3".equals(jsonObj.getString("type")))//如果不是未成交，跳出
+				continue;
 			Order order = new Order();
 			order.setCurrency(jsonObj.getString("currency"));
 			order.setId(jsonObj.getString("id"));
@@ -195,11 +197,9 @@ public class OrderService extends LogService{
 		String orderId = order.getId();//
 		try {
 			Map<String, String> params = new HashMap<String, String>();
-			params.put("method", "cancelOrder");
 			params.put("id", orderId);
 			params.put("currency", order.getCurrency());
-
-			String json = httpService.getJsonPost(params);
+			String json = httpService.get("https://trade.exx.com/api/cancel", params);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

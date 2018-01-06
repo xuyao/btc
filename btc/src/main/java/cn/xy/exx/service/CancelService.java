@@ -37,7 +37,7 @@ public class CancelService extends LogService{
 			orderList = orderService.getUnfinishedOrdersIgnoreTradeType(sa[1]);
 			doCancelOrder(orderList, sa);
 			try {
-				Thread.sleep(350);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
