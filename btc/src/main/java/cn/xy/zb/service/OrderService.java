@@ -64,7 +64,7 @@ public class OrderService extends LogService{
 		sb.append("\n");
 		sb.append(" 买入价格：").append(deal.getBuyPrice()).append(" 卖出价格：").append(deal.getSellPrice()).append(" ").append(sellPrice);
 		sb.append(" 数量：").append(amount).append(" 利：").append((sellPrice-buyPrice)*amount*0.998);//手续费
-		logger.info(sb.toString());  
+		logger.info(sb.toString());
 		logger.info("qc*****************************************");
 	}
 	
