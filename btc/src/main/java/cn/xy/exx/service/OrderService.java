@@ -166,7 +166,6 @@ public class OrderService extends LogService{
 		params.put("pageIndex", "1");
 		params.put("type", "buy");
 		String json = httpService.get("https://trade.exx.com/api/getOpenOrders", params);
-		System.out.println(json);
 		if(StringUtils.isEmpty(json) || json.startsWith("{")){
 			return null;
 		}
@@ -175,7 +174,7 @@ public class OrderService extends LogService{
 		List<Order> list = new ArrayList<Order>();
 		while(it.hasNext()){
 			JSONObject jsonObj = (JSONObject)it.next();
-			if(!"0".equals(jsonObj.getString("type")) && !"3".equals(jsonObj.getString("type")))//如果不是未成交，跳出
+			if(!"0".equals(jsonObj.getString("status")) && !"3".equals(jsonObj.getString("status")))//如果不是未成交，跳出
 				continue;
 			Order order = new Order();
 			order.setCurrency(jsonObj.getString("currency"));
