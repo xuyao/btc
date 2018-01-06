@@ -10,7 +10,7 @@ public class Order {
 	private Double trade_amount;//已成交数量
 	private Integer trade_date;//委托时间
 	private Double trade_money;//已成交总金额
-	private String type;//挂单类型 1/0[buy/sell]
+	private String type;//挂单类型 [buy/sell]
 	
 	public String getCurrency() {
 		return currency;
