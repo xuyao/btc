@@ -31,7 +31,6 @@ public class JobService extends LogService{
 	String direction = ConstsUtil.getDirection();
 	
 	public void work(){
-//		long a = System.currentTimeMillis();
 		//查询账户
 		ai = compService.getAccountInfo();
 		//循环市场
@@ -47,7 +46,6 @@ public class JobService extends LogService{
 			sniffCnyUsd = 0d;
 			sniffUsdCny = 0d;
 		}
-//		System.out.println((System.currentTimeMillis()-a)/1000);
 		logger.info(".");
 		
 	}
