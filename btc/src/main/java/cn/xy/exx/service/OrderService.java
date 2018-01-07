@@ -199,6 +199,7 @@ public class OrderService extends LogService{
 			params.put("id", orderId);
 			params.put("currency", order.getCurrency());
 			String json = httpService.get("https://trade.exx.com/api/cancel", params);
+			logger.info(order.getCurrency()+"cancelOrder 结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
