@@ -13,7 +13,7 @@ import cn.xy.zb.service.HttpService;
 import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.vo.MarketAB;
 
-public class Market {
+public class Market2 {
 
 	public static String[][] arry = new String[24][];
 	public static Map<String,MarketAB> map = new HashMap<String,MarketAB>();//map
