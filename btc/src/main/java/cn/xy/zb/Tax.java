@@ -84,6 +84,12 @@ public class Tax {
 				sb.append(tds.get(2).text()).append(",");
 				sb.append(tds.get(3).text()).append(";");
 			}
+			
+			sb.append("TRUE").append(",");
+			sb.append("0.2%").append(",");
+			sb.append("0.2%").append(",");
+			sb.append("0.2%").append(";");
+			
 			try {
 				FileUtils.writeStringToFile(new File(path), sb.toString(), "utf-8");
 			} catch (IOException e) {
