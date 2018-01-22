@@ -15,13 +15,20 @@ import cn.xy.zb.vo.MarketAB;
 
 public class Market {
 
-	public static String[][] arry = new String[2][];
+	public static String[][] arry = null;
 	public static Map<String,MarketAB> map = new HashMap<String,MarketAB>();//map
 	
 	public static void init(){
 		
-		arry[0] = new String[]{"cdc_qc","cdc_usdt","cdc_btc"};
-		arry[1] = new String[]{"ddm_qc","ddm_usdt","ddm_btc"};
+//		arry[0] = new String[]{"cdc_qc","cdc_usdt","cdc_btc"};
+//		arry[1] = new String[]{"ddm_qc","ddm_usdt","ddm_btc"};
+		String markets = ConstsUtil.getValue("market");
+		String[] marketArr = markets.split(",");
+		arry = new String[marketArr.length][];
+		for(int i=0;i<marketArr.length;i++) {
+			arry[i] = new String[]{marketArr[i]+"_qc", marketArr[i]+"_usdt", marketArr[i]+"_btc"};
+		}
+		
 		
 		String path = ConstsUtil.getValue("jsonpath");
 		String json ="";

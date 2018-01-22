@@ -85,6 +85,10 @@ public class Tax {
 				sb.append(tds.get(3).text()).append(";");
 			}
 			
+			sb.append("TRUE").append(",");
+			sb.append("0.2%").append(",");
+			sb.append("0.2%").append(",");
+			sb.append("0.2%").append(";");
 			sb.append("CDC").append(",");
 			sb.append("0.2%").append(",");
 			sb.append("0.2%").append(",");
