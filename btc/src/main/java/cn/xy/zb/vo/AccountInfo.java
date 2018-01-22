@@ -5,6 +5,8 @@ public class AccountInfo {
 	Double qcAvailable;//qc的剩余
 	
 	Double usdtAvailable;//usdt的剩余
+	
+	
 
 	public Double getQcAvailable() {
 		return qcAvailable;

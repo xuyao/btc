@@ -8,7 +8,7 @@ public class Order {
 	private Integer status;//挂单状态(0：待成交,1：取消,2：交易完成,3：待成交未交易部份)
 	private Double total_amount;//挂单总数量
 	private Double trade_amount;//已成交数量
-	private Integer trade_date;//委托时间
+	private Long trade_date;//委托时间
 	private Double trade_money;//已成交总金额
 	private Integer type;//挂单类型 1/0[buy/sell]
 	
@@ -48,10 +48,10 @@ public class Order {
 	public void setTrade_amount(Double trade_amount) {
 		this.trade_amount = trade_amount;
 	}
-	public Integer getTrade_date() {
+	public Long getTrade_date() {
 		return trade_date;
 	}
-	public void setTrade_date(Integer trade_date) {
+	public void setTrade_date(Long trade_date) {
 		this.trade_date = trade_date;
 	}
 	public Double getTrade_money() {

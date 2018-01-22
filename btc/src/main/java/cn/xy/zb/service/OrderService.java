@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.xy.zb.Market;
 import cn.xy.zb.Tax;
 import cn.xy.zb.util.ConstsUtil;
@@ -18,11 +21,9 @@ import cn.xy.zb.util.DateUtil;
 import cn.xy.zb.util.NumberUtil;
 import cn.xy.zb.vo.AccountInfo;
 import cn.xy.zb.vo.Deal;
+import cn.xy.zb.vo.MarketAB;
 import cn.xy.zb.vo.Order;
 import cn.xy.zb.vo.Result;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 @Service
 public class OrderService extends LogService{
@@ -106,7 +107,10 @@ public class OrderService extends LogService{
 	
 	//得到相应市场的买入数量
 	public Double getAmount(String market, Double amount){
-		return NumberUtil.formatDouble(amount, Market.map.get(market).getAmountScale());
+		MarketAB mab = Market.map.get(market);
+		if(mab==null)
+			return null;
+		return NumberUtil.formatDouble(amount, mab.getAmountScale());
 	}
 	
 	
@@ -149,7 +153,7 @@ public class OrderService extends LogService{
 			String json = httpService.getJsonPost(params);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			result = jsonObj.parseObject(json, Result.class);
-			logger.info(price+" "+amount+"交易结果: " + json);
+			logger.info(currency + price+" "+amount+"交易结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -164,6 +168,7 @@ public class OrderService extends LogService{
 		params.put("pageIndex", "1");
 		params.put("pageSize", "10");
 		String json = httpService.getJsonPost(params);
+		System.out.println(market+json);
 		if(StringUtils.isEmpty(json) || json.startsWith("{")){
 			return null;
 		}
@@ -179,7 +184,7 @@ public class OrderService extends LogService{
 			order.setStatus(jsonObj.getInteger("status"));
 			order.setTotal_amount(jsonObj.getDouble("total_amount"));
 			order.setTrade_amount(jsonObj.getDouble("trade_amount"));
-			order.setTrade_date(jsonObj.getInteger("trade_date"));
+			order.setTrade_date(jsonObj.getLong("trade_date"));
 			order.setTrade_money(jsonObj.getDouble("trade_money"));
 			order.setType(jsonObj.getInteger("type"));
 			list.add(order);

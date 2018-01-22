@@ -4,29 +4,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.commons.io.FileUtils;
-
 import com.alibaba.fastjson.JSONObject;
-
-import cn.xy.zb.service.HttpService;
 import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.vo.MarketAB;
 
-public class Market {
+public class AutoSell {
 
 	public static String[][] arry = null;
 	public static Map<String,MarketAB> map = new HashMap<String,MarketAB>();//map
 	
 	public static void init(){
 		
-		String markets = ConstsUtil.getValue("market");
+		String markets = ConstsUtil.getValue("autosell");
 		String[] marketArr = markets.split(",");
 		arry = new String[marketArr.length][];
 		for(int i=0;i<marketArr.length;i++) {
 			arry[i] = new String[]{marketArr[i]+"_qc", marketArr[i]+"_usdt", marketArr[i]+"_btc"};
 		}
-		
 		
 		String path = ConstsUtil.getValue("jsonpath");
 		String json ="";
@@ -51,18 +46,4 @@ public class Market {
 		
 	}
 	
-	
-	
-	public static void main(String[] args){
-		HttpService http = new HttpService();
-		String json = http.get("http://api.zb.com/data/v1/markets");
-		String path = ConstsUtil.getValue("jsonpath");
-		try {
-			FileUtils.writeStringToFile(new File(path), json, "utf-8");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		System.out.println("save json ok!");
-	}
-
 }

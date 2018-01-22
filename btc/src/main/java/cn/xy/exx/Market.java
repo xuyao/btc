@@ -15,20 +15,17 @@ import cn.xy.exx.vo.MarketAB;
 
 public class Market {
 
-	public static String[][] arry = new String[9][];
+	public static String[][] arry = null;
 	public static Map<String,MarketAB> map = new HashMap<String,MarketAB>();//map
 	
 	public static void init(){
 		
-		arry[0] = new String[]{"xwc_qc","xwc_usdt","xwc_btc"};
-		arry[1] = new String[]{"btc_qc","btc_usdt",null};
-		arry[2] = new String[]{"ubtc_qc","ubtc_usdt","ubtc_btc"};
-		arry[3] = new String[]{"ltc_qc","ltc_usdt","ltc_btc"};
-		arry[4] = new String[]{"eth_qc","eth_usdt","eth_btc"};
-		arry[5] = new String[]{"etc_qc","etc_usdt","etc_btc"};
-		arry[6] = new String[]{"qtum_qc","qtum_usdt","qtum_btc"};
-		arry[7] = new String[]{"hsr_qc","hsr_usdt","hsr_btc"};
-		arry[8] = new String[]{"qbt_qc","qbt_usdt","qbt_btc"};
+		String markets = ConstsUtil.getValue("market");
+		String[] marketArr = markets.split(",");
+		arry = new String[marketArr.length][];
+		for(int i=0;i<marketArr.length;i++) {
+			arry[i] = new String[]{marketArr[i]+"_qc", marketArr[i]+"_usdt", marketArr[i]+"_btc"};
+		}
 		
 		String path = ConstsUtil.getValue("jsonpath");
 		String json ="";

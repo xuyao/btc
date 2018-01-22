@@ -7,14 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+
 import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.vo.AccountInfo;
 import cn.xy.zb.vo.AskBid;
 import cn.xy.zb.vo.Deal;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.xy.zb.vo.Ticker;
 
 @Service
 public class CompService extends LogService{
@@ -132,6 +133,27 @@ public class CompService extends LogService{
 		return deal;
 	}
 	
+	
+	public Ticker getTicker(String currency) {
+		Ticker ticker = null;
+		try {
+			// 请求地址
+			String url = "http://api.zb.com/data/v1/ticker?market=" + currency;
+			String result = httpService.get(url);
+			JSONObject jsonObj = JSONObject.parseObject(result);
+			jsonObj = jsonObj.getJSONObject("ticker");
+			ticker = new Ticker();
+			ticker.setBuy(jsonObj.getDouble("buy"));
+			ticker.setHigh(jsonObj.getDouble("high"));
+			ticker.setLast(jsonObj.getDouble("last"));
+			ticker.setLow(jsonObj.getDouble("low"));
+			ticker.setSell(jsonObj.getDouble("sell"));
+			ticker.setVol(jsonObj.getDouble("vol"));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return ticker;
+	}
 	
 
 	public HttpService getHttpService() {
