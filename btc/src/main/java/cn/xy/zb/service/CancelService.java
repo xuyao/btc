@@ -108,6 +108,21 @@ public class CancelService extends LogService{
 		}
 	}
 	
+	private void doOrder(Order o, String market, Double amount) {
+		Ticker tqc = compService.getTicker(market+"_qc");
+		Ticker tusdt = compService.getTicker(market+"_usdt");
+		if(tqc.getLast()==o.getPrice() || tusdt.getLast()==o.getPrice()) {//如果挂单价格和当前价格一样，什么也不做
+			//noting to do
+		}else {//否则应该先撤单再比较，然后下单
+			orderService.cancelOrder(o);
+			if(tqc.getLast()>tusdt.getLast()*usd_cny) {//qc贵
+				orderService.order(market+"_qc", "0", String.valueOf(tqc.getLast()), String.valueOf(amount));
+			}else {
+				orderService.order(market+"_usdt", "0", String.valueOf(tusdt.getLast()), String.valueOf(amount));
+			}
+		}
+	}
+	
 	
 	private void doCancelOrder(List<Order> orderList, String[] sa){
 		if(orderList==null)//如果没有未成交单据，直接返回
@@ -119,8 +134,7 @@ public class CancelService extends LogService{
 				//如果时间够长，才能撤单
 				long sys = System.currentTimeMillis();
 				if(sys - o.getTrade_date() > 240*1000) {//如果订单间隔2分钟，就撤单
-					orderService.cancelOrder(o);
-					doOrder(o.getCurrency().substring(0, o.getCurrency().indexOf("_")), (o.getTotal_amount()-o.getTrade_amount()));
+					doOrder(o, o.getCurrency().substring(0, o.getCurrency().indexOf("_")), (o.getTotal_amount()-o.getTrade_amount()));
 				}
 			}else{
 				System.out.println("Ask me please,why this order type is undefinded?");
