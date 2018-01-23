@@ -21,6 +21,9 @@ public class ConstsUtil {
 		return prop.getProperty(key);
 	}
 	
+	public static Integer getSecond(){
+		return Integer.parseInt(prop.getProperty("second"));
+	}
 	public static Double getCnyUsd(){
 		return Double.parseDouble(prop.getProperty("usd_cny"));
 	}

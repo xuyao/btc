@@ -31,6 +31,8 @@ public class CancelService extends LogService{
 	HttpService httpService;
 	
 	Double usd_cny = ConstsUtil.getCnyUsd();//汇率
+	Integer second = ConstsUtil.getSecond();//汇率
+	String autosellon = ConstsUtil.getValue("autosellon");//汇率
 	
 	public void work(){
 		//查询账户, 先处理下余额
@@ -131,10 +133,12 @@ public class CancelService extends LogService{
 			if(o.getType()==1){//如果是买单未成交，无论什么情况立刻撤销
 				orderService.cancelOrder(o);
 			}else if(o.getType()==0){//如果是卖单未成交，处理起来比较麻烦
-				//如果时间够长，才能撤单
-				long sys = System.currentTimeMillis();
-				if(sys - o.getTrade_date() > 240*1000) {//如果订单间隔2分钟，就撤单
-					doOrder(o, o.getCurrency().substring(0, o.getCurrency().indexOf("_")), (o.getTotal_amount()-o.getTrade_amount()));
+				if("t".equals(autosellon)){
+					//如果时间够长，才能撤单
+					long sys = System.currentTimeMillis();
+					if(sys - o.getTrade_date() > second*1000) {//如果订单间隔2分钟，就撤单
+						doOrder(o, o.getCurrency().substring(0, o.getCurrency().indexOf("_")), (o.getTotal_amount()-o.getTrade_amount()));
+					}
 				}
 			}else{
 				System.out.println("Ask me please,why this order type is undefinded?");
