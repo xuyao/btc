@@ -32,8 +32,6 @@ public class OrderService extends LogService{
 	HttpService httpService;
 	
 	Double usd_cny = ConstsUtil.getCnyUsd();//汇率
-	Double qc_limit = 0d;//qc限制
-	Double usdt_limit = 0d;//初始化美元
 	Double profit = ConstsUtil.getProfit();//得到利益的下限
 	
 	//qc_usdt
@@ -43,9 +41,11 @@ public class OrderService extends LogService{
 		Double buyPrice = deal.getBuyPrice();
 		Double sellPrice = deal.getSellPrice();
 		sellPrice = NumberUtil.doubleMul(sellPrice, usd_cny);
+		Double qc_limit = ConstsUtil.getQcLimit();//qc限制
 		
 		//计算amount
-		qc_limit = ai.getQcAvailable();
+		if(qc_limit>ai.getQcAvailable())
+			qc_limit = ai.getQcAvailable();
 		Double amount = qc_limit/buyPrice;//qc的价格折算的数量
 		if(amount>deal.getBuyAmount())//如果限制仓位下的amount小于挂单买入的amount，以小的为准
 			amount=deal.getBuyAmount();
@@ -77,8 +77,10 @@ public class OrderService extends LogService{
 		
 		Double buyPrice = deal.getBuyPrice();
 		Double sellPrice = deal.getSellPrice();
-
-		usdt_limit = ai.getUsdtAvailable();
+		Double usdt_limit = ConstsUtil.getUsdtLimit();//初始化美元
+		
+		if(usdt_limit>ai.getUsdtAvailable())
+			usdt_limit = ai.getUsdtAvailable();
 		Double amount = usdt_limit/buyPrice;//qc的价格折算的数量
 		if(amount>deal.getBuyAmount())//如果限制仓位下的amount小于挂单买入的amount，以小的为准
 			amount=deal.getBuyAmount();
@@ -112,6 +114,13 @@ public class OrderService extends LogService{
 			return null;
 		return NumberUtil.formatDouble(amount, mab.getAmountScale());
 	}
+	//得到相应市场的最小价格
+	public Double getMinPrice(String market){
+		MarketAB mab = Market.map.get(market);
+		if(mab==null)
+			return null;
+		return Math.pow(10, -mab.getPriceScale());
+	}
 	
 	
 	//循环等待请求
@@ -124,7 +133,8 @@ public class OrderService extends LogService{
 					//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
 					Double tax = Tax.map.get(deal.getBuyMarket());
 					amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
-					Result sellResult = order(deal.getSellMarket(), "0", String.valueOf(deal.getSellPrice()),String.valueOf(amount));//卖出
+					Result sellResult = order(deal.getSellMarket(), "0", 
+							String.valueOf(deal.getSellPrice() - getMinPrice(deal.getSellMarket())),String.valueOf(amount));//卖出
 					logger.info("sellResult code:"+sellResult.getCode());
 					i++;
 					try {
