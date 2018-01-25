@@ -113,16 +113,25 @@ public class CancelService extends LogService{
 	private void doOrder(Order o, String market, Double amount) {
 		Ticker tqc = compService.getTicker(market+"_qc");
 		Ticker tusdt = compService.getTicker(market+"_usdt");
-		if(tqc.getLast()==o.getPrice() || tusdt.getLast()==o.getPrice()) {//如果挂单价格和当前价格一样，什么也不做
+		if(tqc.getSell()==o.getPrice() || tqc.getSell()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
 			//noting to do
 		}else {//否则应该先撤单再比较，然后下单
 			orderService.cancelOrder(o);
 			if(tqc.getLast()>tusdt.getLast()*usd_cny) {//qc贵
-				orderService.order(market+"_qc", "0", String.valueOf(tqc.getLast()), String.valueOf(amount));
+				orderService.order(market+"_qc", "0", 
+						String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
 			}else {
-				orderService.order(market+"_usdt", "0", String.valueOf(tusdt.getLast()), String.valueOf(amount));
+				orderService.order(market+"_usdt", "0", 
+						String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
 			}
 		}
+	}
+	
+	public Double getMinPrice(String market){
+		MarketAB mab = Market.map.get(market);
+		if(mab==null)
+			return null;
+		return Math.pow(10, -mab.getAmountScale());
 	}
 	
 	
