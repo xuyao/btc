@@ -16,7 +16,7 @@ import com.zb.kits.HttpUtilManager;
 import com.zb.kits.MapSort;
 
 @Service
-public class HttpService {
+public class HttpService extends LogService{
 	
 	public final String ACCESS_KEY = "";
 	public final String SECRET_KEY = "";
@@ -42,11 +42,10 @@ public class HttpService {
 		try {
 			json = HttpUtilManager.getInstance().requestHttpPost(URL_PREFIX, method, params);
 		} catch (HttpException | IOException e) {
-			e.printStackTrace();
+			logger.error("获取交易json异常", e);
 		}
 		return json;
 	}
-	
 	
 	public String get(String urlAll) {
 		BufferedReader reader = null;

@@ -42,10 +42,10 @@ public class OrderService extends LogService{
 		Double sellPrice = deal.getSellPrice();
 		sellPrice = NumberUtil.doubleMul(sellPrice, usd_cny);
 		Double qc_limit = ConstsUtil.getQcLimit();//qc限制
-		
 		//计算amount
 		if(qc_limit>ai.getQcAvailable())
 			qc_limit = ai.getQcAvailable();
+		
 		Double amount = qc_limit/buyPrice;//qc的价格折算的数量
 		if(amount>deal.getBuyAmount())//如果限制仓位下的amount小于挂单买入的amount，以小的为准
 			amount=deal.getBuyAmount();

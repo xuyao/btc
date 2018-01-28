@@ -1,6 +1,7 @@
 package cn.xy.zb.service;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +44,14 @@ public class CompService extends LogService{
 			JSONArray jsonArry = result.getJSONArray("coins");
 			
 			ai = new AccountInfo();
-			JSONObject jsonObj = jsonArry.getJSONObject(0);
-			if("qc".equalsIgnoreCase(jsonObj.getString("key")))
+			Iterator it = jsonArry.iterator();
+			while(it.hasNext()) {
+				JSONObject jsonObj = (JSONObject)it.next();
+				if("qc".equalsIgnoreCase(jsonObj.getString("key")))
 					ai.setQcAvailable(jsonObj.getDouble("available"));
-			jsonObj = jsonArry.getJSONObject(1);
-			if("usdt".equalsIgnoreCase(jsonObj.getString("key")))
-				ai.setUsdtAvailable(jsonObj.getDouble("available"));
+				if("usdt".equalsIgnoreCase(jsonObj.getString("key")))
+					ai.setUsdtAvailable(jsonObj.getDouble("available"));
+			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
