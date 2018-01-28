@@ -15,7 +15,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 import cn.xy.zb.Market;
-import cn.xy.zb.Tax;
 import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.util.DateUtil;
 import cn.xy.zb.util.NumberUtil;
@@ -33,6 +32,7 @@ public class OrderService extends LogService{
 	
 	Double usd_cny = ConstsUtil.getCnyUsd();//汇率
 	Double profit = ConstsUtil.getProfit();//得到利益的下限
+	Double tax = ConstsUtil.getTax();
 	
 	//qc_usdt
 	public void dealQc2Usdt(Deal deal, AccountInfo ai){
@@ -131,7 +131,7 @@ public class OrderService extends LogService{
 				int i=0;
 				do{
 					//卖出时候的b，数量有变化,根据买入市场的数量，买b引起数量变化，卖出影响金额变化
-					Double tax = Tax.map.get(deal.getBuyMarket());
+//					Double tax = Tax.map.get(deal.getBuyMarket());
 					amount = getAmount(deal.getBuyMarket(), amount*(1-tax));
 					Result sellResult = order(deal.getSellMarket(), "0", 
 							String.valueOf(deal.getSellPrice() - getMinPrice(deal.getSellMarket())),String.valueOf(amount));//卖出

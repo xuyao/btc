@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URL;
 import java.util.Map;
 
@@ -15,12 +17,18 @@ import com.zb.kits.EncryDigestUtil;
 import com.zb.kits.HttpUtilManager;
 import com.zb.kits.MapSort;
 
+import cn.xy.zb.util.ConstsUtil;
+
 @Service
 public class HttpService extends LogService{
 	
 	public final String ACCESS_KEY = "";
 	public final String SECRET_KEY = "";
 	public final String URL_PREFIX = "https://trade.zb.com/api/";// 测试环境,测试环境是ttapi测试不通
+	
+	String isproxy = ConstsUtil.getValue("isproxy");
+	static String host =  ConstsUtil.getValue("host");
+	static String port =  ConstsUtil.getValue("port");
 	
 	/**
 	 * 获取json内容(统一加密)
@@ -54,7 +62,17 @@ public class HttpService extends LogService{
 		String userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";// 模拟浏览器
 		try {
 			URL url = new URL(urlAll);
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			HttpURLConnection connection = null;
+			if("t".equals("isproxy")) {
+		        System.setProperty("http.maxRedirects", "50");
+		        System.getProperties().setProperty("proxySet", "true");
+		        System.getProperties().setProperty("http.proxyHost", host);
+		        System.getProperties().setProperty("http.proxyPort", port);
+				Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, Integer.parseInt(port)));  
+				connection = (HttpURLConnection)url.openConnection(proxy);  
+			}else {
+				connection = (HttpURLConnection) url.openConnection();
+			}
 			connection.setRequestMethod("GET");
 			connection.setReadTimeout(30000);
 			connection.setConnectTimeout(30000);
@@ -81,5 +99,13 @@ public class HttpService extends LogService{
 			e.printStackTrace();
 		}
 		return result;
+	}
+	
+	public static void main(String[] args) {
+        System.setProperty("http.maxRedirects", "50");
+        System.getProperties().setProperty("proxySet", "true");
+        System.getProperties().setProperty("http.proxyHost", host);
+        System.getProperties().setProperty("http.proxyPort", port);
+		System.out.println(new HttpService().get("http://www.ip138.com/ips138.asp"));
 	}
 }

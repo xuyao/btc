@@ -9,7 +9,7 @@ public class RunCancel {
 		System.out.println("run zb order cancel start!!!");
 		Market.init();//市场先加载
 		AutoSell.init();
-		Tax.init();//税后加载
+//		Tax.init();//税后加载
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContentCancel.xml");
 	}
 }
