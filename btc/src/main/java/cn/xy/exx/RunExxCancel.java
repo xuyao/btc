@@ -8,6 +8,7 @@ public class RunExxCancel {
 	public static void main(String[] args){
 		System.out.println("run exx order cancel start!!!");
 		Market.init();//市场先加载
+		AutoSell.init();//自动卖出
 		ApplicationContext context = new ClassPathXmlApplicationContext("classpath:applicationContentCancelExx.xml");
 	}
 }
