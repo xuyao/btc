@@ -21,6 +21,9 @@ public class ConstsUtil {
 		return prop.getProperty(key);
 	}
 	
+	public static Double getTax(){
+		return Double.parseDouble(prop.getProperty("tax"));
+	}
 	public static Integer getSecond(){
 		return Integer.parseInt(prop.getProperty("second"));
 	}

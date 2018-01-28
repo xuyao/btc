@@ -42,7 +42,6 @@ public class Tax {
 			map.put(market+"_qc", doTaxValue(tax[3]));
 		}
 		
-		
 		String[][] arry = Market.arry;
 		for(String[] sa : arry){
 			if(map.get(sa[0])==null || map.get(sa[1])==null){
