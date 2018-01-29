@@ -7,17 +7,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
+import java.net.Socket;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
 
 import org.apache.http.HttpException;
 import org.springframework.stereotype.Service;
 
+import cn.xy.zb.util.ConstsUtil;
+
 import com.zb.kits.EncryDigestUtil;
 import com.zb.kits.HttpUtilManager;
 import com.zb.kits.MapSort;
-
-import cn.xy.zb.util.ConstsUtil;
 
 @Service
 public class HttpService extends LogService{
@@ -29,7 +31,6 @@ public class HttpService extends LogService{
 	String isproxy = ConstsUtil.getValue("isproxy");
 	static String host =  ConstsUtil.getValue("host");
 	static String port =  ConstsUtil.getValue("port");
-	
 	/**
 	 * 获取json内容(统一加密)
 	 * 
@@ -63,13 +64,17 @@ public class HttpService extends LogService{
 		try {
 			URL url = new URL(urlAll);
 			HttpURLConnection connection = null;
-			if("t".equals("isproxy")) {
+			if("t".equals(isproxy)) {
+				if(!checkProxy(host, Integer.parseInt(port))){
+					logger.info("proxy is not work!");
+					return null;
+				}
 		        System.setProperty("http.maxRedirects", "50");
 		        System.getProperties().setProperty("proxySet", "true");
 		        System.getProperties().setProperty("http.proxyHost", host);
 		        System.getProperties().setProperty("http.proxyPort", port);
 				Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, Integer.parseInt(port)));  
-				connection = (HttpURLConnection)url.openConnection(proxy);  
+				connection = (HttpURLConnection)url.openConnection(proxy);
 			}else {
 				connection = (HttpURLConnection) url.openConnection();
 			}
@@ -101,11 +106,26 @@ public class HttpService extends LogService{
 		return result;
 	}
 	
+	//check proxy is working now
+	public boolean checkProxy(String url, Integer port){
+		Socket socket = new Socket();
+        try {
+            socket.connect(new InetSocketAddress(host, port));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+	}
+	
 	public static void main(String[] args) {
-        System.setProperty("http.maxRedirects", "50");
-        System.getProperties().setProperty("proxySet", "true");
-        System.getProperties().setProperty("http.proxyHost", host);
-        System.getProperties().setProperty("http.proxyPort", port);
+//		System.out.println(new HttpService().checkProxy(host, Integer.parseInt(port)));
 		System.out.println(new HttpService().get("http://www.ip138.com/ips138.asp"));
 	}
 }

@@ -41,7 +41,10 @@ public class JobService extends LogService{
 		if("t".equals(sniff)){
 			System.out.println("cny to usdt:"+sniffCnyUsd);
 			System.out.println("usdt to cny:"+sniffUsdCny);
-			System.out.println();
+			sniffCnyUsd = sniffCnyUsd-1;
+			sniffUsdCny = sniffUsdCny-1;
+			double diff = sniffCnyUsd - sniffUsdCny;//偏差
+			System.out.println("shoud be:"+ConstsUtil.getCnyUsd()*(1-diff/2));
 			sniffCnyUsd = 0d;
 			sniffUsdCny = 0d;
 		}
