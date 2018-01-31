@@ -15,6 +15,16 @@ public class NumberUtil {
     }
     
     
+    /** 
+     * 使用DecimalFormat,保留小数点后n位,四舍五入
+     */  
+    public static Double formatDoubleHP(double value, Integer scale) {  
+        BigDecimal bd = new BigDecimal(value);  
+        bd = bd.setScale(scale, RoundingMode.HALF_UP);  
+        return bd.doubleValue();
+    }
+    
+    
     public static double doubleAdd(double a1, double b1) {  
     	BigDecimal a2 = new BigDecimal(Double.toString(a1));  
     	BigDecimal b2 = new BigDecimal(Double.toString(b1));  
