@@ -30,7 +30,7 @@ public class OrderService extends LogService{
 	@Autowired
 	HttpService httpService;
 	
-	Double usd_cny = ConstsUtil.getCnyUsd();//汇率
+	public Double usd_cny = ConstsUtil.getCnyUsd();//汇率
 	Double profit = ConstsUtil.getProfit();//得到利益的下限
 	Double tax = ConstsUtil.getTax();
 	

@@ -33,32 +33,32 @@ public class JobService extends LogService{
 	
 	public void work(){
 		//查询账户
-//		ai = compService.getAccountInfo();
+		ai = compService.getAccountInfo();
 		//循环市场
 		String[][] arry = Market.arry;
 		for(String[] sa : arry){
 			detail(sa[0], sa[1]);
 		}
 		
-		if("t".equals(sniff)){
-			if(queue.size()>=21)
-				queue.poll();//删除第一个元素
-			System.out.println("cny to usdt:"+sniffCnyUsd);
-			System.out.println("usdt to cny:"+sniffUsdCny);
-			sniffCnyUsd = sniffCnyUsd-1;
-			sniffUsdCny = sniffUsdCny-1;
-			double diff = sniffCnyUsd - sniffUsdCny;//偏差
-			double midd = ConstsUtil.getCnyUsd()*(1-diff/2);
-			logger.info("shoud be:"+midd);
-			queue.add(NumberUtil.formatDoubleHP(midd, 2));//进入队列
-			
-//			MemUtil.mcc.set("hl", cmpQueue(queue));
-//			logger.info("===========:"+(Double)MemUtil.mcc.get("hl"));
-//			logger.info("===========:"+(String)mcc.get("foo"));
-			sniffCnyUsd = 0d;
-			sniffUsdCny = 0d;
-		}
-		logger.info(".");
+		if(queue.size()>=144)
+			queue.poll();//删除第一个元素
+		
+		System.out.println("cny to usdt:"+sniffCnyUsd);
+		System.out.println("usdt to cny:"+sniffUsdCny);
+		sniffCnyUsd = sniffCnyUsd-1;
+		sniffUsdCny = sniffUsdCny-1;
+		double diff = sniffCnyUsd - sniffUsdCny;//偏差
+		double midd = orderService.usd_cny*(1-diff/2);
+		System.out.println("midd:"+midd);
+		queue.add(NumberUtil.formatDoubleHP(midd, 3));//进入队列
+		double usd_cny = cmpQueue(queue);
+		System.out.println("shoud be:"+cmpQueue(queue));
+		orderService.usd_cny = usd_cny;
+		compService.usd_cny = usd_cny;
+		sniffCnyUsd = 0d;
+		sniffUsdCny = 0d;
+		
+		logger.info("..");
 	}
 	
 	
@@ -76,7 +76,7 @@ public class JobService extends LogService{
 //			}
 			sum = sum+d;
 		}
-		return NumberUtil.formatDoubleHP((sum/queue.size()), 2);
+		return NumberUtil.formatDoubleHP((sum/queue.size()), 3);
 //		int count = 1;
 //		for (Double key : m.keySet()) {  
 //		    if(m.get(key)>count) {
@@ -107,6 +107,8 @@ public class JobService extends LogService{
 				orderService.dealUsdt2Qc(deal_usdt_qc, ai);
 			}
 			if("0".equals(direction)){
+				sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
+				sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
 				Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
 				orderService.dealQc2Usdt(deal_ac_usdt, ai);
 				

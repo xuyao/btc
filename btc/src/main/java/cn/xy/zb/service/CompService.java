@@ -24,7 +24,7 @@ public class CompService extends LogService{
 	@Autowired
 	HttpService httpService;
 	
-	Double usd_cny = ConstsUtil.getCnyUsd();//汇率
+	public Double usd_cny = ConstsUtil.getCnyUsd();//汇率
 	Double comp_cny_usd = ConstsUtil.getCompCnyUsd();//人民币比美元
 	Double comp_usd_cny = ConstsUtil.getCompUsdCny();//美元比人民币
 	
