@@ -9,6 +9,9 @@ import java.util.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.whalin.MemCached.MemCachedClient;
+import com.whalin.MemCached.SockIOPool;
+
 import cn.xy.zb.Market;
 import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.util.NumberUtil;
