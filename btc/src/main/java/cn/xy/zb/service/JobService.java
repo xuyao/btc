@@ -1,15 +1,19 @@
 package cn.xy.zb.service;
 
-import java.util.Date;
+import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.whalin.MemCached.MemCachedClient;
+import com.whalin.MemCached.SockIOPool;
+
 import cn.xy.zb.Market;
 import cn.xy.zb.util.ConstsUtil;
-import cn.xy.zb.util.DateUtil;
 import cn.xy.zb.util.NumberUtil;
 import cn.xy.zb.vo.AccountInfo;
 import cn.xy.zb.vo.AskBid;
@@ -28,10 +32,11 @@ public class JobService extends LogService{
 	Double sniffCnyUsd = 0d;
 	Double sniffUsdCny = 0d;
 	String direction = ConstsUtil.getDirection();
+	Queue<Double> queue = new ArrayDeque<Double>();
 	
 	public void work(){
 		//查询账户
-		ai = compService.getAccountInfo();
+//		ai = compService.getAccountInfo();
 		//循环市场
 		String[][] arry = Market.arry;
 		for(String[] sa : arry){
@@ -39,15 +44,52 @@ public class JobService extends LogService{
 		}
 		
 		if("t".equals(sniff)){
+			if(queue.size()>=21)
+				queue.poll();//删除第一个元素
 			System.out.println("cny to usdt:"+sniffCnyUsd);
 			System.out.println("usdt to cny:"+sniffUsdCny);
-			System.out.println();
+			sniffCnyUsd = sniffCnyUsd-1;
+			sniffUsdCny = sniffUsdCny-1;
+			double diff = sniffCnyUsd - sniffUsdCny;//偏差
+			double midd = ConstsUtil.getCnyUsd()*(1-diff/2);
+			logger.info("shoud be:"+midd);
+			queue.add(NumberUtil.formatDoubleHP(midd, 2));//进入队列
+			
+//			MemUtil.mcc.set("hl", cmpQueue(queue));
+//			logger.info("===========:"+(Double)MemUtil.mcc.get("hl"));
+//			logger.info("===========:"+(String)mcc.get("foo"));
 			sniffCnyUsd = 0d;
 			sniffUsdCny = 0d;
 		}
 		logger.info(".");
-		
 	}
+	
+	
+	private double cmpQueue(Queue<Double> queue) {
+		Iterator it = queue.iterator();
+		Map<Double,Integer> m = new HashMap<Double,Integer>();
+		Double result = 6.61;
+		Double sum = 0d;
+		while(it.hasNext()) {//滑动平均线
+			Double d = (Double)it.next();
+//			if(m.get(d)!=null) {
+//				m.put(d, m.get(d)+1);
+//			}else {
+//				m.put(d, 1);
+//			}
+			sum = sum+d;
+		}
+		return NumberUtil.formatDoubleHP((sum/queue.size()), 2);
+//		int count = 1;
+//		for (Double key : m.keySet()) {  
+//		    if(m.get(key)>count) {
+//		    	count = m.get(key);
+//		    	result = key;
+//		    }
+//		}  
+//		return result;
+	}
+	
 	
 	public void detail(String abqc, String abusdt){
 		AskBid ab_qc = compService.getAskBid(abqc);//qc叫价
