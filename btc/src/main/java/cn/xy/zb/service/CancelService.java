@@ -35,6 +35,8 @@ public class CancelService extends LogService{
 	String autosellon = ConstsUtil.getValue("autosellon");//汇率
 	
 	public void work(){
+		usd_cny = compService.getTicker("usdt_qc").getLast();
+		
 		//查询账户, 先处理下余额
 		doRemain();
 		
