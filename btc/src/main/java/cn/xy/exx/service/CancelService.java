@@ -101,21 +101,33 @@ public class CancelService extends LogService{
 		Ticker tqc = compService.getTicker(market+"_qc");
 		Ticker tusdt = compService.getTicker(market+"_usdt");
 		if(tqc.getSell()>tusdt.getSell()*usd_cny) {//qc贵
-			orderService.order(market+"_qc", "sell", 
-					String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
+			if(tqc.getSell()-getMinPrice(market+"_qc")>tqc.getBuy()) {
+				orderService.order(market+"_qc", "sell", 
+						String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
+			}else {
+				orderService.order(market+"_qc", "sell", 
+						String.valueOf(tqc.getSell()), String.valueOf(amount));
+			}
+
 		}else {
-			orderService.order(market+"_usdt", "sell", 
-					String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+			if(tusdt.getSell()-getMinPrice(market+"_usdt")>tusdt.getBuy()) {
+				orderService.order(market+"_usdt", "sell", 
+						String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+			}else {
+				orderService.order(market+"_usdt", "sell", 
+						String.valueOf(tusdt.getSell()), String.valueOf(amount));
+			}
+
 		}
 	}
 	
 	private void doOrder(Order o, String market, Double amount) {
 		Ticker tqc = compService.getTicker(market+"_qc");
 		Ticker tusdt = compService.getTicker(market+"_usdt");
+		orderService.cancelOrder(o);
 		if(tqc.getSell()==o.getPrice() || tqc.getSell()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
 			//noting to do
 		}else {//否则应该先撤单再比较，然后下单
-			orderService.cancelOrder(o);
 			if(tqc.getSell()>tusdt.getSell()*usd_cny) {//qc贵
 				orderService.order(market+"_qc", "sell", 
 						String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
@@ -144,7 +156,8 @@ public class CancelService extends LogService{
 					//如果时间够长，才能撤单
 					long sys = System.currentTimeMillis();
 					if(sys - o.getTrade_date() > second*1000) {//如果订单间隔2分钟，就撤单
-						doOrder(o, o.getCurrency().substring(0, o.getCurrency().indexOf("_")), (o.getTotal_amount()-o.getTrade_amount()));
+//						doOrder(o, o.getCurrency().substring(0, o.getCurrency().indexOf("_")), (o.getTotal_amount()-o.getTrade_amount()));
+						orderService.cancelOrder(o);
 					}
 				}
 			}else{

@@ -106,11 +106,22 @@ public class CancelService extends LogService{
 		Ticker tqc = compService.getTicker(market+"_qc");
 		Ticker tusdt = compService.getTicker(market+"_usdt");
 		if(tqc.getSell()>tusdt.getSell()*usd_cny) {//qc贵
-			orderService.order(market+"_qc", "0", 
-					String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
+			if(tqc.getSell()-getMinPrice(market+"_qc")>tqc.getBuy()) {
+				orderService.order(market+"_qc", "0", 
+						String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
+			}else {
+				orderService.order(market+"_qc", "0", 
+						String.valueOf(tqc.getSell()), String.valueOf(amount));
+			}
+
 		}else {
-			orderService.order(market+"_usdt", "0", 
-					String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+			if(tusdt.getSell()-getMinPrice(market+"_usdt")>tusdt.getBuy()) {
+				orderService.order(market+"_usdt", "0", 
+						String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+			}else {
+				orderService.order(market+"_usdt", "0", 
+						String.valueOf(tusdt.getSell()), String.valueOf(amount));
+			}
 		}
 	}
 	
@@ -122,11 +133,22 @@ public class CancelService extends LogService{
 		}else {//否则应该先撤单再比较，然后下单
 			orderService.cancelOrder(o);
 			if(tqc.getSell()>tusdt.getSell()*usd_cny) {//qc贵
-				orderService.order(market+"_qc", "0", 
-						String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
+				if(tqc.getSell()-getMinPrice(market+"_qc")>tqc.getBuy()) {
+					orderService.order(market+"_qc", "0", 
+							String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
+				}else {
+					orderService.order(market+"_qc", "0", 
+							String.valueOf(tqc.getSell()), String.valueOf(amount));
+				}
+
 			}else {
-				orderService.order(market+"_usdt", "0", 
-						String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+				if(tusdt.getSell()-getMinPrice(market+"_usdt")>tusdt.getBuy()) {
+					orderService.order(market+"_usdt", "0", 
+							String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+				}else {
+					orderService.order(market+"_usdt", "0", 
+							String.valueOf(tusdt.getSell()), String.valueOf(amount));
+				}
 			}
 		}
 	}
