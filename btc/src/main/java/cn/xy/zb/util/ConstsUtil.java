@@ -51,6 +51,10 @@ public class ConstsUtil {
 		return Double.parseDouble(prop.getProperty("profit"));
 	}
 	
+	public static Integer getQueueSize(){
+		return Integer.parseInt(prop.getProperty("qsize"));
+	}
+	
 	public static String getSniff(){
 		return prop.getProperty("sniff");
 	}

@@ -28,6 +28,7 @@ public class JobService extends LogService{
 	String sniff = ConstsUtil.getSniff();
 	Double sniffCnyUsd = 0d;
 	Double sniffUsdCny = 0d;
+	Integer qsize = ConstsUtil.getQueueSize();
 	Queue<Double> queue = new ArrayDeque<Double>();
 	
 	public void work(){
@@ -57,7 +58,7 @@ public class JobService extends LogService{
 		sniffCnyUsd = 0d;
 		sniffUsdCny = 0d;
 		
-		logger.info(".");
+		logger.info("...");
 	}
 	
 	
