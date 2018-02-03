@@ -1,7 +1,5 @@
 package cn.xy.exx.service;
 
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -14,12 +12,10 @@ import cn.xy.exx.util.ConstsUtil;
 import cn.xy.exx.vo.Order;
 import cn.xy.exx.AutoSell;
 import cn.xy.exx.util.NumberUtil;
-import cn.xy.exx.vo.AccountInfo;
 import cn.xy.exx.vo.MarketAB;
 import cn.xy.exx.vo.Ticker;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 @Service
@@ -37,6 +33,7 @@ public class CancelService extends LogService{
 	String autosellon = ConstsUtil.getValue("autosellon");//汇率
 	
 	public void work(){
+		
 		//查询账户, 先处理下余额
 		doRemain();
 		
@@ -120,10 +117,10 @@ public class CancelService extends LogService{
 		}else {//否则应该先撤单再比较，然后下单
 			orderService.cancelOrder(o);
 			if(tqc.getSell()>tusdt.getSell()*usd_cny) {//qc贵
-				orderService.order(market+"_qc", "0", 
+				orderService.order(market+"_qc", "sell", 
 						String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
 			}else {
-				orderService.order(market+"_usdt", "0", 
+				orderService.order(market+"_usdt", "sell", 
 						String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
 			}
 		}

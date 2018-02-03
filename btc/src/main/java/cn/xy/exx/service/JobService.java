@@ -1,5 +1,11 @@
 package cn.xy.exx.service;
 
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Queue;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -8,6 +14,7 @@ import cn.xy.exx.util.ConstsUtil;
 import cn.xy.exx.vo.AccountInfo;
 import cn.xy.exx.vo.AskBid;
 import cn.xy.exx.vo.Deal;
+import cn.xy.exx.util.NumberUtil;
 import cn.xy.exx.service.LogService;
 
 @Service
@@ -22,7 +29,7 @@ public class JobService extends LogService{
 	String sniff = ConstsUtil.getSniff();
 	Double sniffCnyUsd = 0d;
 	Double sniffUsdCny = 0d;
-	String direction = ConstsUtil.getDirection();
+	Queue<Double> queue = new ArrayDeque<Double>();
 	
 	public void work(){
 		//查询账户
@@ -33,17 +40,51 @@ public class JobService extends LogService{
 			detail(sa[0], sa[1]);
 		}
 		
-		if("t".equals(sniff)){
-			System.out.println("cny to usdt:"+sniffCnyUsd);
-			System.out.println("usdt to cny:"+sniffUsdCny);
-			sniffCnyUsd = sniffCnyUsd-1;
-			sniffUsdCny = sniffUsdCny-1;
-			double diff = sniffCnyUsd - sniffUsdCny;//偏差
-			System.out.println("shoud be:"+ConstsUtil.getCnyUsd()*(1-diff/2));
-			sniffCnyUsd = 0d;
-			sniffUsdCny = 0d;
-		}
+		if(queue.size()>=144)
+			queue.poll();//删除第一个元素
+		
+		System.out.println("cny to usdt:"+sniffCnyUsd);
+		System.out.println("usdt to cny:"+sniffUsdCny);
+		sniffCnyUsd = sniffCnyUsd-1;
+		sniffUsdCny = sniffUsdCny-1;
+		double diff = sniffCnyUsd - sniffUsdCny;//偏差
+		double midd = orderService.usd_cny*(1-diff/2);
+		System.out.println("midd:"+midd);
+		queue.add(NumberUtil.formatDoubleHP(midd, 3));//进入队列
+		double usd_cny = cmpQueue(queue);
+		System.out.println("shoud be:"+cmpQueue(queue));
+		orderService.usd_cny = usd_cny;
+		compService.usd_cny = usd_cny;
+		sniffCnyUsd = 0d;
+		sniffUsdCny = 0d;
+		
 		logger.info("exx.");
+	}
+	
+	
+	private double cmpQueue(Queue<Double> queue) {
+		Iterator it = queue.iterator();
+		Map<Double,Integer> m = new HashMap<Double,Integer>();
+		Double result = 6.61;
+		Double sum = 0d;
+		while(it.hasNext()) {//滑动平均线
+			Double d = (Double)it.next();
+//			if(m.get(d)!=null) {
+//				m.put(d, m.get(d)+1);
+//			}else {
+//				m.put(d, 1);
+//			}
+			sum = sum+d;
+		}
+		return NumberUtil.formatDoubleHP((sum/queue.size()), 3);
+//		int count = 1;
+//		for (Double key : m.keySet()) {  
+//		    if(m.get(key)>count) {
+//		    	count = m.get(key);
+//		    	result = key;
+//		    }
+//		}  
+//		return result;
 	}
 	
 	public void detail(String abqc, String abusdt){
@@ -56,21 +97,14 @@ public class JobService extends LogService{
 			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
 			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
 		}else{
-			if("1".equals(direction)){
-				Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
-				orderService.dealQc2Usdt(deal_ac_usdt, ai);
-			}
-			if("2".equals(direction)){
-				Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
-				orderService.dealUsdt2Qc(deal_usdt_qc, ai);
-			}
-			if("0".equals(direction)){
-				Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
-				orderService.dealQc2Usdt(deal_ac_usdt, ai);
-				
-				Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
-				orderService.dealUsdt2Qc(deal_usdt_qc, ai);
-			}
+			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
+			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
+			
+			Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
+			orderService.dealQc2Usdt(deal_ac_usdt, ai);
+			
+			Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
+			orderService.dealUsdt2Qc(deal_usdt_qc, ai);
 		}
 
 	}

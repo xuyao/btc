@@ -152,7 +152,7 @@ public class OrderService extends LogService{
 			String json = httpService.get("https://trade.exx.com/api/order", params);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			result = jsonObj.parseObject(json, Result.class);
-			logger.info("exx "+price+" "+amount+"交易结果: " + json);
+			logger.info("exx "+currency+" "+price+" "+amount+"交易结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -164,7 +164,6 @@ public class OrderService extends LogService{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("currency", market);
 		params.put("pageIndex", "1");
-		params.put("type", "buy");
 		String json = httpService.get("https://trade.exx.com/api/getOpenOrders", params);
 		if(StringUtils.isEmpty(json) || json.startsWith("{")){
 			return null;
@@ -183,7 +182,7 @@ public class OrderService extends LogService{
 			order.setStatus(jsonObj.getInteger("status"));
 			order.setTotal_amount(jsonObj.getDouble("total_amount"));
 			order.setTrade_amount(jsonObj.getDouble("trade_amount"));
-			order.setTrade_date(jsonObj.getInteger("trade_date"));
+			order.setTrade_date(jsonObj.getLong("trade_date"));
 			order.setTrade_money(jsonObj.getDouble("trade_money"));
 			order.setType(jsonObj.getString("type"));
 			list.add(order);

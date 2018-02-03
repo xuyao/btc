@@ -41,7 +41,6 @@ public class CompService extends LogService{
 			if(result == null)
 				return null;
 			result = result.getJSONObject("funds");
-			
 			ai = new AccountInfo();
 			ai.setQcAvailable(result.getJSONObject("QC").getDouble("balance"));
 			ai.setUsdtAvailable(result.getJSONObject("USDT").getDouble("balance"));
