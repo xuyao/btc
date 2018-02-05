@@ -156,8 +156,7 @@ public class CancelService extends LogService{
 					//如果时间够长，才能撤单
 					long sys = System.currentTimeMillis();
 					if(sys - o.getTrade_date() > second*1000) {//如果订单间隔2分钟，就撤单
-//						doOrder(o, o.getCurrency().substring(0, o.getCurrency().indexOf("_")), (o.getTotal_amount()-o.getTrade_amount()));
-						orderService.cancelOrder(o);
+						doOrder(o, o.getCurrency().substring(0, o.getCurrency().indexOf("_")), (o.getTotal_amount()-o.getTrade_amount()));
 					}
 				}
 			}else{

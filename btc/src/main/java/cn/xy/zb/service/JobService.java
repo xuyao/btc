@@ -40,7 +40,7 @@ public class JobService extends LogService{
 			detail(sa[0], sa[1]);
 		}
 		
-		if(queue.size()>=144)
+		if(queue.size()>=qsize)
 			queue.poll();//删除第一个元素
 		
 		System.out.println("cny to usdt:"+sniffCnyUsd);
