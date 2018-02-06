@@ -27,5 +27,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/memcached-client-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/plato.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

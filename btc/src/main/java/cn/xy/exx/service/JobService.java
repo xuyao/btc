@@ -41,24 +41,28 @@ public class JobService extends LogService{
 			detail(sa[0], sa[1]);
 		}
 		
-		if(queue.size()>=144)
-			queue.poll();//删除第一个元素
-		
-		System.out.println("cny to usdt:"+sniffCnyUsd);
-		System.out.println("usdt to cny:"+sniffUsdCny);
-		sniffCnyUsd = sniffCnyUsd-1;
-		sniffUsdCny = sniffUsdCny-1;
-		double diff = sniffCnyUsd - sniffUsdCny;//偏差
-		double midd = orderService.usd_cny*(1-diff/2);
-		System.out.println("midd:"+midd);
-		queue.add(NumberUtil.formatDoubleHP(midd, 3));//进入队列
-		double usd_cny = cmpQueue(queue);
-		System.out.println("shoud be:"+cmpQueue(queue));
-		orderService.usd_cny = usd_cny;
-		compService.usd_cny = usd_cny;
-		sniffCnyUsd = 0d;
-		sniffUsdCny = 0d;
-		
+//		if(queue.size()>=144)
+//			queue.poll();//删除第一个元素
+//		System.out.println("cny to usdt:"+sniffCnyUsd);
+//		System.out.println("usdt to cny:"+sniffUsdCny);
+//		sniffCnyUsd = sniffCnyUsd-1;
+//		sniffUsdCny = sniffUsdCny-1;
+//		double diff = sniffCnyUsd - sniffUsdCny;//偏差
+//		double midd = orderService.usd_cny*(1-diff/2);
+//		System.out.println("midd:"+midd);
+//		queue.add(NumberUtil.formatDoubleHP(midd, 3));//进入队列
+//		double usd_cny = cmpQueue(queue);
+//		System.out.println("shoud be:"+cmpQueue(queue));
+//		orderService.usd_cny = usd_cny;
+//		compService.usd_cny = usd_cny;
+//		sniffCnyUsd = 0d;
+//		sniffUsdCny = 0d;
+		if("t".equals(sniff)){
+			logger.info("cny to usdt:"+sniffCnyUsd);
+			logger.info("usdt to cny:"+sniffUsdCny);
+			sniffCnyUsd = 0d;
+			sniffUsdCny = 0d;
+		}
 		logger.info("exx.");
 	}
 	
@@ -98,8 +102,8 @@ public class JobService extends LogService{
 			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
 			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
 		}else{
-			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
-			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
+//			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
+//			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
 			
 			Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
 			orderService.dealQc2Usdt(deal_ac_usdt, ai);
