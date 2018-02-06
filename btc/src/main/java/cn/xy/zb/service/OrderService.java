@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.plato.common.cache.memcached.MemcachedCache;
 
 import cn.xy.zb.Market;
 import cn.xy.zb.util.ConstsUtil;
@@ -29,8 +30,10 @@ public class OrderService extends LogService{
 	
 	@Autowired
 	HttpService httpService;
+	MemcachedCache memcachedClient = MemcacheFactory.getClient();
 	
-	public Double usd_cny = ConstsUtil.getCnyUsd();//汇率
+//	public Double usd_cny = ConstsUtil.getCnyUsd();//汇率
+	public Double usd_cny = (Double)memcachedClient.get("hl");//汇率
 	Double profit = ConstsUtil.getProfit();//得到利益的下限
 	Double tax = ConstsUtil.getTax();
 	

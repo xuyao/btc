@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.plato.common.cache.memcached.MemcachedCache;
 
 import cn.xy.zb.AutoSell;
 import cn.xy.zb.Market;
@@ -29,8 +30,9 @@ public class CancelService extends LogService{
 	OrderService orderService;
 	@Autowired
 	HttpService httpService;
+	MemcachedCache memcachedClient = MemcacheFactory.getClient();
 	
-	Double usd_cny = ConstsUtil.getCnyUsd();//汇率
+	Double usd_cny = (Double)memcachedClient.get("hl");//汇率
 	Integer second = ConstsUtil.getSecond();//汇率
 	String autosellon = ConstsUtil.getValue("autosellon");//汇率
 	
@@ -128,7 +130,7 @@ public class CancelService extends LogService{
 	private void doOrder(Order o, String market, Double amount) {
 		Ticker tqc = compService.getTicker(market+"_qc");
 		Ticker tusdt = compService.getTicker(market+"_usdt");
-		if(tqc.getSell()==o.getPrice() || tqc.getSell()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
+		if(tqc.getSell()==o.getPrice() || tusdt.getSell()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
 			//noting to do
 		}else {//否则应该先撤单再比较，然后下单
 			orderService.cancelOrder(o);

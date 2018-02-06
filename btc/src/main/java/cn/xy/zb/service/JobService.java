@@ -9,12 +9,15 @@ import java.util.Queue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.plato.common.cache.memcached.MemcachedCache;
+
 import cn.xy.zb.Market;
 import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.util.NumberUtil;
 import cn.xy.zb.vo.AccountInfo;
 import cn.xy.zb.vo.AskBid;
 import cn.xy.zb.vo.Deal;
+import cn.xy.zb.vo.Ticker;
 
 @Service
 public class JobService extends LogService{
@@ -23,13 +26,14 @@ public class JobService extends LogService{
 	CompService compService;
 	@Autowired
 	OrderService orderService;
+	MemcachedCache memcachedClient = MemcacheFactory.getClient();
 	
 	AccountInfo ai = null;
 	String sniff = ConstsUtil.getSniff();
 	Double sniffCnyUsd = 0d;
 	Double sniffUsdCny = 0d;
 	Integer qsize = ConstsUtil.getQueueSize();
-	Queue<Double> queue = new ArrayDeque<Double>();
+//	Queue<Double> queue = new ArrayDeque<Double>();
 	
 	public void work(){
 		//查询账户
@@ -40,24 +44,24 @@ public class JobService extends LogService{
 			detail(sa[0], sa[1]);
 		}
 		
-		if(queue.size()>=qsize)
-			queue.poll();//删除第一个元素
+//		if(queue.size()>=qsize)
+//			queue.poll();//删除第一个元素
 		
-		System.out.println("cny to usdt:"+sniffCnyUsd);
-		System.out.println("usdt to cny:"+sniffUsdCny);
-		sniffCnyUsd = sniffCnyUsd-1;
-		sniffUsdCny = sniffUsdCny-1;
-		double diff = sniffCnyUsd - sniffUsdCny;//偏差
-		double midd = orderService.usd_cny*(1-diff/2);
-		System.out.println("midd:"+midd);
-		queue.add(NumberUtil.formatDoubleHP(midd, 3));//进入队列
-		double usd_cny = cmpQueue(queue);
-		System.out.println("shoud be:"+cmpQueue(queue));
-		orderService.usd_cny = usd_cny;
-		compService.usd_cny = usd_cny;
-		sniffCnyUsd = 0d;
-		sniffUsdCny = 0d;
-		
+//		System.out.println("cny to usdt:"+sniffCnyUsd);
+//		System.out.println("usdt to cny:"+sniffUsdCny);
+//		sniffCnyUsd = sniffCnyUsd-1;
+//		sniffUsdCny = sniffUsdCny-1;
+//		double diff = sniffCnyUsd - sniffUsdCny;//偏差
+//		double midd = orderService.usd_cny*(1-diff/2);
+//		System.out.println("midd:"+midd);
+//		queue.add(NumberUtil.formatDoubleHP(midd, 3));//进入队列
+//		double usd_cny = cmpQueue(queue);
+//		System.out.println("shoud be:"+usd_cny);
+		Double hl = (Double)memcachedClient.get("hl");
+		orderService.usd_cny = hl;
+		compService.usd_cny = hl;
+//		sniffCnyUsd = 0d;
+//		sniffUsdCny = 0d;
 		logger.info("...");
 	}
 	
@@ -98,8 +102,8 @@ public class JobService extends LogService{
 			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
 			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
 		}else{
-			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
-			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
+//			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
+//			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
 			Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usd
 			orderService.dealQc2Usdt(deal_ac_usdt, ai);
 			
