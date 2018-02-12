@@ -140,12 +140,7 @@ public class OrderService extends LogService{
 							String.valueOf(deal.getSellPrice() - getMinPrice(deal.getSellMarket())),String.valueOf(amount));//卖出
 					logger.info("sellResult code:"+sellResult.getCode());
 					i++;
-					try {
-						Thread.sleep(400);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}while(i<2);//2次
+				}while(i<3);//2次
 			}
 		}
 		java.awt.Toolkit.getDefaultToolkit().beep();
