@@ -176,8 +176,11 @@ public class CancelService extends LogService{
 			return;
 		for(Order o : orderList){
 			if(o.getType()==1){//如果是买单未成交，无论什么情况立刻撤销
-//				if(!o.getCurrency().startsWith("zb"))
+				if(o.getCurrency().startsWith("zb") && o.getTotal_amount()==99) {
+					//noting to do
+				}else {
 					orderService.cancelOrder(o);
+				}
 			}else if(o.getType()==0){//如果是卖单未成交，处理起来比较麻烦
 				if("t".equals(autosellon)){
 					//如果时间够长，才能撤单
