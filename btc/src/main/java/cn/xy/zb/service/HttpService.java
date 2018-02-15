@@ -126,6 +126,6 @@ public class HttpService extends LogService{
 	
 	public static void main(String[] args) {
 //		System.out.println(new HttpService().checkProxy(host, Integer.parseInt(port)));
-		System.out.println(new HttpService().get("http://www.ip138.com/ips138.asp"));
+		System.out.println(new HttpService().get("http://api.zb.com/data/v1/ticker?market=btc_usdt"));
 	}
 }
