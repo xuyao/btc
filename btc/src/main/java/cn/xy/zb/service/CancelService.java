@@ -50,7 +50,7 @@ public class CancelService extends LogService{
 			orderList = orderService.getUnfinishedOrdersIgnoreTradeType(sa[1]);
 			doCancelOrder(orderList, sa);
 			try {
-				Thread.sleep(350);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -92,7 +92,7 @@ public class CancelService extends LogService{
 				
 				if(amount>0) {//如果有剩余数量，就要询价卖出
 					doOrder(market, amount);
-					Thread.sleep(200);
+					Thread.sleep(100);
 				}
 			}
 			
@@ -115,52 +115,78 @@ public class CancelService extends LogService{
 //		Ticker tusdt = compService.getTicker(market+"_usdt");
 		AskBid abc = compService.getAskBid(market+"_qc");
 		AskBid abu = compService.getAskBid(market+"_usdt");
-		if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
-			if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
-				orderService.order(market+"_qc", "0", 
-						String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
-			}else {
-				orderService.order(market+"_qc", "0", 
-						String.valueOf(abc.getAsk2()), String.valueOf(amount));
-			}
-
+		/** 挂卖一 */
+//		if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
+//			if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
+//				orderService.order(market+"_qc", "0", 
+//						String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
+//			}else {
+//				orderService.order(market+"_qc", "0", 
+//						String.valueOf(abc.getAsk2()), String.valueOf(amount));
+//			}
+//
+//		}else {
+//			if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
+//				orderService.order(market+"_usdt", "0", 
+//						String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+//			}else {
+//				orderService.order(market+"_usdt", "0", 
+//						String.valueOf(abu.getAsk2()), String.valueOf(amount));
+//			}
+//		}
+		
+		/** 挂买一 */
+		if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
+			orderService.order(market+"_qc", "0", 
+					String.valueOf(abc.getBid1()), String.valueOf(amount));
 		}else {
-			if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
-				orderService.order(market+"_usdt", "0", 
-						String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
-			}else {
-				orderService.order(market+"_usdt", "0", 
-						String.valueOf(abu.getAsk2()), String.valueOf(amount));
-			}
+			orderService.order(market+"_usdt", "0", 
+					String.valueOf(abu.getBid1()), String.valueOf(amount));
 		}
 	}
 	
 	private void doOrder(Order o, String market, Double amount) {
 		AskBid abc = compService.getAskBid(market+"_qc");
 		AskBid abu = compService.getAskBid(market+"_usdt");
+		/** 卖一价格 */
+//		if(abc.getAsk2()==o.getPrice() || abu.getAsk2()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
+//			//noting to do
+//		}else {//否则应该先撤单再比较，然后下单
+//			orderService.cancelOrder(o);
+//			if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
+//				if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
+//					orderService.order(market+"_qc", "0", 
+//							String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
+//				}else {
+//					orderService.order(market+"_qc", "0", 
+//							String.valueOf(abc.getAsk2()), String.valueOf(amount));
+//				}
+//
+//			}else {
+//				if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
+//					orderService.order(market+"_usdt", "0", 
+//							String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+//				}else {
+//					orderService.order(market+"_usdt", "0", 
+//							String.valueOf(abu.getAsk2()), String.valueOf(amount));
+//				}
+//			}
+//		}
+		
+		/** 挂买一 */
 		if(abc.getAsk2()==o.getPrice() || abu.getAsk2()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
-			//noting to do
+		//noting to do
 		}else {//否则应该先撤单再比较，然后下单
-			orderService.cancelOrder(o);
-			if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
-				if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
-					orderService.order(market+"_qc", "0", 
-							String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
-				}else {
-					orderService.order(market+"_qc", "0", 
-							String.valueOf(abc.getAsk2()), String.valueOf(amount));
-				}
-
-			}else {
-				if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
-					orderService.order(market+"_usdt", "0", 
-							String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
-				}else {
-					orderService.order(market+"_usdt", "0", 
-							String.valueOf(abu.getAsk2()), String.valueOf(amount));
-				}
-			}
+		orderService.cancelOrder(o);
+		if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
+			orderService.order(market+"_qc", "0", 
+					String.valueOf(abc.getBid1()), String.valueOf(amount));
+		}else {
+			orderService.order(market+"_usdt", "0", 
+					String.valueOf(abu.getBid1()), String.valueOf(amount));
 		}
+		}
+		
 	}
 	
 	public Double getMinPrice(String market){
@@ -194,7 +220,7 @@ public class CancelService extends LogService{
 			}
 			
 			try {
-				Thread.sleep(300);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
