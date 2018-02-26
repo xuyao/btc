@@ -37,8 +37,7 @@ public class CancelService extends LogService{
 	
 	public void work(){
 		
-		//查询账户, 先处理下余额
-		doRemain();
+
 		
 		//循环市场,处理冻结
 		List<Order> orderList = null;
@@ -55,6 +54,9 @@ public class CancelService extends LogService{
 				e.printStackTrace();
 			}
 		}
+		
+		//查询账户, 先处理下余额
+		doRemain();
 		logger.info("*");
 	}
 

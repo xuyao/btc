@@ -34,9 +34,6 @@ public class CancelService extends LogService{
 	
 	public void work(){
 		
-		//查询账户, 先处理下余额
-		doRemain();
-		
 //		//循环市场
 		List<Order> orderList = null;
 		String[][] arry = Market.arry;
@@ -47,11 +44,14 @@ public class CancelService extends LogService{
 			orderList = orderService.getUnfinishedOrdersIgnoreTradeType(sa[1]);
 			doCancelOrder(orderList, sa);
 			try {
-				Thread.sleep(300);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+		
+		//查询账户, 先处理下余额
+		doRemain();
 		logger.info("*");
 	}
 
@@ -79,7 +79,7 @@ public class CancelService extends LogService{
 				if(amount>0) {//如果有剩余数量，就要询价卖出
 					doOrder(market, amount);
 					try {
-						Thread.sleep(300);
+						Thread.sleep(100);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -164,7 +164,7 @@ public class CancelService extends LogService{
 			}
 			
 			try {
-				Thread.sleep(300);
+				Thread.sleep(200);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
