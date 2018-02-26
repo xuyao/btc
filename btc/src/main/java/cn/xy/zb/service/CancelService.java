@@ -116,33 +116,33 @@ public class CancelService extends LogService{
 		AskBid abc = compService.getAskBid(market+"_qc");
 		AskBid abu = compService.getAskBid(market+"_usdt");
 		/** 挂卖一 */
-//		if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
-//			if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
-//				orderService.order(market+"_qc", "0", 
-//						String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
-//			}else {
-//				orderService.order(market+"_qc", "0", 
-//						String.valueOf(abc.getAsk2()), String.valueOf(amount));
-//			}
-//
-//		}else {
-//			if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
-//				orderService.order(market+"_usdt", "0", 
-//						String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
-//			}else {
-//				orderService.order(market+"_usdt", "0", 
-//						String.valueOf(abu.getAsk2()), String.valueOf(amount));
-//			}
-//		}
+		if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
+			if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
+				orderService.order(market+"_qc", "0", 
+						String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
+			}else {
+				orderService.order(market+"_qc", "0", 
+						String.valueOf(abc.getAsk2()), String.valueOf(amount));
+			}
+
+		}else {
+			if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
+				orderService.order(market+"_usdt", "0", 
+						String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+			}else {
+				orderService.order(market+"_usdt", "0", 
+						String.valueOf(abu.getAsk2()), String.valueOf(amount));
+			}
+		}
 		
 		/** 挂买一 */
-		if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
-			orderService.order(market+"_qc", "0", 
-					String.valueOf(abc.getBid1()), String.valueOf(amount));
-		}else {
-			orderService.order(market+"_usdt", "0", 
-					String.valueOf(abu.getBid1()), String.valueOf(amount));
-		}
+//		if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
+//			orderService.order(market+"_qc", "0", 
+//					String.valueOf(abc.getBid1()), String.valueOf(amount));
+//		}else {
+//			orderService.order(market+"_usdt", "0", 
+//					String.valueOf(abu.getBid1()), String.valueOf(amount));
+//		}
 	}
 	
 	private void doOrder(Order o, String market, Double amount) {
