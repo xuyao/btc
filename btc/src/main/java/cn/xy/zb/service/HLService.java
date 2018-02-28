@@ -1,7 +1,12 @@
 package cn.xy.zb.service;
 
+import java.io.IOException;
 import java.util.Iterator;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +37,32 @@ public class HLService extends LogService{
 			ma = ma+jsa.getDoubleValue(4);
 		}
 		memcachedClient.set("hl", NumberUtil.formatDoubleHP(ma/size, 4));
+		
+		
+		try {
+			MemcachedCache memcachedClient = MemcacheFactory.getClient();
+			Document doc = Jsoup.connect("https://www.feixiaohao.com/exchange/zb/").get();
+			Elements container = doc.getElementsByClass("num");
+			Element e = container.get(3);
+			String s = e.text();
+			String[] arr = s.split(" ");
+			String total = arr[0].replaceAll("¥", "");
+			total = total.replaceAll(",", "");
+			String totalOld = (String)memcachedClient.get("total");
+			if(total.compareTo("1600000000")<0) {
+				if(total.compareTo(totalOld)>0) {//如果新的交易量大于上一个
+					memcachedClient.set("on", "t");
+				}else {//如果交易量一直下滑
+					memcachedClient.set("on", "f");
+				}
+			}else {
+				memcachedClient.set("on", "t");
+			}
+			memcachedClient.set("total", total);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		logger.info("hl.");
 	}
 	

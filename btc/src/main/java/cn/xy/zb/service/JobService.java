@@ -36,6 +36,10 @@ public class JobService extends LogService{
 //	Queue<Double> queue = new ArrayDeque<Double>();
 	
 	public void work(){
+		
+		String on = (String)memcachedClient.get("on");
+		if(!"t".equals(on))
+			return ;
 		//查询账户
 		ai = compService.getAccountInfo();
 		//循环市场
@@ -44,25 +48,10 @@ public class JobService extends LogService{
 			detail(sa[0], sa[1]);
 		}
 		
-//		if(queue.size()>=qsize)
-//			queue.poll();//删除第一个元素
-		
-//		System.out.println("cny to usdt:"+sniffCnyUsd);
-//		System.out.println("usdt to cny:"+sniffUsdCny);
-//		sniffCnyUsd = sniffCnyUsd-1;
-//		sniffUsdCny = sniffUsdCny-1;
-//		double diff = sniffCnyUsd - sniffUsdCny;//偏差
-//		double midd = orderService.usd_cny*(1-diff/2);
-//		System.out.println("midd:"+midd);
-//		queue.add(NumberUtil.formatDoubleHP(midd, 3));//进入队列
-//		double usd_cny = cmpQueue(queue);
-//		System.out.println("shoud be:"+usd_cny);
 		Double hl = (Double)memcachedClient.get("hl");
 		orderService.usd_cny = hl;
 		compService.usd_cny = hl;
-//		sniffCnyUsd = 0d;
-//		sniffUsdCny = 0d;
-		logger.info("...");
+		logger.info(".");
 	}
 	
 	
@@ -73,22 +62,9 @@ public class JobService extends LogService{
 		Double sum = 0d;
 		while(it.hasNext()) {//滑动平均线
 			Double d = (Double)it.next();
-//			if(m.get(d)!=null) {
-//				m.put(d, m.get(d)+1);
-//			}else {
-//				m.put(d, 1);
-//			}
 			sum = sum+d;
 		}
 		return NumberUtil.formatDoubleHP((sum/queue.size()), 3);
-//		int count = 1;
-//		for (Double key : m.keySet()) {  
-//		    if(m.get(key)>count) {
-//		    	count = m.get(key);
-//		    	result = key;
-//		    }
-//		}  
-//		return result;
 	}
 	
 	
