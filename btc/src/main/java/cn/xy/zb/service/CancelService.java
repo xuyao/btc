@@ -83,8 +83,8 @@ public class CancelService extends LogService{
 				available = jsonObj.getDouble("available");
 				Double amount = getAmount(market+"_qc", available);
 				if("zb".equalsIgnoreCase(market)){
-					if(amount>580)
-						amount = amount-580;
+					if(amount>680)
+						amount = amount-680;
 					else
 						continue;
 				}
@@ -203,12 +203,12 @@ public class CancelService extends LogService{
 		if(orderList==null)//如果没有未成交单据，直接返回
 			return;
 		for(Order o : orderList){
+			if(o.getCurrency().startsWith("zb") && o.getTotal_amount()==99) {
+				continue;
+			}
+			
 			if(o.getType()==1){//如果是买单未成交，无论什么情况立刻撤销
-				if(o.getCurrency().startsWith("zb") && o.getTotal_amount()==99) {
-					//noting to do
-				}else {
-					orderService.cancelOrder(o);
-				}
+				orderService.cancelOrder(o);
 			}else if(o.getType()==0){//如果是卖单未成交，处理起来比较麻烦
 				if("t".equals(autosellon)){
 					//如果时间够长，才能撤单
