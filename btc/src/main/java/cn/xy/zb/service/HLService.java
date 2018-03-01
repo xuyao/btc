@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.xy.zb.util.ConstsUtil;
 import cn.xy.zb.util.NumberUtil;
 
 import com.alibaba.fastjson.JSONArray;
@@ -22,6 +23,7 @@ public class HLService extends LogService{
 	MemcachedCache memcachedClient = MemcacheFactory.getClient();
 	Integer size = Integer.parseInt(MemcacheFactory.size);
 	String type = MemcacheFactory.type;
+	String on = ConstsUtil.getValue("on");//人民币比美元
 
 	@Autowired
 	HttpService httpService;
@@ -38,31 +40,39 @@ public class HLService extends LogService{
 		}
 		memcachedClient.set("hl", NumberUtil.formatDoubleHP(ma/size, 4));
 		
-		
-		try {
-			MemcachedCache memcachedClient = MemcacheFactory.getClient();
-			Document doc = Jsoup.connect("https://www.feixiaohao.com/exchange/zb/").get();
-			Elements container = doc.getElementsByClass("num");
-			Element e = container.get(3);
-			String s = e.text();
-			String[] arr = s.split(" ");
-			String total = arr[0].replaceAll("¥", "");
-			total = total.replaceAll(",", "");
-			String totalOld = (String)memcachedClient.get("total");
-			if(total.compareTo("1600000000")<0) {
-				if(total.compareTo(totalOld)>0) {//如果新的交易量大于上一个
-					memcachedClient.set("on", "t");
-				}else {//如果交易量一直下滑
-					memcachedClient.set("on", "f");
+		if("r".equals(on)){
+			try {
+				Document doc = Jsoup.connect("https://www.feixiaohao.com/exchange/zb/").get();
+				Elements container = doc.getElementsByClass("num");
+				Element e = container.get(3);
+				String s = e.text();
+				String[] arr = s.split(" ");
+				String total = arr[0].replaceAll("¥", "");
+				total = total.replaceAll(",", "");
+				String totalOld = (String)memcachedClient.get("total");
+				if(total.compareTo("1600000000")<0) {
+					if(total.compareTo(totalOld)>0) {//如果新的交易量大于上一个
+						memcachedClient.set("on", "t");
+					}else {//如果交易量一直下滑
+						memcachedClient.set("on", "f");
+					}
+				}else {
+					if(total.compareTo(totalOld)>=0) {//如果新的交易量大于上一个
+						memcachedClient.set("on", "t");
+					}else {//如果交易量一直下滑
+						memcachedClient.set("on", "f");
+					}
 				}
-			}else {
-				memcachedClient.set("on", "t");
+				memcachedClient.set("total", total);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			memcachedClient.set("total", total);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		}else if("t".equals(on)){
+			memcachedClient.set("on", "t");
+		}else{
+			memcachedClient.set("on", "f");
 		}
+
 		logger.info("hl.");
 	}
 	
