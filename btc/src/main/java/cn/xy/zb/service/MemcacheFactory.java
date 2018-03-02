@@ -65,11 +65,11 @@ public class MemcacheFactory {
 	}
 	
 	public static void main(String[] a){
-		System.out.print("print hl:");
-		System.out.println(MemcacheFactory.getClient().get("hl"));
-		System.out.print("print totla:");
-		System.out.println(MemcacheFactory.getClient().get("total"));
-		System.out.print("print on:");
-		System.out.println(MemcacheFactory.getClient().get("on"));
+		System.out.print(MemcacheFactory.getClient().get("hl"));
+		System.out.print(",");
+		System.out.print(MemcacheFactory.getClient().get("total"));
+		System.out.print(",");
+		System.out.print(MemcacheFactory.getClient().get("on"));
+		System.out.print(";");
 	}
 }///~;
