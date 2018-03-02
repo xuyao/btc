@@ -50,14 +50,16 @@ public class HLService extends LogService{
 				String total = arr[0].replaceAll("¥", "");
 				total = total.replaceAll(",", "");
 				String totalOld = (String)memcachedClient.get("total");
+				
+				String son = (String)memcachedClient.get("on");
 				if(total.compareTo("1600000000")<0) {
-					if(total.compareTo(totalOld)>0) {//如果新的交易量大于上一个
+					if(total.compareTo(totalOld)>0 && "t".equals(son)) {//如果新的交易量大于上一个,且上一个on是t
 						memcachedClient.set("on", "t");
 					}else {//如果交易量一直下滑
 						memcachedClient.set("on", "f");
 					}
 				}else {
-					if(total.compareTo(totalOld)>=0) {//如果新的交易量大于上一个
+					if(total.compareTo(totalOld)>=0 || "t".equals(son)) {//如果新的交易量大于上一个
 						memcachedClient.set("on", "t");
 					}else {//如果交易量一直下滑
 						memcachedClient.set("on", "f");
