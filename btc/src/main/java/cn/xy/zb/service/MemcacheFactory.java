@@ -69,7 +69,11 @@ public class MemcacheFactory {
 		System.out.print(",");
 		System.out.print(MemcacheFactory.getClient().get("total"));
 		System.out.print(",");
+		System.out.print(MemcacheFactory.getClient().get("k2"));
+		System.out.print(",");
+		System.out.print(MemcacheFactory.getClient().get("k1"));
+		System.out.print(",");
 		System.out.print(MemcacheFactory.getClient().get("on"));
-		System.out.print(";");
+		System.out.println();
 	}
 }///~;

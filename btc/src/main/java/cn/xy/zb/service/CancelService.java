@@ -151,43 +151,77 @@ public class CancelService extends LogService{
 		AskBid abc = compService.getAskBid(market+"_qc");
 		AskBid abu = compService.getAskBid(market+"_usdt");
 		/** 卖一价格 */
-//		if(abc.getAsk2()==o.getPrice() || abu.getAsk2()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
-//			//noting to do
-//		}else {//否则应该先撤单再比较，然后下单
-//			orderService.cancelOrder(o);
-//			if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
-//				if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
-//					orderService.order(market+"_qc", "0", 
-//							String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
-//				}else {
-//					orderService.order(market+"_qc", "0", 
-//							String.valueOf(abc.getAsk2()), String.valueOf(amount));
-//				}
-//
-//			}else {
-//				if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
-//					orderService.order(market+"_usdt", "0", 
-//							String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
-//				}else {
-//					orderService.order(market+"_usdt", "0", 
-//							String.valueOf(abu.getAsk2()), String.valueOf(amount));
-//				}
-//			}
-//		}
+		if(abc.getAsk2().compareTo(o.getPrice())==0 || abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
+			if(abc.getAsk2().compareTo(o.getPrice())==0) {
+				if(abc.getAsk2().compareTo(abc.getAsk1()-getMinPrice(market+"_qc"))==0) {
+					//to do nothing!
+				}else {
+					orderService.cancelOrder(o);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					orderService.order(market+"_qc", "0", 
+							String.valueOf(abc.getAsk1()-getMinPrice(market+"_qc")), String.valueOf(amount));
+				}
+			}
+			
+			if(abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
+				if(abu.getAsk2().compareTo(abu.getAsk1()-getMinPrice(market+"_usdt"))==0) {
+					//to do nothing!
+				}else {
+					orderService.cancelOrder(o);
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					orderService.order(market+"_usdt", "0", 
+							String.valueOf(abu.getAsk1()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+				}
+				
+			}
+		}else {//否则应该先撤单再比较，然后下单
+			orderService.cancelOrder(o);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
+				if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
+					orderService.order(market+"_qc", "0", 
+							String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
+				}else {
+					orderService.order(market+"_qc", "0", 
+							String.valueOf(abc.getAsk2()), String.valueOf(amount));
+				}
+
+			}else {
+				if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
+					orderService.order(market+"_usdt", "0", 
+							String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+				}else {
+					orderService.order(market+"_usdt", "0", 
+							String.valueOf(abu.getAsk2()), String.valueOf(amount));
+				}
+			}
+		}
 		
 		/** 挂买一 */
-		if(abc.getAsk2()==o.getPrice() || abu.getAsk2()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
-		//noting to do
-		}else {//否则应该先撤单再比较，然后下单
-		orderService.cancelOrder(o);
-		if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
-			orderService.order(market+"_qc", "0", 
-					String.valueOf(abc.getBid1()), String.valueOf(amount));
-		}else {
-			orderService.order(market+"_usdt", "0", 
-					String.valueOf(abu.getBid1()), String.valueOf(amount));
-		}
-		}
+//		if(abc.getAsk2().compareTo(o.getPrice())==0 || abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
+//		//noting to do
+//		}else {//否则应该先撤单再比较，然后下单
+//		orderService.cancelOrder(o);
+//			if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
+//				orderService.order(market+"_qc", "0", 
+//						String.valueOf(abc.getBid1()), String.valueOf(amount));
+//			}else {
+//				orderService.order(market+"_usdt", "0", 
+//						String.valueOf(abu.getBid1()), String.valueOf(amount));
+//			}
+//		}
 		
 	}
 	
@@ -202,13 +236,20 @@ public class CancelService extends LogService{
 	private void doCancelOrder(List<Order> orderList, String[] sa){
 		if(orderList==null)//如果没有未成交单据，直接返回
 			return;
+		if(orderList.size()>1) {//如果一个股票有多个买单，直接撤回
+			for(Order o : orderList) {
+				orderService.cancelOrder(o);
+			}
+			return;
+		}
+		
 		for(Order o : orderList){
 			if(o.getCurrency().startsWith("zb") && o.getTotal_amount()==99) {
 				continue;
 			}
 			
 			if(o.getType()==1){//如果是买单未成交，无论什么情况立刻撤销
-				orderService.cancelOrder(o);
+					orderService.cancelOrder(o);
 			}else if(o.getType()==0){//如果是卖单未成交，处理起来比较麻烦
 				if("t".equals(autosellon)){
 					//如果时间够长，才能撤单

@@ -3,6 +3,7 @@ package cn.xy.zb.service;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -49,26 +50,76 @@ public class HLService extends LogService{
 				String[] arr = s.split(" ");
 				String total = arr[0].replaceAll("¥", "");
 				total = total.replaceAll(",", "");
-				String totalOld = (String)memcachedClient.get("total");
+				String k1 = (String)memcachedClient.get("k1");
+				String k2 = (String)memcachedClient.get("k2");
 				
-				String son = (String)memcachedClient.get("on");
+				if(StringUtils.isEmpty(k1)) {
+					memcachedClient.set("k1", total);
+					k1 = total;
+				}
+
+				if(StringUtils.isEmpty(k2)) {
+					memcachedClient.set("k2", total);
+					k2 = total;
+				}
+					
+
 				if(total.compareTo("1600000000")<0) {
-					if(total.compareTo(totalOld)>0 && "t".equals(son)) {//如果新的交易量大于上一个,且上一个on是t
-						memcachedClient.set("on", "t");
-					}else {//如果交易量一直下滑
-						memcachedClient.set("on", "f");
+					if(total.compareTo(k2)>0) {
+						if(k2.compareTo(k1)>0) {//如果k2大于k1
+							memcachedClient.set("on", "t");//打开开关,然后往前移1位
+							memcachedClient.set("k1", k2);
+							memcachedClient.set("k2", total);
+						}else {//如果k2小于k1
+							memcachedClient.set("on", "f");//打开开关,然后往前移1位
+							memcachedClient.set("k1", k2);
+							memcachedClient.set("k2", total);
+						}
+					}else if(total.compareTo(k2) == 0){
+						//do noting, but not set k1 and k2
+					}else {
+						memcachedClient.set("on", "f");//打开开关,然后往前移1位
+						memcachedClient.set("k1", k2);
+						memcachedClient.set("k2", total);
 					}
-				}else {
-					if(total.compareTo(totalOld)>=0 || "t".equals(son)) {//如果新的交易量大于上一个
-						memcachedClient.set("on", "t");
-					}else {//如果交易量一直下滑
-						memcachedClient.set("on", "f");
+				}else if(total.compareTo("1600000000")>=0 && total.compareTo("1800000000")<=0){//交易额在1600000000-1800000000
+					if(total.compareTo(k2)>0) {
+						memcachedClient.set("on", "t");//打开开关,然后往前移1位
+						memcachedClient.set("k1", k2);
+						memcachedClient.set("k2", total);
+					}else if(total.compareTo(k2) == 0){
+						//do noting, but not set k1 and k2
+					}else {
+						memcachedClient.set("on", "f");//打开开关,然后往前移1位
+						memcachedClient.set("k1", k2);
+						memcachedClient.set("k2", total);
+					}
+					
+				}else {//足量搞
+					if(total.compareTo(k2)<0) {
+						if(k2.compareTo(k1)<0) {
+							memcachedClient.set("on", "f");
+							memcachedClient.set("k1", k2);
+							memcachedClient.set("k2", total);
+						}else {//如果k2小于k1
+							memcachedClient.set("on", "t");//打开开关,然后往前移1位
+							memcachedClient.set("k1", k2);
+							memcachedClient.set("k2", total);
+						}
+					}else if(total.compareTo(k2) == 0){
+						//do noting, but not set k1 and k2
+					}else {
+						memcachedClient.set("on", "t");//打开开关,然后往前移1位
+						memcachedClient.set("k1", k2);
+						memcachedClient.set("k2", total);
 					}
 				}
 				memcachedClient.set("total", total);
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
 		}else if("t".equals(on)){
 			memcachedClient.set("on", "t");
 		}else{
