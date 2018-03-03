@@ -238,6 +238,9 @@ public class CancelService extends LogService{
 			return;
 		if(orderList.size()>1) {//如果一个股票有多个买单，直接撤回
 			for(Order o : orderList) {
+				if(o.getCurrency().startsWith("zb") && o.getTotal_amount()==99) {
+					return;
+				}
 				orderService.cancelOrder(o);
 			}
 			return;

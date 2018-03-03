@@ -82,7 +82,7 @@ public class HLService extends LogService{
 						memcachedClient.set("k1", k2);
 						memcachedClient.set("k2", total);
 					}
-				}else if(total.compareTo("1600000000")>=0 && total.compareTo("1800000000")<=0){//交易额在1600000000-1800000000
+				}else if(total.compareTo("1600000000")>=0 && total.compareTo("2000000000")<=0){//交易额在1600000000-1900000000
 					if(total.compareTo(k2)>0) {
 						memcachedClient.set("on", "t");//打开开关,然后往前移1位
 						memcachedClient.set("k1", k2);
