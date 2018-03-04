@@ -64,7 +64,13 @@ public class HLService extends LogService{
 				}
 					
 
-				if(total.compareTo("1600000000")<0) {
+				if(total.compareTo("1550000000")<0){//如果成交量小于14.5亿以下，就别搞了，搞了也亏
+					if(total.compareTo(k2)!=0) {//如果k2和k1不相等
+						memcachedClient.set("k1", k2);
+						memcachedClient.set("k2", total);
+					}
+					memcachedClient.set("on", "f");//打开开关,然后往前移1位
+				}else if(total.compareTo("1550000000")>=0 && total.compareTo("1750000000")<0) {//如果14.5亿到16.5亿，只有涨涨是能交易的
 					if(total.compareTo(k2)>0) {
 						if(k2.compareTo(k1)>0) {//如果k2大于k1
 							memcachedClient.set("on", "t");//打开开关,然后往前移1位
@@ -82,7 +88,7 @@ public class HLService extends LogService{
 						memcachedClient.set("k1", k2);
 						memcachedClient.set("k2", total);
 					}
-				}else if(total.compareTo("1600000000")>=0 && total.compareTo("2000000000")<=0){//交易额在1600000000-1900000000
+				}else if(total.compareTo("1750000000")>=0 && total.compareTo("1900000000")<0){//交易额在1650000000-1800000000
 					if(total.compareTo(k2)>0) {
 						memcachedClient.set("on", "t");//打开开关,然后往前移1位
 						memcachedClient.set("k1", k2);

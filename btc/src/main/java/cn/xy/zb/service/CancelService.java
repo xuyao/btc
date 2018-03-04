@@ -34,13 +34,14 @@ public class CancelService extends LogService{
 	Double usd_cny = (Double)memcachedClient.get("hl");//汇率
 	Integer second = ConstsUtil.getSecond();//汇率
 	String autosellon = ConstsUtil.getValue("autosellon");//汇率
-	
+	String k2 ="";
 	public void work(){
 		
 
 		
 		//循环市场,处理冻结
 		List<Order> orderList = null;
+		k2 = (String)memcachedClient.get("k2");
 		String[][] arry = AutoSell.arry;
 		for(String[] sa : arry){//循环市场
 			orderList = orderService.getUnfinishedOrdersIgnoreTradeType(sa[0]);
@@ -83,8 +84,8 @@ public class CancelService extends LogService{
 				available = jsonObj.getDouble("available");
 				Double amount = getAmount(market+"_qc", available);
 				if("zb".equalsIgnoreCase(market)){
-					if(amount>680)
-						amount = amount-680;
+					if(amount>180)
+						amount = amount-180;
 					else
 						continue;
 				}
@@ -117,6 +118,7 @@ public class CancelService extends LogService{
 //		Ticker tusdt = compService.getTicker(market+"_usdt");
 		AskBid abc = compService.getAskBid(market+"_qc");
 		AskBid abu = compService.getAskBid(market+"_usdt");
+		
 		/** 挂卖一 */
 		if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
 			if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
@@ -150,80 +152,83 @@ public class CancelService extends LogService{
 	private void doOrder(Order o, String market, Double amount) {
 		AskBid abc = compService.getAskBid(market+"_qc");
 		AskBid abu = compService.getAskBid(market+"_usdt");
-		/** 卖一价格 */
-		if(abc.getAsk2().compareTo(o.getPrice())==0 || abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
-			if(abc.getAsk2().compareTo(o.getPrice())==0) {
-				if(abc.getAsk2().compareTo(abc.getAsk1()-getMinPrice(market+"_qc"))==0) {
-					//to do nothing!
-				}else {
-					orderService.cancelOrder(o);
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
+		
+		if(k2.compareTo("2000000000")>=0){//如果成交量大于18亿直接砸买一
+			/** 挂买一 */
+			if(abc.getAsk2().compareTo(o.getPrice())==0 || abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
+			//noting to do
+			}else {//否则应该先撤单再比较，然后下单
+			orderService.cancelOrder(o);
+				if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
 					orderService.order(market+"_qc", "0", 
-							String.valueOf(abc.getAsk1()-getMinPrice(market+"_qc")), String.valueOf(amount));
+							String.valueOf(abc.getBid1()), String.valueOf(amount));
+				}else {
+					orderService.order(market+"_usdt", "0", 
+							String.valueOf(abu.getBid1()), String.valueOf(amount));
 				}
 			}
-			
-			if(abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
-				if(abu.getAsk2().compareTo(abu.getAsk1()-getMinPrice(market+"_usdt"))==0) {
-					//to do nothing!
-				}else {
-					orderService.cancelOrder(o);
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+		}else{//如果小于18亿，则挂卖一
+			/** 卖一价格 */
+			if(abc.getAsk2().compareTo(o.getPrice())==0 || abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
+				if(abc.getAsk2().compareTo(o.getPrice())==0) {
+					if(abc.getAsk2().compareTo(abc.getAsk1()-getMinPrice(market+"_qc"))==0) {
+						//to do nothing!
+					}else {
+						orderService.cancelOrder(o);
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						orderService.order(market+"_qc", "0", 
+								String.valueOf(abc.getAsk1()-getMinPrice(market+"_qc")), String.valueOf(amount));
 					}
-					orderService.order(market+"_usdt", "0", 
-							String.valueOf(abu.getAsk1()-getMinPrice(market+"_usdt")), String.valueOf(amount));
 				}
 				
-			}
-		}else {//否则应该先撤单再比较，然后下单
-			orderService.cancelOrder(o);
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
-				if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
-					orderService.order(market+"_qc", "0", 
-							String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
-				}else {
-					orderService.order(market+"_qc", "0", 
-							String.valueOf(abc.getAsk2()), String.valueOf(amount));
+				if(abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
+					if(abu.getAsk2().compareTo(abu.getAsk1()-getMinPrice(market+"_usdt"))==0) {
+						//to do nothing!
+					}else {
+						orderService.cancelOrder(o);
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						orderService.order(market+"_usdt", "0", 
+								String.valueOf(abu.getAsk1()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+					}
+					
 				}
+			}else {//否则应该先撤单再比较，然后下单
+				orderService.cancelOrder(o);
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
+					if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
+						orderService.order(market+"_qc", "0", 
+								String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
+					}else {
+						orderService.order(market+"_qc", "0", 
+								String.valueOf(abc.getAsk2()), String.valueOf(amount));
+					}
 
-			}else {
-				if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
-					orderService.order(market+"_usdt", "0", 
-							String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
 				}else {
-					orderService.order(market+"_usdt", "0", 
-							String.valueOf(abu.getAsk2()), String.valueOf(amount));
+					if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
+						orderService.order(market+"_usdt", "0", 
+								String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+					}else {
+						orderService.order(market+"_usdt", "0", 
+								String.valueOf(abu.getAsk2()), String.valueOf(amount));
+					}
 				}
 			}
 		}
-		
-		/** 挂买一 */
-//		if(abc.getAsk2().compareTo(o.getPrice())==0 || abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
-//		//noting to do
-//		}else {//否则应该先撤单再比较，然后下单
-//		orderService.cancelOrder(o);
-//			if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
-//				orderService.order(market+"_qc", "0", 
-//						String.valueOf(abc.getBid1()), String.valueOf(amount));
-//			}else {
-//				orderService.order(market+"_usdt", "0", 
-//						String.valueOf(abu.getBid1()), String.valueOf(amount));
-//			}
-//		}
-		
 	}
+	
 	
 	public Double getMinPrice(String market){
 		MarketAB mab = AutoSell.map.get(market);

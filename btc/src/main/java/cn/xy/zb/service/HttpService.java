@@ -60,7 +60,7 @@ public class HttpService extends LogService{
 		BufferedReader reader = null;
 		String result = null;
 		StringBuffer sbf = new StringBuffer();
-		String userAgent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36";// 模拟浏览器
+		String userAgent = "User-Agent:Mozilla/5.0(Macintosh;IntelMacOSX10_7_0)AppleWebKit/535.11(KHTML,likeGecko)Chrome/17.0.963.56Safari/535.11";// 模拟浏览器
 		try {
 			URL url = new URL(urlAll);
 			HttpURLConnection connection = null;
@@ -87,7 +87,7 @@ public class HttpService extends LogService{
 			try{
 				is = connection.getInputStream();
 			}catch(Exception e){
-				
+				e.printStackTrace();
 			}
 			if(is==null)
 				return null;
