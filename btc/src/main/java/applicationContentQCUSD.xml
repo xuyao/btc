@@ -28,7 +28,7 @@
         <property name="jobDetail" ref="myJobDetail">
         </property>
         <property name="cronExpression">
-            <value>0/5 * * * * ?</value>
+            <value>0/10 * * * * ?</value>
         </property>
     </bean>
 	<bean id="myScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

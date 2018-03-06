@@ -2,6 +2,7 @@ package cn.xy.zb.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Random;
 
 public class NumberUtil {
 
@@ -53,8 +54,15 @@ public class NumberUtil {
     }
     
     
+    public static int geScaretInt(int start, int scare){
+      Random random = new Random();
+      int result = random.nextInt(scare);
+      return result + start;
+    }
+    
+    
     public static void main(String[] args){
-    	System.out.println(formatDouble(450.161, 2));
+      System.out.println(geScaretInt(100, 200));
     }
     
     
