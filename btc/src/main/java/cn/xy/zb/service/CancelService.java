@@ -83,15 +83,14 @@ public class CancelService extends LogService{
 				market = jsonObj.getString("key");
 				available = jsonObj.getDouble("available");
 				Double amount = getAmount(market+"_qc", available);
-				if("zb".equalsIgnoreCase(market)){
-					if(amount>180)
-						amount = amount-180;
-					else
-						continue;
-				}
 				
 				if(amount == null)
 					continue;
+				
+				if("zb".equalsIgnoreCase(market)){
+					if(amount>180)
+						amount = amount-180;
+				}
 				
 				if(amount>0) {//如果有剩余数量，就要询价卖出
 					doOrder(market, amount);
