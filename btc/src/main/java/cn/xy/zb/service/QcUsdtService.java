@@ -36,12 +36,15 @@ public class QcUsdtService extends LogService{
     
     JSONArray dataArray = jsonObj.getJSONArray("data");
     Iterator it = dataArray.iterator();
+    int i = 0;
     while (it.hasNext()){
       JSONObject data = (JSONObject)it.next();
-      buyPrice = data.getDouble("price").doubleValue();
+      buyPrice = data.getDouble("price").doubleValue()+buyPrice;
+      i++;
     }
+    buyPrice =NumberUtil.formatDoubleHP(buyPrice/i, 4);
     
-    double top = buyPrice + 0.0168;
+    double top = buyPrice + 0.0232;
     double bottom = buyPrice - 0.0132;
     
     AskBid ab_qc = compService.getAskBid("usdt_qc");
@@ -68,16 +71,16 @@ public class QcUsdtService extends LogService{
         }
     }
 
-    if ((ai.getQcAvailable().doubleValue() > 2000) && (ab_qc.getAsk2().doubleValue() > top)){
+    if ((ai.getQcAvailable().doubleValue() > 10000) && (ab_qc.getAsk2().doubleValue() > top)){
       if(ifsell) {
-    	  int amount = NumberUtil.geScaretInt(100, 200);
+    	  int amount = NumberUtil.geScaretInt(100, 100);
           orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), String.valueOf(amount));
       }
     }
     
-    if ((ai.getUsdtAvailable().doubleValue() > 200.0) && (ab_qc.getBid1().doubleValue() < bottom)){
+    if ((ai.getUsdtAvailable().doubleValue() > 1600.0) && (ab_qc.getBid1().doubleValue() < bottom)){
     	if(ifbuy) {
-    		int amount = NumberUtil.geScaretInt(100, 200);
+    		int amount = NumberUtil.geScaretInt(100, 100);
     		orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), String.valueOf(amount));
     	}
     }
