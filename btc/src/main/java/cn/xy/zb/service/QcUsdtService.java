@@ -21,31 +21,43 @@ public class QcUsdtService extends LogService{
   OrderService orderService;
   
   Integer second = ConstsUtil.getSecond();
-  String urlbuy = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=1&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
-  String urlsell = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=0&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
+//  String urlbuy = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=1&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
+//  String urlsell = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=0&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
   
-  public void work()
-  {
-    String json = this.httpService.get(this.urlbuy);
-    JSONObject jsonObj = JSONObject.parseObject(json);
-    String code = jsonObj.getString("code");
-    if (!"200".equals(code)) {
-      return;
-    }
-    double buyPrice = 0;
+  public void work(){
+	  
+//    String json = this.httpService.get(this.urlbuy);
+//    JSONObject jsonObj = JSONObject.parseObject(json);
+//    String code = jsonObj.getString("code");
+//    if (!"200".equals(code)) {
+//      return;
+//    }
+//    double buyPrice = 0;
+//    
+//    JSONArray dataArray = jsonObj.getJSONArray("data");
+//    Iterator it = dataArray.iterator();
+//    int i = 0;
+//    while (it.hasNext()){
+//      JSONObject data = (JSONObject)it.next();
+//      buyPrice = data.getDouble("price").doubleValue()+buyPrice;
+//      i++;
+//    }
+	int size =55;
+	String json = httpService.get("http://api.zb.com/data/v1/kline?market=usdt_qc&type=5min&size="+size);
+	JSONObject jsonObj = JSONObject.parseObject(json);
+	JSONArray jsArr = jsonObj.getJSONArray("data");
+	Iterator it = jsArr.listIterator();
+	double buyPrice = 0;
+	while(it.hasNext()){
+		JSONArray jsa = (JSONArray)it.next();
+		buyPrice = buyPrice+jsa.getDoubleValue(4);
+	}
+		
+    buyPrice =NumberUtil.formatDoubleHP(buyPrice/size, 4);
+//    System.out.println(buyPrice);
     
-    JSONArray dataArray = jsonObj.getJSONArray("data");
-    Iterator it = dataArray.iterator();
-    int i = 0;
-    while (it.hasNext()){
-      JSONObject data = (JSONObject)it.next();
-      buyPrice = data.getDouble("price").doubleValue()+buyPrice;
-      i++;
-    }
-    buyPrice =NumberUtil.formatDoubleHP(buyPrice/i, 4);
-    
-    double top = buyPrice + 0.0232;
-    double bottom = buyPrice - 0.0132;
+    double top = buyPrice + 0.0400;
+    double bottom = buyPrice - 0.0400;
     
     AskBid ab_qc = compService.getAskBid("usdt_qc");
     
