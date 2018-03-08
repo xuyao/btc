@@ -88,8 +88,8 @@ public class CancelService extends LogService{
 					continue;
 				
 				if("zb".equalsIgnoreCase(market)){
-					if(amount>180)
-						amount = amount-180;
+					if(amount>380)
+						amount = amount-380;
 				}
 				
 				if(amount>0) {//如果有剩余数量，就要询价卖出
