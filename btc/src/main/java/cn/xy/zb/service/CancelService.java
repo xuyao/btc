@@ -90,6 +90,8 @@ public class CancelService extends LogService{
 				if("zb".equalsIgnoreCase(market)){
 					if(amount>180)
 						amount = amount-180;
+					else
+						continue;
 				}
 				
 				if(amount>0) {//如果有剩余数量，就要询价卖出
@@ -152,21 +154,19 @@ public class CancelService extends LogService{
 		AskBid abc = compService.getAskBid(market+"_qc");
 		AskBid abu = compService.getAskBid(market+"_usdt");
 		
-		if(k2.compareTo("2000000000")>=0){//如果成交量大于18亿直接砸买一
 			/** 挂买一 */
-			if(abc.getAsk2().compareTo(o.getPrice())==0 || abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
-			//noting to do
-			}else {//否则应该先撤单再比较，然后下单
-			orderService.cancelOrder(o);
-				if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
-					orderService.order(market+"_qc", "0", 
-							String.valueOf(abc.getBid1()), String.valueOf(amount));
-				}else {
-					orderService.order(market+"_usdt", "0", 
-							String.valueOf(abu.getBid1()), String.valueOf(amount));
-				}
-			}
-		}else{//如果小于18亿，则挂卖一
+//			if(abc.getAsk2().compareTo(o.getPrice())==0 || abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
+//			//noting to do
+//			}else {//否则应该先撤单再比较，然后下单
+//			orderService.cancelOrder(o);
+//				if(abc.getBid1()>abu.getBid1()*usd_cny) {//qc贵
+//					orderService.order(market+"_qc", "0", 
+//							String.valueOf(abc.getBid1()), String.valueOf(amount));
+//				}else {
+//					orderService.order(market+"_usdt", "0", 
+//							String.valueOf(abu.getBid1()), String.valueOf(amount));
+//				}
+//			}
 			/** 卖一价格 */
 			if(abc.getAsk2().compareTo(o.getPrice())==0 || abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
 				if(abc.getAsk2().compareTo(o.getPrice())==0) {
@@ -185,7 +185,7 @@ public class CancelService extends LogService{
 				}
 				
 				if(abu.getAsk2().compareTo(o.getPrice())==0) {//如果挂单价格和卖一价格一样，什么也不做
-					if(abu.getAsk2().compareTo(abu.getAsk1()-getMinPrice(market+"_usdt"))==0) {
+					if(abu.getAsk2().compareTo(abu.getAsk1()-getMinPrice(market+"_usdt"))==0) {//如果卖一价格和卖二相差不只一个单位
 						//to do nothing!
 					}else {
 						orderService.cancelOrder(o);
@@ -225,7 +225,6 @@ public class CancelService extends LogService{
 					}
 				}
 			}
-		}
 	}
 	
 	
