@@ -5,10 +5,14 @@ import cn.xy.zb.util.NumberUtil;
 import cn.xy.zb.vo.AccountInfo;
 import cn.xy.zb.vo.AskBid;
 import cn.xy.zb.vo.Order;
+
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.plato.common.cache.memcached.MemcachedCache;
+
 import java.util.Iterator;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QcUsdtService extends LogService{
@@ -20,32 +24,50 @@ public class QcUsdtService extends LogService{
   @Autowired
   OrderService orderService;
   
-  Integer second = ConstsUtil.getSecond();
-  String urlbuy = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=1&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
-  String urlsell = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=0&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
+  MemcachedCache memcachedClient = MemcacheFactory.getClient();
   
-  public void work()
-  {
-    String json = this.httpService.get(this.urlbuy);
-    JSONObject jsonObj = JSONObject.parseObject(json);
-    String code = jsonObj.getString("code");
-    if (!"200".equals(code)) {
-      return;
-    }
-    double buyPrice = 0;
-    
-    JSONArray dataArray = jsonObj.getJSONArray("data");
-    Iterator it = dataArray.iterator();
-    int i = 0;
-    while (it.hasNext()){
-      JSONObject data = (JSONObject)it.next();
-      buyPrice = data.getDouble("price").doubleValue()+buyPrice;
-      i++;
-    }
-    buyPrice =NumberUtil.formatDoubleHP(buyPrice/i, 4);
-    
-    double top = buyPrice + 0.0232;
-    double bottom = buyPrice - 0.0132;
+  Integer second = ConstsUtil.getSecond();
+//  String urlbuy = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=1&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
+//  String urlsell = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=0&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
+  
+  public void work(){
+/*************火币*********/
+//    String json = this.httpService.get(this.urlbuy);
+//    JSONObject jsonObj = JSONObject.parseObject(json);
+//    String code = jsonObj.getString("code");
+//    if (!"200".equals(code)) {
+//      return;
+//    }
+//    double buyPrice = 0;
+//    
+//    JSONArray dataArray = jsonObj.getJSONArray("data");
+//    Iterator it = dataArray.iterator();
+//    int i = 0;
+//    while (it.hasNext()){
+//      JSONObject data = (JSONObject)it.next();
+//      buyPrice = data.getDouble("price").doubleValue()+buyPrice;
+//      i++;
+//    }
+/*************ma*********/
+//	int size =55;
+//	String json = httpService.get("http://api.zb.com/data/v1/kline?market=usdt_qc&type=1hour&size="+size);
+//	JSONObject jsonObj = JSONObject.parseObject(json);
+//	JSONArray jsArr = jsonObj.getJSONArray("data");
+//	Iterator it = jsArr.listIterator();
+//	double ma = 0;
+//	while(it.hasNext()){
+//		JSONArray jsa = (JSONArray)it.next();
+//		ma = ma+jsa.getDoubleValue(4);
+//	}
+//		
+//    ma =NumberUtil.formatDoubleHP(ma/size, 4);
+//    memcachedClient.set("ma", ma);
+//    System.out.println(buyPrice);
+ 
+/*************gogo*********/ 
+//    double buyPrice = 0;
+//    double top = buyPrice + 0.0350;
+//    double bottom = buyPrice - 0.0350;
     
     AskBid ab_qc = compService.getAskBid("usdt_qc");
     
@@ -71,20 +93,31 @@ public class QcUsdtService extends LogService{
         }
     }
 
-    if ((ai.getQcAvailable().doubleValue() > 10000) && (ab_qc.getAsk2().doubleValue() > top)){
-      if(ifsell) {
-    	  int amount = NumberUtil.geScaretInt(100, 100);
-          orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), String.valueOf(amount));
-      }
+    if(ifbuy) {
+	    if (ab_qc.getBid1().doubleValue() < 6.56){//买单
+	    	int amount = NumberUtil.geScaretInt(2, 2);
+	    	if (ab_qc.getBid1().doubleValue() < 6.55){
+	    		amount = NumberUtil.geScaretInt(10, 10);
+	    	}
+	    	if (ab_qc.getBid1().doubleValue() < 6.54){
+	    		amount = NumberUtil.geScaretInt(100, 100);
+	    	}
+	    	orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), String.valueOf(amount));
+	    }
     }
     
-    if ((ai.getUsdtAvailable().doubleValue() > 1600.0) && (ab_qc.getBid1().doubleValue() < bottom)){
-    	if(ifbuy) {
-    		int amount = NumberUtil.geScaretInt(100, 100);
-    		orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), String.valueOf(amount));
+    if(ifsell) {
+    	if (ab_qc.getAsk2().doubleValue() > 6.61){//卖单
+	      	int amount = NumberUtil.geScaretInt(2, 2);
+	      	if (ab_qc.getAsk2().doubleValue() > 6.62){
+	      		amount = NumberUtil.geScaretInt(10, 10);
+	      	}
+	      	if (ab_qc.getAsk2().doubleValue() > 6.63){
+	      		amount = NumberUtil.geScaretInt(100, 100);
+	      	}  
+	      	orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), String.valueOf(amount));
     	}
     }
-    
     
     logger.info("usdt_qc.");
   }

@@ -20,7 +20,7 @@ import cn.xy.zb.vo.Deal;
 import cn.xy.zb.vo.Ticker;
 
 @Service
-public class JobService extends LogService{
+public class Job2Service extends LogService{
 
 	@Autowired
 	CompService compService;
@@ -34,24 +34,30 @@ public class JobService extends LogService{
 	Double sniffUsdCny = 0d;
 	Integer qsize = ConstsUtil.getQueueSize();
 //	Queue<Double> queue = new ArrayDeque<Double>();
+	Double ma = 0d;
+	Double hl = 0d;
 	
 	public void work(){
 		
 		String on = (String)memcachedClient.get("on");
 		if(!"t".equals(on))
-			return ;
-		//鏌ヨ璐︽埛
+			return;
+		
+		hl = (Double)memcachedClient.get("hl");
+		orderService.usd_cny = hl;
+		compService.usd_cny = hl;
+		ma = (Double)memcachedClient.get("ma");
+		
+		//查询账户
 		ai = compService.getAccountInfo();
-		//寰幆甯傚満
+		//循环市场
 		String[][] arry = Market.arry;
 		for(String[] sa : arry){
 			detail(sa[0], sa[1]);
 		}
 		
-		Double hl = (Double)memcachedClient.get("hl");
-		orderService.usd_cny = hl;
-		compService.usd_cny = hl;
-		logger.info(".");
+
+		logger.info(hl+"."+ma);
 	}
 	
 	
@@ -60,7 +66,7 @@ public class JobService extends LogService{
 		Map<Double,Integer> m = new HashMap<Double,Integer>();
 		Double result = 6.61;
 		Double sum = 0d;
-		while(it.hasNext()) {//婊戝姩骞冲潎绾�
+		while(it.hasNext()) {//滑动平均线
 			Double d = (Double)it.next();
 			sum = sum+d;
 		}
@@ -69,10 +75,10 @@ public class JobService extends LogService{
 	
 	
 	public void detail(String abqc, String abusdt){
-		AskBid ab_qc = compService.getAskBid(abqc);//qc鍙环
-		AskBid ab_usdt = compService.getAskBid(abusdt);//usdt鍙环
+		AskBid ab_qc = compService.getAskBid(abqc);//qc叫价
+		AskBid ab_usdt = compService.getAskBid(abusdt);//usdt叫价
 		if(ab_qc==null || ab_usdt==null)
-			return ;//濡傛灉涓虹┖锛屽氨杩斿洖
+			return ;//如果为空，就返回
 		
 		if("t".equals(sniff)){//
 			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
@@ -80,10 +86,13 @@ public class JobService extends LogService{
 		}else{
 //			sniffCnyUsd = Math.max(compService.sniffCnyUsd(ab_qc, ab_usdt), sniffCnyUsd);
 //			sniffUsdCny = Math.max(compService.sniffUsdCny(ab_usdt, ab_qc), sniffUsdCny);
-			Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny杞瑄sd
-			orderService.dealQc2Usdt(deal_ac_usdt, ai);
+//			if(hl < ma -0.015){
+				Deal deal_ac_usdt = compService.compCnyUsd(ab_qc, ab_usdt);//cny转usdt
+				orderService.dealQc2Usdt(deal_ac_usdt, ai);
+//			}
+
 			
-			Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);
+			Deal deal_usdt_qc = compService.compUsdCny(ab_usdt, ab_qc);//usdt到cny
 			orderService.dealUsdt2Qc(deal_usdt_qc, ai);
 		}
 

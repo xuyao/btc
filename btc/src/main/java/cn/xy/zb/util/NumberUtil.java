@@ -62,7 +62,7 @@ public class NumberUtil {
     
     
     public static void main(String[] args){
-      System.out.println(geScaretInt(100, 200));
+      System.out.println(geScaretInt(5, 5));
     }
     
     
