@@ -56,8 +56,8 @@ public class QcUsdtService extends LogService{
     buyPrice =NumberUtil.formatDoubleHP(buyPrice/size, 4);
 //    System.out.println(buyPrice);
     
-    double top = buyPrice + 0.0350;
-    double bottom = buyPrice - 0.0350;
+    double top = buyPrice + 0.0382;
+    double bottom = buyPrice - 0.0382;
     
     AskBid ab_qc = compService.getAskBid("usdt_qc");
     
