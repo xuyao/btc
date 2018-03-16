@@ -35,7 +35,7 @@ public class GuguHttps {
         HttpURLConnection httpConn = null;
         try{
             URL myURL = new URL(url);
-            System.out.println("请求地址："+url);
+//            System.out.println("请求地址："+url);
             if(url.startsWith("https://")){
                 httpsConn =    (HttpsURLConnection) myURL.openConnection();
                 TrustManager[] trustAllCerts = new TrustManager[]{
@@ -125,14 +125,14 @@ public class GuguHttps {
                     result += line;
 //                    System.out.println("=====反回结果====="+ line);
                 }
-                System.out.println(result);
+//                System.out.println(result);
             }else{
                 result = null;
                 throw new Exception("支付失败,服务端响应码："+code);
             }
         }catch(IOException e){
         	e.printStackTrace();
-            System.out.println("请求地址："+url);
+//            System.out.println("请求地址："+url);
             result = null;
         }catch(Exception e){
         	e.printStackTrace();

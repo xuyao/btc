@@ -97,10 +97,10 @@ public class QcUsdtService extends LogService{
 	    if (ab_qc.getBid1().doubleValue() < 6.56){//买单
 	    	int amount = NumberUtil.geScaretInt(2, 2);
 	    	if (ab_qc.getBid1().doubleValue() < 6.55){
-	    		amount = NumberUtil.geScaretInt(10, 10);
+	    		amount = NumberUtil.geScaretInt(20, 20);
 	    	}
 	    	if (ab_qc.getBid1().doubleValue() < 6.54){
-	    		amount = NumberUtil.geScaretInt(100, 100);
+	    		amount = NumberUtil.geScaretInt(200, 200);
 	    	}
 	    	orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), String.valueOf(amount));
 	    }
@@ -110,10 +110,10 @@ public class QcUsdtService extends LogService{
     	if (ab_qc.getAsk2().doubleValue() > 6.61){//卖单
 	      	int amount = NumberUtil.geScaretInt(2, 2);
 	      	if (ab_qc.getAsk2().doubleValue() > 6.62){
-	      		amount = NumberUtil.geScaretInt(10, 10);
+	      		amount = NumberUtil.geScaretInt(20, 20);
 	      	}
 	      	if (ab_qc.getAsk2().doubleValue() > 6.63){
-	      		amount = NumberUtil.geScaretInt(100, 100);
+	      		amount = NumberUtil.geScaretInt(200, 200);
 	      	}  
 	      	orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), String.valueOf(amount));
     	}
