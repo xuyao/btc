@@ -63,7 +63,7 @@ public class CompService extends LogService{
 	
 	//得到挂单的买卖价格和数量
 	public AskBid getAskBid(String market){
-		String ha = "http://api.zb.com/data/v1/depth?market="+market+"&size=2";
+		String ha = "http://api.bitkk.com/data/v1/depth?market="+market+"&size=2";
 		String result = httpService.get(ha);
 //		System.out.println(market+result);
 		if(StringUtils.isEmpty(result))//如果行情没取到直接返回
@@ -195,7 +195,7 @@ public class CompService extends LogService{
 		Ticker ticker = null;
 		try {
 			// 请求地址
-			String url = "http://api.zb.com/data/v1/ticker?market=" + currency;
+			String url = "http://api.bitkk.com/data/v1/ticker?market=" + currency;
 			String result = httpService.get(url);
 			JSONObject jsonObj = JSONObject.parseObject(result);
 			jsonObj = jsonObj.getJSONObject("ticker");

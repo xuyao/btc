@@ -7,18 +7,22 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.plato.common.cache.memcached.MemcachedCache;
 
 import cn.xy.zb.service.HttpService;
+import cn.xy.zb.service.MemcacheFactory;
 import cn.xy.zb.util.ConstsUtil;
+import cn.xy.zb.util.NumberUtil;
 
 public class Tax {
 	
 	//market,tax
 	public static Map<String,Double> map = new HashMap<String,Double>();//map
+	
+	static MemcachedCache memcachedClient = MemcacheFactory.getClient();
 	
 	public static void init(){
 		
@@ -65,44 +69,44 @@ public class Tax {
 	
 		
 	public static void main(String[] args){
-			HttpService http = new HttpService();
-			String html = http.get("https://www.zb.com/i/rate");
-			String path = ConstsUtil.getValue("taxpath");
-			
-			Document doc = Jsoup.parse(html);
-			Elements es = doc.getElementsByTag("table");
-			Elements trs = es.get(0).getElementsByTag("tr");
-			Iterator it = trs.iterator();
-			it.next();
-			StringBuilder sb = new StringBuilder();
-			while(it.hasNext()){
-				Element tr = (Element)it.next();
-				Elements tds = tr.getElementsByTag("td");
-				sb.append(tds.get(0).text()).append(",");
-				sb.append(tds.get(1).text()).append(",");
-				sb.append(tds.get(2).text()).append(",");
-				sb.append(tds.get(3).text()).append(";");
-			}
-			
-			sb.append("TRUE").append(",");
-			sb.append("0.2%").append(",");
-			sb.append("0.2%").append(",");
-			sb.append("0.2%").append(";");
-			sb.append("CDC").append(",");
-			sb.append("0.2%").append(",");
-			sb.append("0.2%").append(",");
-			sb.append("0.2%").append(";");
-			sb.append("DDM").append(",");
-			sb.append("0.2%").append(",");
-			sb.append("0.2%").append(",");
-			sb.append("0.2%").append(";");
-			
-			try {
-				FileUtils.writeStringToFile(new File(path), sb.toString(), "utf-8");
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			System.out.println("save tax ok!");
+//			HttpService http = new HttpService();
+//			String html = http.get("https://www.zb.com/i/rate");
+//			String path = ConstsUtil.getValue("taxpath");
+//			
+//			Document doc = Jsoup.parse(html);
+//			Elements es = doc.getElementsByTag("table");
+//			Elements trs = es.get(0).getElementsByTag("tr");
+//			Iterator it = trs.iterator();
+//			it.next();
+//			StringBuilder sb = new StringBuilder();
+//			while(it.hasNext()){
+//				Element tr = (Element)it.next();
+//				Elements tds = tr.getElementsByTag("td");
+//				sb.append(tds.get(0).text()).append(",");
+//				sb.append(tds.get(1).text()).append(",");
+//				sb.append(tds.get(2).text()).append(",");
+//				sb.append(tds.get(3).text()).append(";");
+//			}
+//			
+//			sb.append("TRUE").append(",");
+//			sb.append("0.2%").append(",");
+//			sb.append("0.2%").append(",");
+//			sb.append("0.2%").append(";");
+//			sb.append("CDC").append(",");
+//			sb.append("0.2%").append(",");
+//			sb.append("0.2%").append(",");
+//			sb.append("0.2%").append(";");
+//			sb.append("DDM").append(",");
+//			sb.append("0.2%").append(",");
+//			sb.append("0.2%").append(",");
+//			sb.append("0.2%").append(";");
+//			
+//			try {
+//				FileUtils.writeStringToFile(new File(path), sb.toString(), "utf-8");
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			System.out.println("save tax ok!");
 			
 		
 //			Market.init();
@@ -114,7 +118,25 @@ public class Tax {
 //			amount = amount*(1-tax);
 //			amount = NumberUtil.formatDouble(amount, mab.getAmountScale());
 //			System.out.println(amount);
+		
+			String type = "15min";
+			String size = "610";
+			HttpService http = new HttpService();
+			String json = http.get("http://api.zb.com/data/v1/kline?market=usdt_qc&type="+type+"&size="+size);
+			JSONObject jsonObj = JSONObject.parseObject(json);
+			JSONArray jsArr = jsonObj.getJSONArray("data");
+			Iterator it = jsArr.listIterator();
+			double ma = 0;
+			int i=0;
+			while(it.hasNext()){
+				JSONArray jsa = (JSONArray)it.next();
+				ma = ma+jsa.getDoubleValue(4);
+				i++;
+			}
+				
+		    ma =NumberUtil.formatDoubleHP(ma/i, 4);
+		    memcachedClient.set("ma", ma);
+		    System.out.println(i+" "+ma);
 		}
-	
 	
 }

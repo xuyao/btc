@@ -26,7 +26,7 @@ public class HttpService extends LogService{
 	
 	public final String ACCESS_KEY = "";
 	public final String SECRET_KEY = "";
-	public final String URL_PREFIX = "https://trade.zb.com/api/";// 测试环境,测试环境是ttapi测试不通
+	public final String URL_PREFIX = "https://trade.bitkk.com/api/";// 测试环境,测试环境是ttapi测试不通
 	
 	String isproxy = ConstsUtil.getValue("isproxy");
 	static String host =  ConstsUtil.getValue("host");
@@ -126,6 +126,6 @@ public class HttpService extends LogService{
 	
 	public static void main(String[] args) {
 //		System.out.println(new HttpService().checkProxy(host, Integer.parseInt(port)));
-		System.out.println(new HttpService().get("http://api.zb.com/data/v1/ticker?market=btc_usdt"));
+		System.out.println(new HttpService().get("http://api.bitkk.com/data/v1/ticker?market=btc_usdt"));
 	}
 }

@@ -30,7 +30,7 @@ public class HLService extends LogService{
 	HttpService httpService;
 	
 	public void work(){
-		String json = httpService.get("http://api.zb.com/data/v1/kline?market=usdt_qc&type="+type+"&size="+size);
+		String json = httpService.get("http://api.bitkk.com/data/v1/kline?market=usdt_qc&type="+type+"&size="+size);
 		JSONObject jsonObj = JSONObject.parseObject(json);
 		JSONArray jsArr = jsonObj.getJSONArray("data");
 		Iterator it = jsArr.listIterator();

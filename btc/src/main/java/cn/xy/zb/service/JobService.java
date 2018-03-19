@@ -33,6 +33,7 @@ public class JobService extends LogService{
 	Double sniffCnyUsd = 0d;
 	Double sniffUsdCny = 0d;
 	Integer qsize = ConstsUtil.getQueueSize();
+	String mark = (String)ConstsUtil.getValue("mark");
 //	Queue<Double> queue = new ArrayDeque<Double>();
 	
 	public void work(){
@@ -51,7 +52,7 @@ public class JobService extends LogService{
 		Double hl = (Double)memcachedClient.get("hl");
 		orderService.usd_cny = hl;
 		compService.usd_cny = hl;
-		logger.info(".");
+		logger.info(mark);
 	}
 	
 	

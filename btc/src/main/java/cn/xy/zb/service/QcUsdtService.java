@@ -6,11 +6,8 @@ import cn.xy.zb.vo.AccountInfo;
 import cn.xy.zb.vo.AskBid;
 import cn.xy.zb.vo.Order;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.plato.common.cache.memcached.MemcachedCache;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,6 +69,9 @@ public class QcUsdtService extends LogService{
     AskBid ab_qc = compService.getAskBid("usdt_qc");
     
     AccountInfo ai = compService.getAccountInfo();
+    Double qc = ai.getQcAvailable();
+    Double usdt = ai.getUsdtAvailable();
+    Double ma  = (Double)memcachedClient.get("ma");//取得均线
     List<Order> orderList = this.orderService.getUnfinishedOrdersIgnoreTradeType("usdt_qc");
     boolean ifsell = true;
     boolean ifbuy = true;
@@ -94,52 +94,75 @@ public class QcUsdtService extends LogService{
     }
 
     if(ifbuy) {
-	    if (ab_qc.getBid1().doubleValue() < 6.5610){//买单
+	    if (ab_qc.getBid1().doubleValue() < ma-0.03){//买单
 	    	int amount = NumberUtil.geScaretInt(2, 2);
-	    	if (ab_qc.getBid1().doubleValue() < 6.5510){
-	    		amount = NumberUtil.geScaretInt(20, 20);
+	    	if (ab_qc.getBid1().doubleValue() < ma-0.04){
+	    		amount = NumberUtil.geScaretInt(40, 40);
 	    	}
-	    	if (ab_qc.getBid1().doubleValue() < 6.5410){
+	    	if (ab_qc.getBid1().doubleValue() < ma-0.05){
 	    		amount = NumberUtil.geScaretInt(100, 100);
 	    	}
-	    	if (ab_qc.getBid1().doubleValue() < 6.5310){
+	    	if (ab_qc.getBid1().doubleValue() < ma-0.06){
 	    		amount = NumberUtil.geScaretInt(200, 200);
 	    	}
+	    	amount = Math.min(amount, qc.intValue());
 	    	orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), String.valueOf(amount));
 	    }
     }
     
     if(ifsell) {
-    	if (ab_qc.getAsk2().doubleValue() > 6.6090){//卖单
+    	if (ab_qc.getAsk2().doubleValue() > ma+0.03){//卖单
 	      	int amount = NumberUtil.geScaretInt(2, 2);
-	      	if (ab_qc.getAsk2().doubleValue() > 6.6190){
-	      		amount = NumberUtil.geScaretInt(20, 20);
+	      	if (ab_qc.getAsk2().doubleValue() > ma+0.04){
+	      		amount = NumberUtil.geScaretInt(40, 40);
 	      	}
-	      	if (ab_qc.getAsk2().doubleValue() > 6.6290){
+	      	if (ab_qc.getAsk2().doubleValue() > ma+0.05){
 	      		amount = NumberUtil.geScaretInt(100, 100);
 	      	}
-	      	if (ab_qc.getAsk2().doubleValue() > 6.6390){
-	      		amount = NumberUtil.geScaretInt(100, 100);
+	      	if (ab_qc.getAsk2().doubleValue() > ma+0.06){
+	      		amount = NumberUtil.geScaretInt(200, 200);
 	      	}
+	      	amount = Math.min(amount, usdt.intValue());
 	      	orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), String.valueOf(amount));
     	}
     }
     
+    
+//    if(ifbuy) {
+//	    if (ab_qc.getBid1().doubleValue() < 6.5610){//买单
+//	    	int amount = NumberUtil.geScaretInt(2, 2);
+//	    	if (ab_qc.getBid1().doubleValue() < 6.5510){
+//	    		amount = NumberUtil.geScaretInt(40, 40);
+//	    	}
+//	    	if (ab_qc.getBid1().doubleValue() < 6.5420){
+//	    		amount = NumberUtil.geScaretInt(100, 100);
+//	    	}
+//	    	if (ab_qc.getBid1().doubleValue() < 6.5320){
+//	    		amount = NumberUtil.geScaretInt(200, 200);
+//	    	}
+//	    	amount = Math.min(amount, qc.intValue());
+//	    	orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), String.valueOf(amount));
+//	    }
+//    }
+//    
+//    if(ifsell) {
+//    	if (ab_qc.getAsk2().doubleValue() > 6.6190){//卖单
+//	      	int amount = NumberUtil.geScaretInt(2, 2);
+//	      	if (ab_qc.getAsk2().doubleValue() > 6.6290){
+//	      		amount = NumberUtil.geScaretInt(40, 40);
+//	      	}
+//	      	if (ab_qc.getAsk2().doubleValue() > 6.6390){
+//	      		amount = NumberUtil.geScaretInt(100, 100);
+//	      	}
+//	      	if (ab_qc.getAsk2().doubleValue() > 6.6490){
+//	      		amount = NumberUtil.geScaretInt(200, 200);
+//	      	}
+//	      	amount = Math.min(amount, usdt.intValue());
+//	      	orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), String.valueOf(amount));
+//    	}
+//    }
+    
     logger.info("usdt_qc.");
   }
-  
-  
-//  private void doCancelOrder(AskBid ab_qc, List<Order> orderList){
-//
-//    for (Order o : orderList){
-//      long sys = System.currentTimeMillis();
-//      if (sys - o.getTrade_date().longValue() > this.second.intValue() * 2 * 1000) {//如果当前价格等于卖一或者买一
-//    	  if(o.getPrice().compareTo(ab_qc.getAsk2())==0 || o.getPrice().compareTo(ab_qc.getBid1())==0)
-//    		  continue;
-//    	  else
-//    		  orderService.cancelOrder(o);
-//      }
-//    }
-//  }
   
 }
