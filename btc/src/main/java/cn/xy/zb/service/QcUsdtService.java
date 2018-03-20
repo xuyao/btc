@@ -10,6 +10,7 @@ import com.plato.common.cache.memcached.MemcachedCache;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QcUsdtService extends LogService{
@@ -24,6 +25,7 @@ public class QcUsdtService extends LogService{
   MemcachedCache memcachedClient = MemcacheFactory.getClient();
   
   Integer second = ConstsUtil.getSecond();
+  String smma = ConstsUtil.getValue("mma");
 //  String urlbuy = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=1&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
 //  String urlsell = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=0&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
   
@@ -93,7 +95,7 @@ public class QcUsdtService extends LogService{
         }
     }
 
-    if(ifbuy && qc>10) {
+    if(ifbuy && qc>3000) {
 	    if (ab_qc.getBid1().doubleValue() < ma-0.03){//买单
 	    	int amount = NumberUtil.geScaretInt(2, 2);
 	    	if (ab_qc.getBid1().doubleValue() < ma-0.04){
@@ -110,7 +112,14 @@ public class QcUsdtService extends LogService{
 	    }
     }
     
-    if(ifsell && usdt>1) {
+    if(qc<1800) {//如果qc小于2000
+    	orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), "50");//卖出100
+    }
+    
+    if(ifsell && usdt>460) {
+    	if(smma!=null && !"".equals(smma)) {//如果mma有值，就是说明要手动控制价格了
+    		ma = Double.parseDouble(smma);
+    	}
     	if (ab_qc.getAsk2().doubleValue() > ma+0.03){//卖单
 	      	int amount = NumberUtil.geScaretInt(2, 2);
 	      	if (ab_qc.getAsk2().doubleValue() > ma+0.04){
@@ -125,6 +134,10 @@ public class QcUsdtService extends LogService{
 	      	amount = Math.min(amount, usdt.intValue());
 	      	orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), String.valueOf(amount));
     	}
+    }
+    
+    if(usdt<280) {
+    	orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), "50");//买入100
     }
     
     
