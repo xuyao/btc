@@ -109,17 +109,17 @@ public class CompService extends LogService{
 	public Deal compCnyUsd(AskBid ab1, AskBid ab2){
 		Deal deal =null;
 		
-		if((ab2.getBid1()*usd_cny)/ab1.getAsk1()>comp_cny_usd){//买一和卖二比价
-			deal = new Deal();
-			deal.setBuyPrice(ab1.getAsk1());//买入价格设置为ab1的卖一价格
-			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
-			deal.setBuyMarket(ab1.getMarket());
-			
-			deal.setBuyAmount(Math.min(ab1.getAsk1_amount(), ab2.getBid1_amount()));//量取小的那个
-			deal.setSellAmount(Math.min(ab1.getAsk1_amount(), ab2.getBid1_amount()));//同上，买卖量相同
-			deal.setSellMarket(ab2.getMarket());
-			return deal;
-		}
+//		if((ab2.getBid1()*usd_cny)/ab1.getAsk1()>comp_cny_usd){//买一和卖二比价
+//			deal = new Deal();
+//			deal.setBuyPrice(ab1.getAsk1());//买入价格设置为ab1的卖一价格
+//			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
+//			deal.setBuyMarket(ab1.getMarket());
+//			
+//			deal.setBuyAmount(Math.min(ab1.getAsk1_amount(), ab2.getBid1_amount()));//量取小的那个
+//			deal.setSellAmount(Math.min(ab1.getAsk1_amount(), ab2.getBid1_amount()));//同上，买卖量相同
+//			deal.setSellMarket(ab2.getMarket());
+//			return deal;
+//		}
 		
 		if((ab2.getBid2()*usd_cny)/ab1.getAsk2()>comp_cny_usd){//买二和卖一比价
 			deal = new Deal();
@@ -133,17 +133,17 @@ public class CompService extends LogService{
 			return deal;
 		}
 		
-		if((ab2.getBid1()*usd_cny)/ab1.getAsk2()>comp_cny_usd){//买一和卖一比价
-			deal = new Deal();
-			deal.setBuyPrice(ab1.getAsk2());//买入价格设置为ab1的卖一价格
-			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
-			deal.setBuyMarket(ab1.getMarket());
-			
-			deal.setBuyAmount(Math.min(ab1.getAsk2_amount(), ab2.getBid1_amount()));//量取小的那个
-			deal.setSellAmount(Math.min(ab1.getAsk2_amount(), ab2.getBid1_amount()));//同上，买卖量相同
-			deal.setSellMarket(ab2.getMarket());
-			return deal;
-		}
+//		if((ab2.getBid1()*usd_cny)/ab1.getAsk2()>comp_cny_usd){//买一和卖一比价
+//			deal = new Deal();
+//			deal.setBuyPrice(ab1.getAsk2());//买入价格设置为ab1的卖一价格
+//			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
+//			deal.setBuyMarket(ab1.getMarket());
+//			
+//			deal.setBuyAmount(Math.min(ab1.getAsk2_amount(), ab2.getBid1_amount()));//量取小的那个
+//			deal.setSellAmount(Math.min(ab1.getAsk2_amount(), ab2.getBid1_amount()));//同上，买卖量相同
+//			deal.setSellMarket(ab2.getMarket());
+//			return deal;
+//		}
 		return deal;
 	}
 	
@@ -152,17 +152,17 @@ public class CompService extends LogService{
 	public Deal compUsdCny(AskBid ab1, AskBid ab2){
 		Deal deal =null;
 		
-		if(ab2.getBid1()/(ab1.getAsk1()*usd_cny)>comp_usd_cny){//买一对卖二
-			deal = new Deal();
-			deal.setBuyPrice(ab1.getAsk1());//买入价格设置为ab1的卖一价格
-			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
-			deal.setBuyMarket(ab1.getMarket());
-			
-			deal.setBuyAmount(Math.min(ab1.getAsk1_amount(), ab2.getBid1_amount()));//量取小的那个
-			deal.setSellAmount(Math.min(ab1.getAsk1_amount(), ab2.getBid1_amount()));//同上，买卖量相同
-			deal.setSellMarket(ab2.getMarket());
-			return deal;
-		}
+//		if(ab2.getBid1()/(ab1.getAsk1()*usd_cny)>comp_usd_cny){//买一对卖二
+//			deal = new Deal();
+//			deal.setBuyPrice(ab1.getAsk1());//买入价格设置为ab1的卖一价格
+//			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
+//			deal.setBuyMarket(ab1.getMarket());
+//			
+//			deal.setBuyAmount(Math.min(ab1.getAsk1_amount(), ab2.getBid1_amount()));//量取小的那个
+//			deal.setSellAmount(Math.min(ab1.getAsk1_amount(), ab2.getBid1_amount()));//同上，买卖量相同
+//			deal.setSellMarket(ab2.getMarket());
+//			return deal;
+//		}
 		
 		if(ab2.getBid2()/(ab1.getAsk2()*usd_cny)>comp_usd_cny){//买二对卖一
 			deal = new Deal();
@@ -176,17 +176,17 @@ public class CompService extends LogService{
 			return deal;
 		}
 		
-		if(ab2.getBid1()/(ab1.getAsk2()*usd_cny)>comp_usd_cny){//买一对卖一
-			deal = new Deal();
-			deal.setBuyPrice(ab1.getAsk2());//买入价格设置为ab1的卖一价格
-			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
-			deal.setBuyMarket(ab1.getMarket());
-			
-			deal.setBuyAmount(Math.min(ab1.getAsk2_amount(), ab2.getBid1_amount()));//量取小的那个
-			deal.setSellAmount(Math.min(ab1.getAsk2_amount(), ab2.getBid1_amount()));//同上，买卖量相同
-			deal.setSellMarket(ab2.getMarket());
-			return deal;
-		}
+//		if(ab2.getBid1()/(ab1.getAsk2()*usd_cny)>comp_usd_cny){//买一对卖一
+//			deal = new Deal();
+//			deal.setBuyPrice(ab1.getAsk2());//买入价格设置为ab1的卖一价格
+//			deal.setSellPrice(ab2.getBid1());//卖出价格设置为ab2的买一价格
+//			deal.setBuyMarket(ab1.getMarket());
+//			
+//			deal.setBuyAmount(Math.min(ab1.getAsk2_amount(), ab2.getBid1_amount()));//量取小的那个
+//			deal.setSellAmount(Math.min(ab1.getAsk2_amount(), ab2.getBid1_amount()));//同上，买卖量相同
+//			deal.setSellMarket(ab2.getMarket());
+//			return deal;
+//		}
 		return deal;
 	}
 	
