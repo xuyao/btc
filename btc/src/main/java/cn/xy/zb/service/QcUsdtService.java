@@ -26,6 +26,7 @@ public class QcUsdtService extends LogService{
   
   Integer second = ConstsUtil.getSecond();
   String smma = ConstsUtil.getValue("mma");
+  String bsusdt = ConstsUtil.getValue("bsusdt");
 //  String urlbuy = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=1&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
 //  String urlsell = "https://api-otc.huobi.pro/v1/otc/trade/list/public?coinId=2&tradeType=0&currentPage=1&payWay=&country=&merchant=1&online=1&range=0";
   
@@ -112,7 +113,7 @@ public class QcUsdtService extends LogService{
 	    }
     }
     
-    if(qc<1800) {//如果qc小于2000
+    if("t".equals(bsusdt) && qc<1800) {//如果qc小于2000
     	orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), "50");//卖出100
     }
     
@@ -136,7 +137,7 @@ public class QcUsdtService extends LogService{
     	}
     }
     
-    if(usdt<280) {
+    if("t".equals(bsusdt) && usdt<280) {
     	orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), "50");//买入100
     }
     
