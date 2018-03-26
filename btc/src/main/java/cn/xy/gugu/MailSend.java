@@ -38,7 +38,7 @@ public class MailSend {
         //下面两段代码是设置ssl和端口，不设置发送不出去。  
         props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");  
         //props.setProperty("mail.smtp.port", "465");  
-        props.setProperty("mail.smtp.socketFactory.port", "465");  
+        props.setProperty("mail.smtp.socketFactory.port", "4655");  
         // 表示SMTP发送邮件，需要进行身份验证  
         props.setProperty("mail.transport.protocol", "smtp");// 设置传输协议  
         props.put("mail.smtp.auth", "true");  
@@ -156,15 +156,15 @@ public class MailSend {
         MailSend mail = new MailSend();  
         mail.setSubject("这个是标题");  
         mail.setContent("这个是内容");  
-        mail.setTo(new String[] {""});  
+        mail.setTo(new String[] {"12345@qq.com"});  
         //发送附件列表 可以写绝对路径 也可以写相对路径(起点是项目根目录)  
         //发送邮件  
         try {  
             mail.sendMessage();  
             System.out.println("发送邮件成功！");  
         } catch (Exception e) {  
-            System.out.println("发送邮件失败！");  
             e.printStackTrace();  
+            System.out.println("发送邮件失败！"); 
         }  
     }  
 }
