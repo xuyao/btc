@@ -132,6 +132,7 @@ public class HLService extends LogService{
 		}else if("t".equals(on)){
 			memcachedClient.set("k1", total);
 			memcachedClient.set("k2", total);
+			memcachedClient.set("total", total);
 			memcachedClient.set("on", "t");
 		}else{
 			memcachedClient.set("on", "f");
