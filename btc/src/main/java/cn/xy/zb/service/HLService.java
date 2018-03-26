@@ -41,15 +41,21 @@ public class HLService extends LogService{
 		}
 		memcachedClient.set("hl", NumberUtil.formatDoubleHP(ma/size, 4));
 		
+		
+		Document doc = null;
+		try {
+			doc = Jsoup.connect("https://www.feixiaohao.com/exchange/zb/").get();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		Elements container = doc.getElementsByClass("num");
+		Element e = container.get(3);
+		String s = e.text();
+		String[] arr = s.split(" ");
+		String total = arr[0].replaceAll("¥", "");
+		total = total.replaceAll(",", "");
+		
 		if("r".equals(on)){
-			try {
-				Document doc = Jsoup.connect("https://www.feixiaohao.com/exchange/zb/").get();
-				Elements container = doc.getElementsByClass("num");
-				Element e = container.get(3);
-				String s = e.text();
-				String[] arr = s.split(" ");
-				String total = arr[0].replaceAll("¥", "");
-				total = total.replaceAll(",", "");
 				String k1 = (String)memcachedClient.get("k1");
 				String k2 = (String)memcachedClient.get("k2");
 				
@@ -122,11 +128,10 @@ public class HLService extends LogService{
 				}
 				memcachedClient.set("total", total);
 				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 			
 		}else if("t".equals(on)){
+			memcachedClient.set("k1", total);
+			memcachedClient.set("k2", total);
 			memcachedClient.set("on", "t");
 		}else{
 			memcachedClient.set("on", "f");
