@@ -13,24 +13,24 @@ public class ProxyTest {
 	public static void main(String[] args){
 		//http://www.ip138.com/ips138.asp
 		//http://api.zb.com/data/v1/ticker?market=btc_usdt
-		get("http://api.zb.com/data/v1/ticker?market=btc_usdt", "f", 
+		get("http://api.bitkk.com/data/v1/ticker?market=btc_usdt", "f", 
 				args[0], args[1]);
-		long a = System.currentTimeMillis();
-		System.out.println(get("http://api.zb.com/data/v1/ticker?market=btc_usdt", "f",
-				args[0], args[1]));
-		System.out.println(System.currentTimeMillis()-a);
-		long b = System.currentTimeMillis();
-		System.out.println(get("http://api.zb.com/data/v1/ticker?market=btc_usdt", "t",
-				args[0], args[1]));
-		System.out.println(System.currentTimeMillis()-b);
+//		long a = System.currentTimeMillis();
+//		System.out.println(get("http://api.bitkk.com/data/v1/ticker?market=btc_usdt", "f",
+//				args[0], args[1]));
+//		System.out.println(System.currentTimeMillis()-a);
+//		long b = System.currentTimeMillis();
+//		System.out.println(get("http://api.bitkk.com/data/v1/ticker?market=btc_usdt", "t",
+//				args[0], args[1]));
+//		System.out.println(System.currentTimeMillis()-b);
 		
 		String host = args[0];
 		String port = args[1];
 		get("http://api.bitkk.com/data/v1/ticker?market=btc_usdt", "f", host, port);
-		 a = System.currentTimeMillis();
+		long a = System.currentTimeMillis();
 		System.out.println(get("http://api.bitkk.com/data/v1/ticker?market=btc_usdt", "f", host, port));
 		System.out.println(System.currentTimeMillis()-a);
-		 b = System.currentTimeMillis();
+		long b = System.currentTimeMillis();
 		System.out.println(get("http://api.bitkk.com/data/v1/ticker?market=btc_usdt", "t", host, port));
 		System.out.println(System.currentTimeMillis()-b);
 	}

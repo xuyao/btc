@@ -61,8 +61,15 @@ public class NumberUtil {
     }
     
     
+    public static double geScaretDouble(int x, int y){
+    	Random random = new Random();
+    	double d = x + ((y - x) * random.nextDouble());
+        return formatDoubleHP(d,3);
+    }
+    
+    
     public static void main(String[] args){
-      System.out.println(geScaretInt(5, 5));
+      System.out.println(geScaretDouble(1,9));
     }
     
     

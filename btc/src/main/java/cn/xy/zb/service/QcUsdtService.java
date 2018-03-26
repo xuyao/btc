@@ -97,16 +97,19 @@ public class QcUsdtService extends LogService{
     }
 
     if(ifbuy && qc>3000) {
-	    if (ab_qc.getBid1().doubleValue() < ma-0.03){//买单
-	    	int amount = NumberUtil.geScaretInt(2, 2);
+	    if (ab_qc.getBid1().doubleValue() < ma-0.02){//买单
+	    	double amount = NumberUtil.geScaretDouble(1,2);
+	    	if (ab_qc.getBid1().doubleValue() < ma-0.03){
+	    		amount = NumberUtil.geScaretDouble(5,10);
+	    	}
 	    	if (ab_qc.getBid1().doubleValue() < ma-0.04){
-	    		amount = NumberUtil.geScaretInt(40, 40);
+	    		amount = NumberUtil.geScaretDouble(25,50);
 	    	}
 	    	if (ab_qc.getBid1().doubleValue() < ma-0.05){
-	    		amount = NumberUtil.geScaretInt(100, 100);
+	    		amount = NumberUtil.geScaretDouble(125,200);
 	    	}
 	    	if (ab_qc.getBid1().doubleValue() < ma-0.06){
-	    		amount = NumberUtil.geScaretInt(200, 200);
+	    		amount = NumberUtil.geScaretDouble(300,400);
 	    	}
 	    	amount = Math.min(amount, new Double(NumberUtil.doubleDiv(qc, ab_qc.getBid1().doubleValue(), 4)).intValue());
 	    	orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), String.valueOf(amount));
@@ -121,16 +124,19 @@ public class QcUsdtService extends LogService{
     	if(smma!=null && !"".equals(smma)) {//如果mma有值，就是说明要手动控制价格了
     		ma = Double.parseDouble(smma);
     	}
-    	if (ab_qc.getAsk2().doubleValue() > ma+0.03){//卖单
-	      	int amount = NumberUtil.geScaretInt(2, 2);
+    	if (ab_qc.getAsk2().doubleValue() > ma+0.02){//卖单
+    		double amount = NumberUtil.geScaretDouble(1,2);
+	      	if (ab_qc.getAsk2().doubleValue() > ma+0.03){
+	      		amount = NumberUtil.geScaretDouble(5,10);
+	      	}
 	      	if (ab_qc.getAsk2().doubleValue() > ma+0.04){
-	      		amount = NumberUtil.geScaretInt(40, 40);
+	      		amount = NumberUtil.geScaretDouble(25,50);
 	      	}
 	      	if (ab_qc.getAsk2().doubleValue() > ma+0.05){
-	      		amount = NumberUtil.geScaretInt(100, 100);
+	      		amount = NumberUtil.geScaretDouble(125,200);
 	      	}
 	      	if (ab_qc.getAsk2().doubleValue() > ma+0.06){
-	      		amount = NumberUtil.geScaretInt(200, 200);
+	      		amount = NumberUtil.geScaretDouble(300,400);
 	      	}
 	      	amount = Math.min(amount, usdt.intValue());
 	      	orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), String.valueOf(amount));
