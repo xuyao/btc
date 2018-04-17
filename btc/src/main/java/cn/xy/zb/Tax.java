@@ -119,10 +119,10 @@ public class Tax {
 //			amount = NumberUtil.formatDouble(amount, mab.getAmountScale());
 //			System.out.println(amount);
 		
-			String type = "15min";
-			String size = "610";
+			String type = "5min";
+			String size = "233";
 			HttpService http = new HttpService();
-			String json = http.get("http://api.zb.com/data/v1/kline?market=usdt_qc&type="+type+"&size="+size);
+			String json = http.get("http://api.bitkk.com/data/v1/kline?market=usdt_qc&type="+type+"&size="+size);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			JSONArray jsArr = jsonObj.getJSONArray("data");
 			Iterator it = jsArr.listIterator();
