@@ -21,12 +21,12 @@ public class CompService extends LogService{
 	HttpService httpService;
 	
 	
-	//获得用户信息
+	//鑾峰緱鐢ㄦ埛淇℃伅
 	public AccountInfo getAccountInfo(){
 		String ha = "https://parseObject/api/getBalance";
 		AccountInfo ai = null;
 		try {
-			// 需加密的请求参数
+			// 闇�鍔犲瘑鐨勮姹傚弬鏁�
 			Map<String, String> params = new TreeMap<String, String>();
 			String json = httpService.get(ha, params);
 			JSONObject result = JSON.parseObject(json);
@@ -43,33 +43,33 @@ public class CompService extends LogService{
 	}
 	
 	
-	//得到挂单的买卖价格和数量
+	//寰楀埌鎸傚崟鐨勪拱鍗栦环鏍煎拰鏁伴噺
 	public AskBid getAskBid(String market){
 		String ha = "https://www.okex.cn/api/v1/depth.do?symbol="+market+"&size=2";;
 		String result = httpService.get(ha, null);
-		if(StringUtils.isEmpty(result))//如果行情没取到直接返回
+		if(StringUtils.isEmpty(result))//濡傛灉琛屾儏娌″彇鍒扮洿鎺ヨ繑鍥�
 			return null;
 
 		JSONArray asksArr = JSON.parseObject(result).getJSONArray("asks");
 		JSONArray bidsArr = JSON.parseObject(result).getJSONArray("bids");
 		if(asksArr==null || bidsArr==null)
 			return null;
-		JSONArray asks1 = asksArr.getJSONArray(asksArr.size()-1);//卖一
-		JSONArray bids1 = bidsArr.getJSONArray(0);//买一
+		JSONArray asks1 = asksArr.getJSONArray(asksArr.size()-1);//鍗栦竴
+		JSONArray bids1 = bidsArr.getJSONArray(0);//涔颁竴
 		
-		JSONArray asks2 = asksArr.getJSONArray(asksArr.size()-2);//卖二
-		JSONArray bids2 = bidsArr.getJSONArray(1);//买二
+		JSONArray asks2 = asksArr.getJSONArray(asksArr.size()-2);//鍗栦簩
+		JSONArray bids2 = bidsArr.getJSONArray(1);//涔颁簩
 		
 		AskBid ab = new AskBid();
-		ab.setAsk1(asks1.getDouble(0));//卖一
+		ab.setAsk1(asks1.getDouble(0));//鍗栦竴
 		ab.setAsk1_amount(asks1.getDouble(1));
-		ab.setBid1(bids1.getDouble(0));//买一
+		ab.setBid1(bids1.getDouble(0));//涔颁竴
 		ab.setBid1_amount(bids1.getDouble(1));
 		ab.setMarket(market);
 		
-		ab.setAsk2(asks2.getDouble(0));//卖二
+		ab.setAsk2(asks2.getDouble(0));//鍗栦簩
 		ab.setAsk2_amount(asks2.getDouble(1));
-		ab.setBid2(bids2.getDouble(0));//买二
+		ab.setBid2(bids2.getDouble(0));//涔颁簩
 		ab.setBid2_amount(bids2.getDouble(1));
 
 		return ab;

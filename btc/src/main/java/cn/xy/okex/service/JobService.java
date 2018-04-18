@@ -1,10 +1,8 @@
 package cn.xy.okex.service;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import cn.xy.okex.Market;
 import cn.xy.okex.vo.AskBid;
 
@@ -60,7 +58,7 @@ public class JobService extends LogService{
 				System.out.println(exnbtc+" 卖出："+ab_exnbtc.getBid1()+" "+ab_exnbtc.getBid1_amount());
 				System.out.println("btc==============="+diff);
 			}
+
 		}
 	}
-	
 }
