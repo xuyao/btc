@@ -19,8 +19,8 @@ public class StockClient {
 	public static void main(String[] args) throws HttpException, IOException{
 		
 	    String api_key = "";  //OKCoin申请的apiKey
-       	    String secret_key = "";  //OKCoin 申请的secret_key
- 	    String url_prex = "";  //注意：请求URL 国际站https://www.okcoin.com ; 国内站https://www.okcoin.cn
+       	String secret_key = "";  //OKCoin 申请的secret_key
+ 	    String url_prex = "https://www.okcoin.cn";  //注意：请求URL 国际站https://www.okcoin.com ; 国内站https://www.okcoin.cn
 	
 	    /**
 	     * get请求无需发送身份认证,通常用于获取行情，市场深度等公共信息
@@ -39,11 +39,11 @@ public class StockClient {
 	    //现货行情
 	    stockGet.ticker("btc_usd");
 
-            //现货市场深度
-            stockGet.depth("btc_usd");
+        //现货市场深度
+        stockGet.depth("btc_usd");
 		
-            //现货OKCoin历史交易信息
-            stockGet.trades("btc_usd", "20");
+        //现货OKCoin历史交易信息
+        stockGet.trades("btc_usd", "20");
 		
 	    //现货用户信息
 	    stockPost.userinfo();
@@ -55,7 +55,7 @@ public class StockClient {
 	    String tradeOrderV1 = tradeJSV1.getString("order_id");
 
 	    //现货获取用户订单信息
-            stockPost.order_info("btc_usd", tradeOrderV1);
+        stockPost.order_info("btc_usd", tradeOrderV1);
 		
 	    //现货撤销订单
 	    stockPost.cancel_order("btc_usd", tradeOrderV1);

@@ -14,8 +14,6 @@ public class JobService extends LogService{
 
 	@Autowired
 	CompService compService;
-	@Autowired
-	OrderService orderService;
 	
 //	AccountInfo ai = null;
 	
@@ -53,7 +51,7 @@ public class JobService extends LogService{
 		
 		//第二三角
 		if(ab_btcusdt.getBid1()>(ab_exnusdt.getAsk1()/ab_exnbtc.getBid1())){
-			double amount = Math.min(ab_exnbtc.getAsk1_amount(), ab_exnusdt.getBid1_amount());
+			double amount = Math.min(ab_exnbtc.getAsk1_amount(), ab_exnusdt.getAsk1_amount());
 			double diff = amount*ab_exnbtc.getBid1()-(amount*ab_exnusdt.getAsk1()/ab_btcusdt.getBid1());
 			if(diff>0.0000001){
 				System.out.println(btcusdt+" 卖出："+ab_btcusdt.getBid1()+" "+ab_btcusdt.getBid1_amount());
