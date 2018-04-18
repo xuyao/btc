@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cn.xy.okex.Market;
+import cn.xy.okex.util.NumberUtil;
 import cn.xy.okex.vo.AskBid;
 
 @Service
@@ -45,7 +46,7 @@ public class JobService extends LogService{
 				System.out.println(exnbtc+" 买入："+ab_exnbtc.getAsk1()+" "+ab_exnbtc.getAsk1_amount());
 				System.out.println(exnusdt+" 卖出："+ab_exnusdt.getBid1()+" "+ab_exnusdt.getBid1_amount());
 				System.out.println(btcusdt+" 买入："+ab_btcusdt.getAsk1()+" "+ab_btcusdt.getAsk1_amount());
-				System.out.println("btc==============="+diff);
+				System.out.println("btc==============="+NumberUtil.format(diff,8));
 			}
 			
 		}
@@ -58,9 +59,9 @@ public class JobService extends LogService{
 				System.out.println(btcusdt+" 卖出："+ab_btcusdt.getBid1()+" "+ab_btcusdt.getBid1_amount());
 				System.out.println(exnusdt+" 买入："+ab_exnusdt.getAsk1()+" "+ab_exnusdt.getAsk1_amount());
 				System.out.println(exnbtc+" 卖出："+ab_exnbtc.getBid1()+" "+ab_exnbtc.getBid1_amount());
-				System.out.println("btc==============="+diff);
+				System.out.println("btc==============="+NumberUtil.format(diff,8));
 			}
+
 		}
 	}
-	
 }
