@@ -71,7 +71,7 @@ mtl
 nano
 nas
 neo
-muls
+nuls
 oax
 of
 okb
