@@ -57,7 +57,7 @@ public class CancelService extends LogService{
 
 	
 	private void doRemain(){
-		String ha = "https://trade.exx.com/api/getBalance";
+		String ha = "https://trade.exxvip.com/api/getBalance";
 			// 需加密的请求参数
 			Map<String, String> params = new TreeMap<String, String>();
 			String json = httpService.get(ha, params);

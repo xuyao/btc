@@ -67,7 +67,7 @@ public class Tax {
 		
 	public static void main(String[] args){
 			HttpService http = new HttpService();
-			String html = http.get("https://www.exx.com/help/rate", null);
+			String html = http.get("https://www.exxvip.com/help/rate", null);
 			String path = ConstsUtil.getValue("taxpath");
 			
 			Document doc = Jsoup.parse(html);
