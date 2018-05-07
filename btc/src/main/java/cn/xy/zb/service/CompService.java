@@ -71,8 +71,10 @@ public class CompService extends LogService{
 
 		JSONArray asksArr = JSON.parseObject(result).getJSONArray("asks");
 		JSONArray bidsArr = JSON.parseObject(result).getJSONArray("bids");
-		if(asksArr==null || bidsArr==null)
+		if(asksArr==null || bidsArr==null
+				||asksArr.size()<2 ||bidsArr.size()<2)
 			return null;
+		
 		JSONArray asks1 = asksArr.getJSONArray(0);
 		JSONArray bids1 = bidsArr.getJSONArray(0);
 		
