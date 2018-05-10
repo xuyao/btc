@@ -120,7 +120,7 @@ public class Tax {
 //			System.out.println(amount);
 		
 			String type = "5min";
-			String size = "233";
+			String size = "144";
 			HttpService http = new HttpService();
 			String json = http.get("http://api.bitkk.com/data/v1/kline?market=usdt_qc&type="+type+"&size="+size);
 			JSONObject jsonObj = JSONObject.parseObject(json);
