@@ -49,10 +49,15 @@ public class CompService extends LogService{
 			Iterator it = jsonArry.iterator();
 			while(it.hasNext()) {
 				JSONObject jsonObj = (JSONObject)it.next();
-				if("qc".equalsIgnoreCase(jsonObj.getString("key")))
+				if("qc".equalsIgnoreCase(jsonObj.getString("key"))){
 					ai.setQcAvailable(jsonObj.getDouble("available"));
-				if("usdt".equalsIgnoreCase(jsonObj.getString("key")))
+					ai.setQcfreez(jsonObj.getDouble("freez"));
+					
+				}
+				if("usdt".equalsIgnoreCase(jsonObj.getString("key"))){
 					ai.setUsdtAvailable(jsonObj.getDouble("available"));
+					ai.setUsdtfreez(jsonObj.getDouble("freez"));
+				}
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();

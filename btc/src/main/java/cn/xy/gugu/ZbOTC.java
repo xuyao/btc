@@ -28,31 +28,33 @@ public class ZbOTC {
     	System.out.println(d);
     	
     	if(d<0.99){
-            MailSend mail = new MailSend();  
-            mail.setSubject("zb充值买入符合条件");  
-            mail.setContent("otc买入符合条件，赶紧下手");  
-            mail.setTo(new String[] {"58394322@qq.com"});  
-            //发送附件列表 可以写绝对路径 也可以写相对路径(起点是项目根目录)  
-            //发送邮件  
-            try {  
-                mail.sendMessage();  
-            } catch (Exception e) {  
-                e.printStackTrace();  
-            }
+//            MailSend mail = new MailSend();  
+//            mail.setSubject("zb充值买入符合条件");  
+//            mail.setContent("otc买入符合条件，赶紧下手");  
+//            mail.setTo(new String[] {"58394322@qq.com"});  
+//            //发送附件列表 可以写绝对路径 也可以写相对路径(起点是项目根目录)  
+//            //发送邮件  
+//            try {  
+//                mail.sendMessage();  
+//            } catch (Exception e) {  
+//                e.printStackTrace();  
+//            }
+    		MsgUtil.sendText("可以买入otc了");
     	}
     	
     	if(d>0.995){
-            MailSend mail = new MailSend();  
-            mail.setSubject("zb卖出符合条件");  
-            mail.setContent("otc赶紧卖，赶紧下手");  
-            mail.setTo(new String[] {"58394322@qq.com"});  
-            //发送附件列表 可以写绝对路径 也可以写相对路径(起点是项目根目录)  
-            //发送邮件  
-            try {  
-                mail.sendMessage();  
-            } catch (Exception e) {  
-                e.printStackTrace();  
-            }
+//            MailSend mail = new MailSend();  
+//            mail.setSubject("zb卖出符合条件");  
+//            mail.setContent("otc赶紧卖，赶紧下手");  
+//            mail.setTo(new String[] {"58394322@qq.com"});  
+//            //发送附件列表 可以写绝对路径 也可以写相对路径(起点是项目根目录)  
+//            //发送邮件  
+//            try {  
+//                mail.sendMessage();  
+//            } catch (Exception e) {  
+//                e.printStackTrace();  
+//            }
+            MsgUtil.sendText("可以卖出otc了");
     	}
     }
 }

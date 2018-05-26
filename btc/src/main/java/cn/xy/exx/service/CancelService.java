@@ -38,11 +38,12 @@ public class CancelService extends LogService{
 		List<Order> orderList = null;
 		String[][] arry = Market.arry;
 		for(String[] sa : arry){//循环市场
+			System.out.println();
 			orderList = orderService.getUnfinishedOrdersIgnoreTradeType(sa[0]);
-			doCancelOrder(orderList, sa);
+			doCancelOrder(orderList);
 			
 			orderList = orderService.getUnfinishedOrdersIgnoreTradeType(sa[1]);
-			doCancelOrder(orderList, sa);
+			doCancelOrder(orderList);
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -145,7 +146,7 @@ public class CancelService extends LogService{
 		return Math.pow(10, -mab.getPriceScale());
 	}
 	
-	private void doCancelOrder(List<Order> orderList, String[] sa){
+	private void doCancelOrder(List<Order> orderList){
 		if(orderList==null)//如果没有未成交单据，直接返回
 			return;
 		for(Order o : orderList){
