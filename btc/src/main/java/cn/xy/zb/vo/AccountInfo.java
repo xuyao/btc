@@ -6,7 +6,25 @@ public class AccountInfo {
 	
 	Double usdtAvailable;//usdt的剩余
 	
+	Double qcfreez;//qc的冻结
 	
+	Double usdtfreez;//usdt的冻结
+
+	public Double getQcfreez() {
+		return qcfreez;
+	}
+
+	public void setQcfreez(Double qcfreez) {
+		this.qcfreez = qcfreez;
+	}
+
+	public Double getUsdtfreez() {
+		return usdtfreez;
+	}
+
+	public void setUsdtfreez(Double usdtfreez) {
+		this.usdtfreez = usdtfreez;
+	}
 
 	public Double getQcAvailable() {
 		return qcAvailable;

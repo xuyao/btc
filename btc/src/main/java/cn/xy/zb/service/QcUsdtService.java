@@ -72,8 +72,8 @@ public class QcUsdtService extends LogService{
     AskBid ab_qc = compService.getAskBid("usdt_qc");
     
     AccountInfo ai = compService.getAccountInfo();
-    Double qc = ai.getQcAvailable();
-    Double usdt = ai.getUsdtAvailable();
+    Double qc = ai.getQcAvailable() + ai.getQcfreez();
+    Double usdt = ai.getUsdtAvailable() + ai.getUsdtfreez();
     Double ma  = (Double)memcachedClient.get("ma");//取得均线
     List<Order> orderList = this.orderService.getUnfinishedOrdersIgnoreTradeType("usdt_qc");
     boolean ifsell = true;
