@@ -97,18 +97,18 @@ public class QcUsdtService extends LogService{
     }
 
     if(ifbuy && qc>3000) {
-	    if (ab_qc.getBid1().doubleValue() < ma-0.03){//买单
+	    if (ab_qc.getBid1().doubleValue() < ma-0.04){//买单
 	    	double amount = NumberUtil.geScaretDouble(1,2);
-	    	if (ab_qc.getBid1().doubleValue() < ma-0.04){
+	    	if (ab_qc.getBid1().doubleValue() < ma-0.05){
 	    		amount = NumberUtil.geScaretDouble(5,10);
 	    	}
-	    	if (ab_qc.getBid1().doubleValue() < ma-0.05){
+	    	if (ab_qc.getBid1().doubleValue() < ma-0.06){
 	    		amount = NumberUtil.geScaretDouble(25,50);
 	    	}
-	    	if (ab_qc.getBid1().doubleValue() < ma-0.06){
+	    	if (ab_qc.getBid1().doubleValue() < ma-0.07){
 	    		amount = NumberUtil.geScaretDouble(125,250);
 	    	}
-	    	if (ab_qc.getBid1().doubleValue() < ma-0.07){
+	    	if (ab_qc.getBid1().doubleValue() < ma-0.08){
 	    		amount = NumberUtil.geScaretDouble(300,450);
 	    	}
 	    	amount = Math.min(amount, new Double(NumberUtil.doubleDiv(qc, ab_qc.getBid1().doubleValue(), 4)).intValue());
