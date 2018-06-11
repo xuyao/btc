@@ -38,7 +38,6 @@ public class CancelService extends LogService{
 		List<Order> orderList = null;
 		String[][] arry = Market.arry;
 		for(String[] sa : arry){//循环市场
-			System.out.println();
 			orderList = orderService.getUnfinishedOrdersIgnoreTradeType(sa[0]);
 			doCancelOrder(orderList);
 			
@@ -58,7 +57,7 @@ public class CancelService extends LogService{
 
 	
 	private void doRemain(){
-		String ha = "https://trade.exx.com/api/getBalance";
+		String ha = "https://trade.exxvip.com/api/getBalance";
 			// 需加密的请求参数
 			Map<String, String> params = new TreeMap<String, String>();
 			String json = httpService.get(ha, params);
@@ -74,7 +73,7 @@ public class CancelService extends LogService{
 				market = entry.getKey();
 				market = market.split("_")[0];
 				available = result.getJSONObject(market.toUpperCase()).getDouble("balance");
-				Double amount = getAmount(market+"_qc", available);
+				Double amount = getAmount(market+"_cnyt", available);
 				if(amount == null)
 					continue;
 				if(amount>0) {//如果有剩余数量，就要询价卖出
@@ -99,14 +98,14 @@ public class CancelService extends LogService{
 	
 	//看看qc高还是usdt高
 	private void doOrder(String market, Double amount) {
-		Ticker tqc = compService.getTicker(market+"_qc");
+		Ticker tqc = compService.getTicker(market+"_cnyt");
 		Ticker tusdt = compService.getTicker(market+"_usdt");
 		if(tqc.getSell()>tusdt.getSell()*usd_cny) {//qc贵
 			if(tqc.getSell()-getMinPrice(market+"_qc")>tqc.getBuy()) {
-				orderService.order(market+"_qc", "sell", 
-						String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
+				orderService.order(market+"_cnyt", "sell", 
+						String.valueOf(tqc.getSell()-getMinPrice(market+"_cnyt")), String.valueOf(amount));
 			}else {
-				orderService.order(market+"_qc", "sell", 
+				orderService.order(market+"_cnyt", "sell", 
 						String.valueOf(tqc.getSell()), String.valueOf(amount));
 			}
 
@@ -123,15 +122,15 @@ public class CancelService extends LogService{
 	}
 	
 	private void doOrder(Order o, String market, Double amount) {
-		Ticker tqc = compService.getTicker(market+"_qc");
+		Ticker tqc = compService.getTicker(market+"_cnyt");
 		Ticker tusdt = compService.getTicker(market+"_usdt");
 		orderService.cancelOrder(o);
 		if(tqc.getSell()==o.getPrice() || tqc.getSell()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
 			//noting to do
 		}else {//否则应该先撤单再比较，然后下单
 			if(tqc.getSell()>tusdt.getSell()*usd_cny) {//qc贵
-				orderService.order(market+"_qc", "sell", 
-						String.valueOf(tqc.getSell()-getMinPrice(market+"_qc")), String.valueOf(amount));
+				orderService.order(market+"_cnyt", "sell", 
+						String.valueOf(tqc.getSell()-getMinPrice(market+"_cnyt")), String.valueOf(amount));
 			}else {
 				orderService.order(market+"_usdt", "sell", 
 						String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));

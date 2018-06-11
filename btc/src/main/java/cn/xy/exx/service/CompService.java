@@ -31,7 +31,7 @@ public class CompService extends LogService{
 	
 	//获得用户信息
 	public AccountInfo getAccountInfo(){
-		String ha = "https://trade.exx.com/api/getBalance";
+		String ha = "https://trade.exxvip.com/api/getBalance";
 		AccountInfo ai = null;
 		try {
 			// 需加密的请求参数
@@ -53,7 +53,7 @@ public class CompService extends LogService{
 	
 	//得到挂单的买卖价格和数量
 	public AskBid getAskBid(String market){
-		String ha = "https://api.exx.com/data/v1/depth?currency="+market;
+		String ha = "https://api.exxvip.com/data/v1/depth?currency="+market;
 		String result = httpService.get(ha, null);
 		if(StringUtils.isEmpty(result))//如果行情没取到直接返回
 			return null;
@@ -127,7 +127,7 @@ public class CompService extends LogService{
 		Ticker ticker = null;
 		try {
 			// 请求地址
-			String url = "https://api.exx.com/data/v1/ticker?currency=" + currency;
+			String url = "https://api.exxvip.com/data/v1/ticker?currency=" + currency;
 			String result = httpService.get(url,null);
 			JSONObject jsonObj = JSONObject.parseObject(result);
 			jsonObj = jsonObj.getJSONObject("ticker");

@@ -24,7 +24,7 @@ public class Market {
 		String[] marketArr = markets.split(",");
 		arry = new String[marketArr.length][];
 		for(int i=0;i<marketArr.length;i++) {
-			arry[i] = new String[]{marketArr[i]+"_qc", marketArr[i]+"_usdt", marketArr[i]+"_btc"};
+			arry[i] = new String[]{marketArr[i]+"_cnyt", marketArr[i]+"_usdt", marketArr[i]+"_btc"};
 		}
 		
 		String path = ConstsUtil.getValue("jsonpath");

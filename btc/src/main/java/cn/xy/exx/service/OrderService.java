@@ -164,7 +164,7 @@ public class OrderService extends LogService{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("currency", market);
 		params.put("pageIndex", "1");
-		String json = httpService.get("https://trade.exx.com/api/getOpenOrders", params);
+		String json = httpService.get("https://trade.exxvip.com/api/getOpenOrders", params);
 		if(StringUtils.isEmpty(json) || json.startsWith("{")){
 			return null;
 		}
@@ -197,7 +197,7 @@ public class OrderService extends LogService{
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("id", orderId);
 			params.put("currency", order.getCurrency());
-			String json = httpService.get("https://trade.exx.com/api/cancel", params);
+			String json = httpService.get("https://trade.exxvip.com/api/cancel", params);
 			logger.info(order.getCurrency()+"cancelOrder 结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
