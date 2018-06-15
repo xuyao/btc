@@ -23,7 +23,7 @@ public class HttpService extends LogService{
 	
 	public final String ACCESS_KEY = "";
 	public final String SECRET_KEY = "";
-	public final String URL_PREFIX = " https://trade.exx.com/api/";// 测试环境,测试环境是ttapi测试不通
+	public final String URL_PREFIX = " https://trade.exxvip.com/api/";// 测试环境,测试环境是ttapi测试不通
 	
 	/**
 	 * 获取json内容(统一加密)

@@ -31,7 +31,7 @@ public class CompService extends LogService{
 	
 	//获得用户信息
 	public AccountInfo getAccountInfo(){
-		String ha = "https://trade.exx.com/api/getBalance";
+		String ha = "https://trade.exxvip.com/api/getBalance";
 		AccountInfo ai = null;
 		try {
 			// 需加密的请求参数
@@ -42,7 +42,7 @@ public class CompService extends LogService{
 				return null;
 			result = result.getJSONObject("funds");
 			ai = new AccountInfo();
-			ai.setQcAvailable(result.getJSONObject("QC").getDouble("balance"));
+			ai.setQcAvailable(result.getJSONObject("CNYT").getDouble("balance"));
 			ai.setUsdtAvailable(result.getJSONObject("USDT").getDouble("balance"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -53,14 +53,15 @@ public class CompService extends LogService{
 	
 	//得到挂单的买卖价格和数量
 	public AskBid getAskBid(String market){
-		String ha = "https://api.exx.com/data/v1/depth?currency="+market;
+		String ha = "https://api.exxvip.com/data/v1/depth?currency="+market;
 		String result = httpService.get(ha, null);
 		if(StringUtils.isEmpty(result))//如果行情没取到直接返回
 			return null;
 
 		JSONArray asksArr = JSON.parseObject(result).getJSONArray("asks");
 		JSONArray bidsArr = JSON.parseObject(result).getJSONArray("bids");
-		if(asksArr==null || bidsArr==null)
+		if(asksArr==null || bidsArr==null
+				||asksArr.size()==0 || bidsArr.size() == 0)
 			return null;
 		JSONArray asks1 = asksArr.getJSONArray(asksArr.size()-1);
 		JSONArray bids1 = bidsArr.getJSONArray(0);
@@ -127,7 +128,7 @@ public class CompService extends LogService{
 		Ticker ticker = null;
 		try {
 			// 请求地址
-			String url = "https://api.exx.com/data/v1/ticker?currency=" + currency;
+			String url = "https://api.exxvip.com/data/v1/ticker?currency=" + currency;
 			String result = httpService.get(url,null);
 			JSONObject jsonObj = JSONObject.parseObject(result);
 			jsonObj = jsonObj.getJSONObject("ticker");

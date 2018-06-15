@@ -149,7 +149,7 @@ public class OrderService extends LogService{
 			params.put("type", tradeType);
 			params.put("currency", currency);
 			// 请求测试
-			String json = httpService.get("https://trade.exx.com/api/order", params);
+			String json = httpService.get("https://trade.exxvip.com/api/order", params);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			result = jsonObj.parseObject(json, Result.class);
 			logger.info("exx "+currency+" "+price+" "+amount+"交易结果: " + json);
@@ -164,7 +164,7 @@ public class OrderService extends LogService{
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("currency", market);
 		params.put("pageIndex", "1");
-		String json = httpService.get("https://trade.exx.com/api/getOpenOrders", params);
+		String json = httpService.get("https://trade.exxvip.com/api/getOpenOrders", params);
 		if(StringUtils.isEmpty(json) || json.startsWith("{")){
 			return null;
 		}
@@ -197,7 +197,7 @@ public class OrderService extends LogService{
 			Map<String, String> params = new HashMap<String, String>();
 			params.put("id", orderId);
 			params.put("currency", order.getCurrency());
-			String json = httpService.get("https://trade.exx.com/api/cancel", params);
+			String json = httpService.get("https://trade.exxvip.com/api/cancel", params);
 			logger.info(order.getCurrency()+"cancelOrder 结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
