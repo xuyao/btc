@@ -42,7 +42,7 @@ public class CompService extends LogService{
 				return null;
 			result = result.getJSONObject("funds");
 			ai = new AccountInfo();
-			ai.setQcAvailable(result.getJSONObject("QC").getDouble("balance"));
+			ai.setQcAvailable(result.getJSONObject("CNYT").getDouble("balance"));
 			ai.setUsdtAvailable(result.getJSONObject("USDT").getDouble("balance"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -60,7 +60,8 @@ public class CompService extends LogService{
 
 		JSONArray asksArr = JSON.parseObject(result).getJSONArray("asks");
 		JSONArray bidsArr = JSON.parseObject(result).getJSONArray("bids");
-		if(asksArr==null || bidsArr==null)
+		if(asksArr==null || bidsArr==null
+				||asksArr.size()==0 || bidsArr.size() == 0)
 			return null;
 		JSONArray asks1 = asksArr.getJSONArray(asksArr.size()-1);
 		JSONArray bids1 = bidsArr.getJSONArray(0);

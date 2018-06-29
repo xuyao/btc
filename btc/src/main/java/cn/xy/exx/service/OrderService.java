@@ -149,7 +149,7 @@ public class OrderService extends LogService{
 			params.put("type", tradeType);
 			params.put("currency", currency);
 			// 请求测试
-			String json = httpService.get("https://trade.exx.com/api/order", params);
+			String json = httpService.get("https://trade.exxvip.com/api/order", params);
 			JSONObject jsonObj = JSONObject.parseObject(json);
 			result = jsonObj.parseObject(json, Result.class);
 			logger.info("exx "+currency+" "+price+" "+amount+"交易结果: " + json);

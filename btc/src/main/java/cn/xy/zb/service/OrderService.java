@@ -32,7 +32,6 @@ public class OrderService extends LogService{
 	HttpService httpService;
 	MemcachedCache memcachedClient = MemcacheFactory.getClient();
 	
-//	public Double usd_cny = ConstsUtil.getCnyUsd();//汇率
 	public Double usd_cny = (Double)memcachedClient.get("hl");//汇率
 	Double profit = ConstsUtil.getProfit();//得到利益的下限
 	Double tax = ConstsUtil.getTax();
@@ -176,7 +175,7 @@ public class OrderService extends LogService{
 		params.put("pageIndex", "1");
 		params.put("pageSize", "10");
 		String json = httpService.getJsonPost(params);
-		System.out.println(market+json);
+//		System.out.println(market+json);
 		if(StringUtils.isEmpty(json) || json.startsWith("{")){
 			return null;
 		}
@@ -210,7 +209,6 @@ public class OrderService extends LogService{
 			params.put("currency", order.getCurrency());
 
 			String json = httpService.getJsonPost(params);
-			logger.info(order.getCurrency()+"cancelOrder 结果: " + json);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

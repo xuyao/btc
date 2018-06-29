@@ -116,7 +116,7 @@ public class QcUsdtService extends LogService{
 	    }
     }
     
-    if("t".equals(bsusdt) && qc<1800) {//如果qc小于2000
+    if("t".equals(bsusdt) && qc<680) {//如果qc小于680
     	orderService.order("usdt_qc", "0", String.valueOf(ab_qc.getAsk2().doubleValue() - 0.0001), "50");//卖出100
     }
     
@@ -143,8 +143,8 @@ public class QcUsdtService extends LogService{
     	}
     }
     
-    if("t".equals(bsusdt) && usdt<280) {
-    	orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), "50");//买入100
+    if("t".equals(bsusdt) && usdt<100) {
+    	orderService.order("usdt_qc", "1", String.valueOf(ab_qc.getBid1().doubleValue() + 0.0001), "50");//买入50
     }
     
     

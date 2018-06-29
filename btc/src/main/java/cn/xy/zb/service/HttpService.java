@@ -26,11 +26,11 @@ public class HttpService extends LogService{
 	
 	public final String ACCESS_KEY = "";
 	public final String SECRET_KEY = "";
-	public final String URL_PREFIX = "https://trade.bitkk.com/api/";// 测试环境,测试环境是ttapi测试不通
+	public final String URL_PREFIX = "https://trade.bitkk.com/api/";// 测试环境,测试环境是httapi测试不通
 	
-	String isproxy = ConstsUtil.getValue("isproxy");
-	static String host =  ConstsUtil.getValue("host");
-	static String port =  ConstsUtil.getValue("port");
+//	String isproxy = ConstsUtil.getValue("isproxy");
+//	static String host =  ConstsUtil.getValue("host");
+//	static String port =  ConstsUtil.getValue("port");
 	/**
 	 * 获取json内容(统一加密)
 	 * 
@@ -50,6 +50,7 @@ public class HttpService extends LogService{
 		String json = "";
 		try {
 			json = HttpUtilManager.getInstance().requestHttpPost(URL_PREFIX, method, params);
+//			System.out.println(json);
 		} catch (HttpException | IOException e) {
 			logger.error("获取交易json异常", e);
 		}
@@ -64,20 +65,20 @@ public class HttpService extends LogService{
 		try {
 			URL url = new URL(urlAll);
 			HttpURLConnection connection = null;
-			if("t".equals(isproxy)) {
-				if(!checkProxy(host, Integer.parseInt(port))){
-					logger.info("proxy is not work!");
-					return null;
-				}
-		        System.setProperty("http.maxRedirects", "50");
-		        System.getProperties().setProperty("proxySet", "true");
-		        System.getProperties().setProperty("http.proxyHost", host);
-		        System.getProperties().setProperty("http.proxyPort", port);
-				Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, Integer.parseInt(port)));  
-				connection = (HttpURLConnection)url.openConnection(proxy);
-			}else {
+//			if("t".equals(isproxy)) {
+//				if(!checkProxy(host, Integer.parseInt(port))){
+//					logger.info("proxy is not work!");
+//					return null;
+//				}
+//		        System.setProperty("http.maxRedirects", "50");
+//		        System.getProperties().setProperty("proxySet", "true");
+//		        System.getProperties().setProperty("http.proxyHost", host);
+//		        System.getProperties().setProperty("http.proxyPort", port);
+//				Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, Integer.parseInt(port)));  
+//				connection = (HttpURLConnection)url.openConnection(proxy);
+//			}else {
 				connection = (HttpURLConnection) url.openConnection();
-			}
+//			}
 			connection.setRequestMethod("GET");
 			connection.setReadTimeout(30000);
 			connection.setConnectTimeout(30000);
@@ -107,22 +108,22 @@ public class HttpService extends LogService{
 	}
 	
 	//check proxy is working now
-	public boolean checkProxy(String url, Integer port){
-		Socket socket = new Socket();
-        try {
-            socket.connect(new InetSocketAddress(host, port));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return true;
-	}
+//	public boolean checkProxy(String url, Integer port){
+//		Socket socket = new Socket();
+//        try {
+//            socket.connect(new InetSocketAddress(host, port));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return false;
+//        } finally {
+//            try {
+//                socket.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        return true;
+//	}
 	
 	public static void main(String[] args) {
 //		System.out.println(new HttpService().checkProxy(host, Integer.parseInt(port)));
