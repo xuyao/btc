@@ -2,6 +2,7 @@ package cn.xy.zb.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.Random;
 
 public class NumberUtil {
@@ -10,9 +11,11 @@ public class NumberUtil {
      * 使用DecimalFormat,保留小数点后n位 ,直接截取，不保留小数
      */  
     public static Double formatDouble(double value, Integer scale) {  
-        BigDecimal bd = new BigDecimal(value);  
-        bd = bd.setScale(scale, RoundingMode.DOWN);  
-        return bd.doubleValue();
+    	DecimalFormat formater = new DecimalFormat();
+    	formater.setMaximumFractionDigits(scale);
+    	formater.setGroupingSize(0);
+    	formater.setRoundingMode(RoundingMode.FLOOR);
+        return Double.parseDouble(formater.format(value));
     }
     
     
@@ -69,7 +72,7 @@ public class NumberUtil {
     
     
     public static void main(String[] args){
-      System.out.println(geScaretDouble(1,9));
+    	System.out.println(formatDouble(615.3,3));
     }
     
     
