@@ -127,7 +127,8 @@ public class CancelService extends LogService{
 		AskBid abc = compService.getAskBid(market+"_cnyt");
 		AskBid abu = compService.getAskBid(market+"_usdt");
 		
-		if(abc.getAsk1()==o.getPrice() || abu.getAsk1()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
+		if(abc.getAsk1().doubleValue()==o.getPrice().doubleValue() 
+				|| abu.getAsk1().doubleValue()==o.getPrice().doubleValue()) {//如果挂单价格和卖一价格一样，什么也不做
 			//noting to do
 		}else {//否则应该先撤单再比较，然后下单
 			orderService.cancelOrder(o);
