@@ -34,11 +34,15 @@ public class CancelService extends LogService{
 	Double usd_cny = (Double)memcachedClient.get("hl");//汇率
 	Integer second = ConstsUtil.getSecond();//汇率
 	String autosellon = ConstsUtil.getValue("autosellon");//汇率
+	String k2 ="";
 	public void work(){
+		
+
+		
 		//循环市场,处理冻结
 		List<Order> orderList = null;
+		k2 = (String)memcachedClient.get("k2");
 		String[][] arry = AutoSell.arry;
-		
 		for(String[] sa : arry){//循环市场
 			orderList = orderService.getUnfinishedOrdersIgnoreTradeType(sa[0]);
 			doCancelOrder(orderList, sa);
@@ -78,22 +82,20 @@ public class CancelService extends LogService{
 				JSONObject jsonObj = (JSONObject)it.next();
 				market = jsonObj.getString("key");
 				available = jsonObj.getDouble("available");
+				Double amount = getAmount(market+"_qc", available);
 				
-				Double amountQC = getAmount(market+"_qc", available);
-				Double amountUSDT = getAmount(market+"_usdt", available);
-				
-				if(amountQC==null && amountUSDT==null)
+				if(amount == null)
 					continue;
 				
-				if("zb".equalsIgnoreCase(market)){//对zb进行处理
-					if(amountQC>280)
-						amountQC = amountQC-280;
+				if("zb".equalsIgnoreCase(market)){
+					if(amount>280)
+						amount = amount-280;
 					else
 						continue;
 				}
 				
-				if(amountQC>0 || amountUSDT>0) {//如果有剩余数量，就要询价卖出
-					doOrder(market, amountQC, amountUSDT);
+				if(amount>0) {//如果有剩余数量，就要询价卖出
+					doOrder(market, amount);
 					Thread.sleep(100);
 				}
 			}
@@ -112,7 +114,7 @@ public class CancelService extends LogService{
 		return NumberUtil.formatDouble(amount, mab.getAmountScale());
 	}
 	
-	private void doOrder(String market, Double amountQC, Double amountUSDT) {
+	private void doOrder(String market, Double amount) {
 //		Ticker tqc = compService.getTicker(market+"_qc");
 //		Ticker tusdt = compService.getTicker(market+"_usdt");
 		AskBid abc = compService.getAskBid(market+"_qc");
@@ -122,19 +124,19 @@ public class CancelService extends LogService{
 		if(abc.getAsk2()>abu.getAsk2()*usd_cny) {//qc贵
 			if(abc.getAsk2()-getMinPrice(market+"_qc")>abc.getBid1()) {
 				orderService.order(market+"_qc", "0", 
-						String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amountQC));
+						String.valueOf(abc.getAsk2()-getMinPrice(market+"_qc")), String.valueOf(amount));
 			}else {
 				orderService.order(market+"_qc", "0", 
-						String.valueOf(abc.getAsk2()), String.valueOf(amountQC));
+						String.valueOf(abc.getAsk2()), String.valueOf(amount));
 			}
 
 		}else {
 			if(abu.getAsk2()-getMinPrice(market+"_usdt")>abu.getBid1()) {
 				orderService.order(market+"_usdt", "0", 
-						String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amountUSDT));
+						String.valueOf(abu.getAsk2()-getMinPrice(market+"_usdt")), String.valueOf(amount));
 			}else {
 				orderService.order(market+"_usdt", "0", 
-						String.valueOf(abu.getAsk2()), String.valueOf(amountUSDT));
+						String.valueOf(abu.getAsk2()), String.valueOf(amount));
 			}
 		}
 		

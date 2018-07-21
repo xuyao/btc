@@ -18,10 +18,9 @@ public class Market {
 	public static String[][] arry = null;
 	public static Map<String,MarketAB> map = new HashMap<String,MarketAB>();//map
 	
-	public static void init(String markets){
+	public static void init(){
 		
-//		String markets = ConstsUtil.getValue("market"); //这个不需要了
-		
+		String markets = ConstsUtil.getValue("market");
 		String[] marketArr = markets.split(",");
 		arry = new String[marketArr.length][];
 		for(int i=0;i<marketArr.length;i++) {

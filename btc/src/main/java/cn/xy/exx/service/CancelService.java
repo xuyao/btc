@@ -7,12 +7,13 @@ import java.util.TreeMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import cn.xy.exx.AutoSell;
 import cn.xy.exx.Market;
 import cn.xy.exx.util.ConstsUtil;
-import cn.xy.exx.vo.Order;
-import cn.xy.exx.AutoSell;
 import cn.xy.exx.util.NumberUtil;
+import cn.xy.exx.vo.AskBid;
 import cn.xy.exx.vo.MarketAB;
+import cn.xy.exx.vo.Order;
 import cn.xy.exx.vo.Ticker;
 
 import com.alibaba.fastjson.JSON;
@@ -31,6 +32,7 @@ public class CancelService extends LogService{
 	Double usd_cny = ConstsUtil.getCnyUsd();//汇率
 	Integer second = ConstsUtil.getSecond();//汇率
 	String autosellon = ConstsUtil.getValue("autosellon");//汇率
+	String markets = ConstsUtil.getValue("market");
 	
 	public void work(){
 		
@@ -66,12 +68,11 @@ public class CancelService extends LogService{
 				return;
 			result = result.getJSONObject("funds");
 			
-			String market = "";
+			
+			String[] marketArr = markets.split(",");
 			Double available = 0.0;
-			for (Map.Entry<String, MarketAB> entry : Market.map.entrySet()) {  
+			for (String market : marketArr) {  
 //				    System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());  
-				market = entry.getKey();
-				market = market.split("_")[0];
 				available = result.getJSONObject(market.toUpperCase()).getDouble("balance");
 				Double amount = getAmount(market+"_cnyt", available);
 				if(amount == null)
@@ -79,7 +80,7 @@ public class CancelService extends LogService{
 				if(amount>0) {//如果有剩余数量，就要询价卖出
 					doOrder(market, amount);
 					try {
-						Thread.sleep(100);
+						Thread.sleep(200);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
@@ -98,42 +99,45 @@ public class CancelService extends LogService{
 	
 	//看看qc高还是usdt高
 	private void doOrder(String market, Double amount) {
-		Ticker tqc = compService.getTicker(market+"_cnyt");
-		Ticker tusdt = compService.getTicker(market+"_usdt");
-		if(tqc.getSell()>tusdt.getSell()*usd_cny) {//qc贵
-			if(tqc.getSell()-getMinPrice(market+"_qc")>tqc.getBuy()) {
+		AskBid abc = compService.getAskBid(market+"_cnyt");
+		AskBid abu = compService.getAskBid(market+"_usdt");
+		
+		if(abc.getAsk1()>abu.getAsk1()*usd_cny) {//cnyt贵
+			if(abc.getAsk1()-getMinPrice(market+"_cnyt")>abc.getBid1()) {
 				orderService.order(market+"_cnyt", "sell", 
-						String.valueOf(tqc.getSell()-getMinPrice(market+"_cnyt")), String.valueOf(amount));
+						String.valueOf(abc.getAsk1()-getMinPrice(market+"_cnyt")), String.valueOf(amount));
 			}else {
 				orderService.order(market+"_cnyt", "sell", 
-						String.valueOf(tqc.getSell()), String.valueOf(amount));
+						String.valueOf(abc.getAsk1()), String.valueOf(amount));
 			}
 
 		}else {
-			if(tusdt.getSell()-getMinPrice(market+"_usdt")>tusdt.getBuy()) {
+			if(abu.getAsk1()-getMinPrice(market+"_usdt")>abu.getBid1()) {
 				orderService.order(market+"_usdt", "sell", 
-						String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+						String.valueOf(abu.getAsk1()-getMinPrice(market+"_usdt")), String.valueOf(amount));
 			}else {
 				orderService.order(market+"_usdt", "sell", 
-						String.valueOf(tusdt.getSell()), String.valueOf(amount));
+						String.valueOf(abu.getAsk1()), String.valueOf(amount));
 			}
 
 		}
 	}
 	
 	private void doOrder(Order o, String market, Double amount) {
-		Ticker tqc = compService.getTicker(market+"_cnyt");
-		Ticker tusdt = compService.getTicker(market+"_usdt");
-		orderService.cancelOrder(o);
-		if(tqc.getSell()==o.getPrice() || tqc.getSell()==o.getPrice()) {//如果挂单价格和卖一价格一样，什么也不做
+		AskBid abc = compService.getAskBid(market+"_cnyt");
+		AskBid abu = compService.getAskBid(market+"_usdt");
+		
+		if(abc.getAsk1().doubleValue()==o.getPrice().doubleValue() 
+				|| abu.getAsk1().doubleValue()==o.getPrice().doubleValue()) {//如果挂单价格和卖一价格一样，什么也不做
 			//noting to do
 		}else {//否则应该先撤单再比较，然后下单
-			if(tqc.getSell()>tusdt.getSell()*usd_cny) {//qc贵
+			orderService.cancelOrder(o);
+			if(abc.getAsk1()>abu.getAsk1()*usd_cny) {//qc贵
 				orderService.order(market+"_cnyt", "sell", 
-						String.valueOf(tqc.getSell()-getMinPrice(market+"_cnyt")), String.valueOf(amount));
+						String.valueOf(abc.getAsk1()-getMinPrice(market+"_cnyt")), String.valueOf(amount));
 			}else {
 				orderService.order(market+"_usdt", "sell", 
-						String.valueOf(tusdt.getSell()-getMinPrice(market+"_usdt")), String.valueOf(amount));
+						String.valueOf(abu.getAsk1()-getMinPrice(market+"_usdt")), String.valueOf(amount));
 			}
 		}
 	}

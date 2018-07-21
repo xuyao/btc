@@ -123,29 +123,6 @@ public class CompService extends LogService{
 		return deal;
 	}
 	
-	
-	public Ticker getTicker(String currency) {
-		Ticker ticker = null;
-		try {
-			// 请求地址
-			String url = "https://api.exxvip.com/data/v1/ticker?currency=" + currency;
-			String result = httpService.get(url,null);
-			JSONObject jsonObj = JSONObject.parseObject(result);
-			jsonObj = jsonObj.getJSONObject("ticker");
-			ticker = new Ticker();
-			ticker.setBuy(jsonObj.getDouble("buy"));
-			ticker.setHigh(jsonObj.getDouble("high"));
-			ticker.setLast(jsonObj.getDouble("last"));
-			ticker.setLow(jsonObj.getDouble("low"));
-			ticker.setSell(jsonObj.getDouble("sell"));
-			ticker.setVol(jsonObj.getDouble("vol"));
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		return ticker;
-	}
-	
-
 	public HttpService getHttpService() {
 		return httpService;
 	}

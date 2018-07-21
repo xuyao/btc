@@ -1,53 +1,47 @@
 package cn.xy.zb.service;
 
-import org.apache.log4j.Logger;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import java.util.ArrayDeque;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Queue;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.springframework.stereotype.Service;
 
 import com.plato.common.cache.memcached.MemcachedCache;
 
 import cn.xy.zb.Market;
 import cn.xy.zb.util.ConstsUtil;
+import cn.xy.zb.util.NumberUtil;
 import cn.xy.zb.vo.AccountInfo;
 import cn.xy.zb.vo.AskBid;
 import cn.xy.zb.vo.Deal;
+import cn.xy.zb.vo.Ticker;
 
-@DisallowConcurrentExecution
 @Service
-public class JobService extends QuartzJobBean {
+public class JobService extends LogService{
 
-	public static Logger logger = Logger.getLogger(JobService.class);
-	
 	@Autowired
 	CompService compService;
 	@Autowired
 	OrderService orderService;
-	@Autowired
-	ConstService constService;
+	MemcachedCache memcachedClient = MemcacheFactory.getClient();
 	
 	AccountInfo ai = null;
 	String sniff = ConstsUtil.getSniff();
 	Double sniffCnyUsd = 0d;
 	Double sniffUsdCny = 0d;
+	Integer qsize = ConstsUtil.getQueueSize();
+	String mark = (String)ConstsUtil.getValue("mark");
+//	Queue<Double> queue = new ArrayDeque<Double>();
 	
-	@Override
-	protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
-		String markets = (String) context.getJobDetail().getJobDataMap().get("markets");
-		String mark = (String) context.getJobDetail().getJobDataMap().get("mark");
+	public void work(){
 		
-		MemcachedCache memcachedClient = compService.memcachedClient;
-		Boolean isFirstRun = constService.map.get(mark);
-		if(isFirstRun==null || isFirstRun==true) {//第一次初始化
-			Market.init(markets);
-			compService.usd_cny = compService.getTicker("usdt_qc").getLast();
-			orderService.usd_cny = compService.getTicker("usdt_qc").getLast();
-			constService.map.put(mark, false);
-		}
+		String on = (String)memcachedClient.get("on");
+		if(!"t".equals(on))
+			return ;
+		//查询账户
 		
 		ai = compService.getAccountInfo();
 		//循环市场
@@ -59,7 +53,19 @@ public class JobService extends QuartzJobBean {
 		orderService.usd_cny = hl;
 		compService.usd_cny = hl;
 		logger.info(mark);
-		
+	}
+	
+	
+	private double cmpQueue(Queue<Double> queue) {
+		Iterator it = queue.iterator();
+		Map<Double,Integer> m = new HashMap<Double,Integer>();
+		Double result = 6.61;
+		Double sum = 0d;
+		while(it.hasNext()) {//滑动平均线
+			Double d = (Double)it.next();
+			sum = sum+d;
+		}
+		return NumberUtil.formatDoubleHP((sum/queue.size()), 3);
 	}
 	
 	
@@ -100,5 +106,5 @@ public class JobService extends QuartzJobBean {
 	public void setCompService(CompService compService) {
 		this.compService = compService;
 	}
-
+	
 }

@@ -15,62 +15,26 @@
 	<context:component-scan base-package="cn.xy.zb.service" >
 	</context:component-scan>
 	
-	<!-- job2 configuration -->
-	<bean id="data2" class="org.quartz.JobDataMap">
-	    <constructor-arg>
-	        <map>
-	            <entry key="markets" value="hsr,xrp,bcd,dash,sbtc,ink,tv,bcx,bth,doge,omg,xlm,mtl" />
-	            <entry key="mark" value=".." />
-	            <entry key="isFirstRun" value="true" />
-	        </map>
-	    </constructor-arg>
-	</bean>
-	<bean id="myJobDetail2" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
-	    <property name="jobClass" value="cn.xy.zb.service.JobService" />
-	    <property name="jobDataMap" ref="data2"/>
-	</bean>
-	<bean id="myTriggers2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="myJobDetail2">
+	<bean id="myJobDetail"
+        class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="jobService"></property>
+        <property name="targetMethod" value="work"></property>
+        <property name="concurrent" value="false" />
+        <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 -->
+    </bean>
+	<bean id="myTriggers" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="myJobDetail">
         </property>
         <property name="cronExpression">
-            <value>1/3 * * * * ?</value>
+            <value>0/15 * * * * ?</value>
         </property>
     </bean>
-    
-    
-	<!-- job1 configuration -->
-	<bean id="data1" class="org.quartz.JobDataMap">
-	    <constructor-arg>
-	        <map>
-	            <entry key="markets" value="btc,bcc,ubtc,bts,ltc,eth,etc,qtum,hpy,btm,mana,rcn,mco,gnt" />
-	            <entry key="mark" value="." />
-	            <entry key="isFirstRun" value="true" />
-	        </map>
-	    </constructor-arg>
-	</bean>
-	<bean id="myJobDetail1" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
-	    <property name="jobClass" value="cn.xy.zb.service.JobService" />
-	    <property name="jobDataMap" ref="data1"/>
-	</bean>
-	<bean id="myTriggers1" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="myJobDetail1">
-        </property>
-        <property name="cronExpression">
-            <value>0/3 * * * * ?</value>
-        </property>
-    </bean>
-    
-    <!-- scheduler task list -->
 	<bean id="myScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
         <property name="triggers">
             <list>
-                <ref bean="myTriggers1"></ref>
-                <ref bean="myTriggers2"></ref>
+                <ref bean="myTriggers"></ref>
             </list>
         </property>
         <property name="autoStartup" value="true"></property>
-        <property name="jobFactory">
-            <bean class="cn.xy.zb.service.JobFactory" />
-        </property>
     </bean>
 </beans>

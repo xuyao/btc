@@ -27,6 +27,9 @@ public class ConstsUtil {
 	public static Integer getSecond(){
 		return Integer.parseInt(prop.getProperty("second"));
 	}
+	public static Double getCnyUsd(){
+		return Double.parseDouble(prop.getProperty("usd_cny"));
+	}
 	
 	public static Double getCompCnyUsd(){
 		return Double.parseDouble(prop.getProperty("comp_cny_usd"));
@@ -44,12 +47,12 @@ public class ConstsUtil {
 		return Double.parseDouble(prop.getProperty("usdt_limit"));
 	}
 	
-	public static Integer getQueueSize(){
-		return Integer.parseInt(prop.getProperty("qsize"));
-	}
-	
 	public static Double getProfit(){
 		return Double.parseDouble(prop.getProperty("profit"));
+	}
+	
+	public static Integer getQueueSize(){
+		return Integer.parseInt(prop.getProperty("qsize"));
 	}
 	
 	public static String getSniff(){
